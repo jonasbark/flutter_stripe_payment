@@ -2,20 +2,20 @@
 
 A flutter plugin to integrate the stripe plugin for iOS and Android. Currently only adding a credit card as source is implemented.
 
-![Screenshot Android](https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_android.png)
-![Screenshot iOS](https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_ios.png)
+![Screenshot Android](https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_android.png | width=300)
+![Screenshot iOS](https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_ios.png | width=300)
 
 ## Usage
 
 To set your publishable key set:
-```
+```dart
 import 'package:stripe_payment/stripe_source.dart';
 StripeSource.setPublishableKey("pk_test_MA0JmL7HowNa25IxNKp4toZF");
 ```
 from somewhere in your code, e.g. your main.dart file.
 
 To open the dialog:
-```
+```dart
 StripeSource.addSource.then((String token) {
     print(token); //your stripe card source token
 });
