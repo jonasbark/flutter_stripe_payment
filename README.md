@@ -10,7 +10,7 @@ A flutter plugin to integrate the stripe plugin for iOS and Android. Currently o
 To set your publishable key set:
 ```dart
 import 'package:stripe_payment/stripe_payment.dart';
-StripeSource.setPublishableKey("pk_test_MA0JmL7HowNa25IxNKp4toZF");
+StripeSource.setPublishableKey("pk_test");
 ```
 from somewhere in your code, e.g. your main.dart file.
 
