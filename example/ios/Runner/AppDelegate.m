@@ -33,7 +33,7 @@
 -(void)openStripeCardVC:(FlutterViewController*)controller result:(FlutterResult) result {
     flutterResult = result;
     
-    [[STPPaymentConfiguration sharedConfiguration] setPublishableKey:@"pk_test_MA0JmL7HowNa25IxNKp4toZF"];
+    [[STPPaymentConfiguration sharedConfiguration] setPublishableKey:@"pk_test"];
     
     STPAddSourceViewController* addSourceVC = [[STPAddSourceViewController alloc] init];
     addSourceVC.srcDelegate = self;

@@ -24,9 +24,11 @@
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
   if ([@"addSource" isEqualToString:call.method]) {
       [self openStripeCardVC:self.viewController result:result];
-  } else if ([@"setPublishableKey" isEqualToString:call.method]) {
+  }
+  else if ([@"setPublishableKey" isEqualToString:call.method]) {
       [[STPPaymentConfiguration sharedConfiguration] setPublishableKey:call.arguments];
-  } else {
+  }
+  else {
       result(FlutterMethodNotImplemented);
   }
 }
