@@ -1,0 +1,72 @@
+group 'de.jonasbark.stripepayment'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url "https://maven.google.com"
+        }
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.10"
+        classpath 'com.android.tools.build:gradle:3.0.1'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        jcenter()
+        maven {
+            url "https://maven.google.com"
+        }
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 26
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
+        }
+        debug {
+
+        }
+        profile {
+            // Specifies a sorted list of fallback build types that the
+            // plugin should try to use when a dependency does not include a
+            // "staging" build type. You may specify as many fallbacks as you
+            // like, and the plugin selects the first build type that's
+            // available in the dependency.
+            //matchingFallbacks = ['debug', 'release']
+        }
+    }
+}
+
+dependencies {
+    compile 'org.jetbrains.kotlin:kotlin-stdlib-jre7:1.1.51'
+    compile 'com.stripe:stripe-android:5.1.0'
+}
+
+apply plugin: 'kotlin-android-extensions'
