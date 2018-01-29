@@ -16,7 +16,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -30,7 +30,7 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "de.jonasbark.stripepaymentexample"
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -51,7 +51,7 @@ android {
             // "staging" build type. You may specify as many fallbacks as you
             // like, and the plugin selects the first build type that's
             // available in the dependency.
-            matchingFallbacks = ['debug', 'release']
+            //matchingFallbacks = ['debug', 'release']
         }
     }
 }
@@ -61,8 +61,5 @@ flutter {
 }
 
 dependencies {
-    androidTestCompile 'com.android.support:support-annotations:26.0.1'
-    androidTestCompile 'com.android.support.test:runner:1.0.1'
-    androidTestCompile 'com.android.support.test:rules:1.0.1'
-    compile 'org.jetbrains.kotlin:kotlin-stdlib-jre7:1.1.51'
+    api 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.20'
 }

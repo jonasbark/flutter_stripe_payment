@@ -1,6 +1,5 @@
 package de.jonasbark.stripepayment
 
-import android.app.Activity
 import android.support.v4.app.FragmentActivity
 import android.util.Log
 import io.flutter.plugin.common.MethodCall
@@ -22,26 +21,25 @@ class StripePaymentPlugin(private val activity: FragmentActivity) : MethodCallHa
     var publishableKey: String? = null
 
     override fun onMethodCall(call: MethodCall, result: Result): Unit {
-        if (call.method == "addSource") {
-            if (publishableKey != null) {
-                StripeDialog.newInstance("Add Source", publishableKey!!).apply {
+        when (call.method) {
+            "addSource" -> {
+                publishableKey?.let {key ->
+                    StripeDialog.newInstance("Add Source", key).apply {
 
-                    show(this@StripePaymentPlugin.activity.supportFragmentManager, "stripe")
+                        show(this@StripePaymentPlugin.activity.supportFragmentManager, "stripe")
 
-                    tokenListener = { token ->
-                        result.success(token)
+                        tokenListener = { token ->
+                            result.success(token)
+                        }
                     }
                 }
+                if (publishableKey == null) {
+                    Log.e("STRIPE", "You have to set a publishable key first")
+                    result.success(false)
+                }
             }
-            else {
-                result.success(false)
-            }
-        }
-        else if (call.method == "setPublishableKey") {
-            publishableKey = call.arguments as String
-        }
-        else {
-            result.notImplemented()
+            "setPublishableKey" -> publishableKey = call.arguments as String
+            else -> result.notImplemented()
         }
     }
 }

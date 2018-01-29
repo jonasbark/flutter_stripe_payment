@@ -1,25 +1,17 @@
 package de.jonasbark.stripepayment
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import com.stripe.android.SourceCallback
 import com.stripe.android.Stripe
-import com.stripe.android.TokenCallback
 import com.stripe.android.model.Source
 import com.stripe.android.model.SourceParams
-import com.stripe.android.model.Token
 import com.stripe.android.view.CardMultilineWidget
 import java.lang.Exception
-import android.app.DialogFragment.STYLE_NO_TITLE
-
-
 
 
 class StripeDialog : DialogFragment() {
@@ -47,9 +39,6 @@ class StripeDialog : DialogFragment() {
         // Fetch arguments from bundle and set title
         val title = arguments.getString("title", "Add Source")
         dialog.setTitle(title)
-        // Show soft keyboard automatically and request focus to field
-//        mEditText.requestFocus()
-//        dialog.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
 
         view?.findViewById<View>(R.id.buttonSave)?.setOnClickListener {
             getToken()
@@ -71,46 +60,40 @@ class StripeDialog : DialogFragment() {
 
         if (mCardInputWidget.validateAllFields()) {
 
-            view?.findViewById<View>(R.id.progress)?.visibility = View.VISIBLE
-            view?.findViewById<View>(R.id.buttonSave)?.visibility = View.GONE
+            mCardInputWidget.card?.let { card ->
 
-            val publishableKey = arguments.getString("publishableKey", null)
+                view?.findViewById<View>(R.id.progress)?.visibility = View.VISIBLE
+                view?.findViewById<View>(R.id.buttonSave)?.visibility = View.GONE
 
-            val stripe = Stripe(activity, publishableKey)
-            stripe.createSource(SourceParams.createCardParams(mCardInputWidget.card!!), object: SourceCallback {
-                override fun onSuccess(source: Source?) {
-                    view?.findViewById<View>(R.id.progress)?.visibility = View.GONE
-                    view?.findViewById<View>(R.id.buttonSave)?.visibility = View.GONE
+                val publishableKey = arguments.getString("publishableKey", null)
 
-                    tokenListener?.invoke(source!!.id)
-                    dismiss()
-                }
+                val stripe = Stripe(activity, publishableKey)
+                stripe.createSource(SourceParams.createCardParams(card), object : SourceCallback {
+                    override fun onSuccess(source: Source?) {
+                        view?.findViewById<View>(R.id.progress)?.visibility = View.GONE
+                        view?.findViewById<View>(R.id.buttonSave)?.visibility = View.GONE
 
-                override fun onError(error: Exception?) {
-                    view?.findViewById<View>(R.id.progress)?.visibility = View.GONE
-                    view?.findViewById<View>(R.id.buttonSave)?.visibility = View.VISIBLE
-                    Snackbar.make(view!!, error!!.localizedMessage, Snackbar.LENGTH_LONG).show()
-                }
+                        if (source != null) {
+                            tokenListener?.invoke(source.id)
+                            dismiss()
+                        }
+                    }
 
-            })
-            /*stripe.createToken(mCardInputWidget.card!!, object: TokenCallback{
-                override fun onSuccess(token: Token?) {
-                    view?.findViewById<View>(R.id.progress)?.visibility = View.GONE
-                    view?.findViewById<View>(R.id.buttonSave)?.visibility = View.GONE
+                    override fun onError(error: Exception?) {
+                        view?.findViewById<View>(R.id.progress)?.visibility = View.GONE
+                        view?.findViewById<View>(R.id.buttonSave)?.visibility = View.VISIBLE
+                        view?.let {
+                            Snackbar.make(it, error!!.localizedMessage, Snackbar.LENGTH_LONG).show()
+                        }
+                    }
 
-                    tokenListener?.invoke(token!!.id)
-                    dismiss()
-                }
-
-                override fun onError(error: Exception?) {
-                    view?.findViewById<View>(R.id.progress)?.visibility = View.GONE
-                    view?.findViewById<View>(R.id.buttonSave)?.visibility = View.VISIBLE
-                    Snackbar.make(view!!, error!!.localizedMessage, Snackbar.LENGTH_LONG).show()
-                }
-            })*/
+                })
+            }
         }
         else {
-            Snackbar.make(view!!, "The card info you entered is not correct", Snackbar.LENGTH_LONG).show()
+            view?.let {
+                Snackbar.make(it, "The card info you entered is not correct", Snackbar.LENGTH_LONG).show()
+            }
         }
 
     }
