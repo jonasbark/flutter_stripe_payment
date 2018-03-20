@@ -28,16 +28,16 @@ class StripeDialog : DialogFragment() {
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater!!.inflate(R.layout.activity_stripe, container)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Get field from view
         // Fetch arguments from bundle and set title
-        val title = arguments.getString("title", "Add Source")
+        val title = arguments?.getString("title", "Add Source")
         dialog.setTitle(title)
 
         view?.findViewById<View>(R.id.buttonSave)?.setOnClickListener {
@@ -65,9 +65,9 @@ class StripeDialog : DialogFragment() {
                 view?.findViewById<View>(R.id.progress)?.visibility = View.VISIBLE
                 view?.findViewById<View>(R.id.buttonSave)?.visibility = View.GONE
 
-                val publishableKey = arguments.getString("publishableKey", null)
+                val publishableKey = arguments?.getString("publishableKey", null) ?: ""
 
-                val stripe = Stripe(activity, publishableKey)
+                val stripe = Stripe(activity!!, publishableKey)
                 stripe.createSource(SourceParams.createCardParams(card), object : SourceCallback {
                     override fun onSuccess(source: Source?) {
                         view?.findViewById<View>(R.id.progress)?.visibility = View.GONE
