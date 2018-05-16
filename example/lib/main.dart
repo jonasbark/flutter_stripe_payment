@@ -18,7 +18,7 @@ class _MyAppState extends State<MyApp> {
   initState() {
     super.initState();
     StripeSource.setPublishableKey("pk_test");
-    StripeSource.addSource.then((String token) {
+    StripeSource.addSource().then((String token) {
       _addSource(token);
     });
   }
@@ -35,5 +35,9 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  void _addSource(String token) {
+
   }
 }

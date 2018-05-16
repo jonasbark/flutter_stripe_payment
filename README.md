@@ -16,7 +16,7 @@ from somewhere in your code, e.g. your main.dart file.
 
 To open the dialog:
 ```dart
-StripeSource.addSource.then((String token) {
+StripeSource.addSource().then((String token) {
     print(token); //your stripe card source token
 });
 ```

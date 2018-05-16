@@ -8,7 +8,10 @@ class StripeSource {
 
   /// opens the stripe dialog to add a new card
   /// if the source has been successfully added the card token will be returned
-  static Future<String> get addSource => _channel.invokeMethod('addSource');
+  static Future<String> addSource() async {
+    final String token = await _channel.invokeMethod('addSource');
+    return token;
+  }
 
   static bool _publishableKeySet = false;
 
