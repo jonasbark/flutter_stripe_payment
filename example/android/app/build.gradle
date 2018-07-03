@@ -61,5 +61,6 @@ flutter {
 }
 
 dependencies {
-    api 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.20'
+    api 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.50'
+    compile 'com.android.support:appcompat-v7:27.1.0'
 }
