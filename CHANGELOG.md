@@ -1,3 +1,7 @@
+## [0.0.7] - 03.12.2018
+
+* Increase Kotlin and Gradle versions
+
 ## [0.0.6] - 16.05.2018
 
 * Dart 2 fixes
