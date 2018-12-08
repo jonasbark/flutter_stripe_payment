@@ -3,6 +3,4 @@
 
 @interface StripePaymentPlugin : NSObject<FlutterPlugin, STPAddSourceViewControllerDelegate>
 
-@property (nonatomic, retain) UIViewController *viewController;
-
 @end

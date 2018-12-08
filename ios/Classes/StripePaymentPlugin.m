@@ -8,22 +8,13 @@
     
     FlutterMethodChannel* channel = [FlutterMethodChannel methodChannelWithName:@"stripe_payment" binaryMessenger:[registrar messenger]];
     
-    UIViewController *viewController = (UIViewController *)registrar.messenger;
-    StripePaymentPlugin* instance = [[StripePaymentPlugin alloc] initWithViewController:viewController];
+    StripePaymentPlugin* instance = [[StripePaymentPlugin alloc] init];
     [registrar addMethodCallDelegate:instance channel:channel];
-}
-
-- (instancetype)initWithViewController:(UIViewController *)viewController {
-    self = [super init];
-    if (self) {
-        self.viewController = viewController;
-    }
-    return self;
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
   if ([@"addSource" isEqualToString:call.method]) {
-      [self openStripeCardVC:self.viewController result:result];
+      [self openStripeCardVC:result];
   }
   else if ([@"setPublishableKey" isEqualToString:call.method]) {
       [[STPPaymentConfiguration sharedConfiguration] setPublishableKey:call.arguments];
@@ -33,7 +24,7 @@
   }
 }
 
--(void)openStripeCardVC:(UIViewController*)controller result:(FlutterResult) result {
+-(void)openStripeCardVC:(FlutterResult) result {
     flutterResult = result;
     
     STPAddSourceViewController* addSourceVC = [[STPAddSourceViewController alloc] init];
@@ -41,7 +32,8 @@
     
     UINavigationController* navigationController = [[UINavigationController alloc] initWithRootViewController:addSourceVC];
     [navigationController setModalPresentationStyle:UIModalPresentationFormSheet];
-    
+
+    UIViewController* controller = [[[UIApplication sharedApplication] keyWindow] rootViewController];
     [controller presentViewController:navigationController animated:true completion:nil];
 }
 
