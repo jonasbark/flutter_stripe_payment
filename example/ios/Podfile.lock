@@ -6,8 +6,8 @@ PODS:
     - Stripe
 
 DEPENDENCIES:
-  - Flutter (from `/Users/boni/Documents/Programmieren/Dart/flutter/bin/cache/artifacts/engine/ios`)
-  - stripe_payment (from `/Users/boni/Documents/Programmieren/Dart/stripe_payment/ios`)
+  - Flutter (from `/Users/developer/flutter/bin/cache/artifacts/engine/ios`)
+  - stripe_payment (from `/Users/developer/Github/flutter_stripe_payment/ios`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -15,9 +15,9 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Flutter:
-    :path: "/Users/boni/Documents/Programmieren/Dart/flutter/bin/cache/artifacts/engine/ios"
+    :path: "/Users/developer/flutter/bin/cache/artifacts/engine/ios"
   stripe_payment:
-    :path: "/Users/boni/Documents/Programmieren/Dart/stripe_payment/ios"
+    :path: "/Users/developer/Github/flutter_stripe_payment/ios"
 
 SPEC CHECKSUMS:
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296

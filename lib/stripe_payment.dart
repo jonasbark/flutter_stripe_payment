@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 class StripeSource {
-
   static const MethodChannel _channel = const MethodChannel('stripe_payment');
 
   /// opens the stripe dialog to add a new card
@@ -14,6 +13,8 @@ class StripeSource {
   }
 
   static bool _publishableKeySet = false;
+
+  static bool get ready => _publishableKeySet;
 
   /// set the publishable key that stripe should use
   /// call this once and before you use [addSource]
