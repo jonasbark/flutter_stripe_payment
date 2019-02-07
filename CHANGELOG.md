@@ -1,4 +1,4 @@
-## [0.0.9] - Updating Dependency
+## [0.0.9] - 07.02.2018
 
 * Updating Android Gradle
 
