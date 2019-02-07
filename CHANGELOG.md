@@ -1,3 +1,7 @@
+## [0.0.9] - Updating Dependency
+
+* Updating Android Gradle
+
 ## [0.0.8] - 08.12.2018
 
 * Fix crash on iOS for newer Flutter beta (fixes https://github.com/jonasbark/flutter_stripe_payment/issues/12) 

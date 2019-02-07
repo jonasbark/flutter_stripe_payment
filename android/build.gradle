@@ -1,4 +1,5 @@
 group 'de.jonasbark.stripepayment'
+
 version '1.0'
 
 buildscript {
