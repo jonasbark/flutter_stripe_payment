@@ -16,7 +16,7 @@ class _MyAppState extends State<MyApp> {
   initState() {
     super.initState();
 
-    StripeSource.setPublishableKey("sk_0G1JZIKlGks6b8DhZUf5vfJY7XCMq");
+    StripeSource.setPublishableKey("pk_test");
   }
 
   @override
