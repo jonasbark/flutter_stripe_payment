@@ -22,7 +22,7 @@
         android:text="Save"
         android:id="@+id/buttonSave"/>
 
-    <android.support.v4.widget.ContentLoadingProgressBar
+    <androidx.core.widget.ContentLoadingProgressBar
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="30dp"
         android:layout_height="30dp"
