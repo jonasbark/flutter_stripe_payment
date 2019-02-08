@@ -66,4 +66,3 @@ dependencies {
     api 'com.stripe:stripe-android:6.1.2'
 }
 
-apply plugin: 'kotlin-android-extensions'
