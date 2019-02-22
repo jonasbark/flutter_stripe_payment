@@ -1,8 +1,8 @@
 package de.jonasbark.stripepayment
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.DialogFragment
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +14,7 @@ import com.stripe.android.view.CardMultilineWidget
 import java.lang.Exception
 
 
-class StripeDialog : DialogFragment() {
+class StripeDialog : androidx.fragment.app.DialogFragment() {
 
     companion object {
         fun newInstance(title: String, publishableKey: String): StripeDialog {
@@ -50,7 +50,7 @@ class StripeDialog : DialogFragment() {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState)
 
-        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_AppCompat_Light_Dialog)
+        setStyle(androidx.fragment.app.DialogFragment.STYLE_NO_TITLE, R.style.Theme_AppCompat_Light_Dialog)
     }
 
     var tokenListener: ((String) -> (Unit))? = null

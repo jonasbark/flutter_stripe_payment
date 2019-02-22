@@ -35,7 +35,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
         disable 'InvalidPackage'
@@ -65,5 +65,3 @@ dependencies {
     api 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.20'
     api 'com.stripe:stripe-android:6.1.2'
 }
-
-apply plugin: 'kotlin-android-extensions'

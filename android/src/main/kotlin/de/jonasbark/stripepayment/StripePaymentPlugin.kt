@@ -1,6 +1,6 @@
 package de.jonasbark.stripepayment
 
-import android.support.v4.app.FragmentActivity
+import androidx.fragment.app.FragmentActivity
 import android.util.Log
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -8,13 +8,13 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-class StripePaymentPlugin(private val activity: FragmentActivity) : MethodCallHandler {
+class StripePaymentPlugin(private val activity: androidx.fragment.app.FragmentActivity) : MethodCallHandler {
 
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar): Unit {
             val channel = MethodChannel(registrar.messenger(), "stripe_payment")
-            channel.setMethodCallHandler(StripePaymentPlugin(registrar.activity() as FragmentActivity))
+            channel.setMethodCallHandler(StripePaymentPlugin(registrar.activity() as androidx.fragment.app.FragmentActivity))
         }
     }
 
