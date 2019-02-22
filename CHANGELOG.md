@@ -1,4 +1,8 @@
-## [0.0.9] - 07.02.2018
+## [0.1.0] - 22.02.2019
+
+* Breaking change: use AndroidX
+
+## [0.0.9] - 07.02.2019
 
 * Updating Android Gradle
 
