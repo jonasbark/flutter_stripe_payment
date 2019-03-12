@@ -5,6 +5,10 @@ A flutter plugin to integrate the stripe plugin for iOS and Android. Currently o
 <img src="https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_android.png" width="300">
 <img src="https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_ios.png" width="300">
 
+## Android
+
+**Please be aware that your main activity must extend from FlutterFragmentActivity. Otherwise the Android dialog would've looked very nasty.**
+
 ## Usage
 
 To set your publishable key set:
@@ -20,10 +24,6 @@ StripeSource.addSource().then((String token) {
     print(token); //your stripe card source token
 });
 ```
-
-## Android
-
-Please be aware that your main activity must extend from FlutterFragmentActivity. Otherwise the Android dialog would've looked very nasty.
 
 ## TODO
 
