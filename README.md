@@ -9,6 +9,12 @@ A flutter plugin to integrate the stripe plugin for iOS and Android. Currently o
 
 **Please be aware that your main activity must extend from FlutterFragmentActivity. Otherwise the Android dialog would've looked very nasty.**
 
+Include this into your project's android/gradle.properties file
+```properties
+android.useAndroidX=true
+android.enableJetifier=true
+```
+
 ## Usage
 
 To set your publishable key set:
