@@ -2,7 +2,6 @@ package de.jonasbark.stripepayment
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,9 +27,11 @@ class StripeDialog : androidx.fragment.app.DialogFragment() {
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.activity_stripe, container)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.activity_stripe, container)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,7 +41,7 @@ class StripeDialog : androidx.fragment.app.DialogFragment() {
         val title = arguments?.getString("title", "Add Source")
         dialog.setTitle(title)
 
-        view?.findViewById<View>(R.id.buttonSave)?.setOnClickListener {
+        view.findViewById<View>(R.id.buttonSave)?.setOnClickListener {
             getToken()
         }
 
@@ -50,7 +51,7 @@ class StripeDialog : androidx.fragment.app.DialogFragment() {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState)
 
-        setStyle(androidx.fragment.app.DialogFragment.STYLE_NO_TITLE, R.style.Theme_AppCompat_Light_Dialog)
+        setStyle(STYLE_NO_TITLE, R.style.Theme_AppCompat_Light_Dialog)
     }
 
     var tokenListener: ((String) -> (Unit))? = null
@@ -69,28 +70,27 @@ class StripeDialog : androidx.fragment.app.DialogFragment() {
 
                 val stripe = Stripe(activity!!, publishableKey)
                 stripe.createSource(SourceParams.createCardParams(card), object : SourceCallback {
-                    override fun onSuccess(source: Source?) {
+                    override fun onSuccess(result: Source) {
                         view?.findViewById<View>(R.id.progress)?.visibility = View.GONE
                         view?.findViewById<View>(R.id.buttonSave)?.visibility = View.GONE
 
-                        if (source != null) {
-                            tokenListener?.invoke(source.id)
+                        if (result.id != null) {
+                            tokenListener?.invoke(result.id!!)
                             dismiss()
                         }
                     }
 
-                    override fun onError(error: Exception?) {
+                    override fun onError(error: Exception) {
                         view?.findViewById<View>(R.id.progress)?.visibility = View.GONE
                         view?.findViewById<View>(R.id.buttonSave)?.visibility = View.VISIBLE
                         view?.let {
-                            Snackbar.make(it, error!!.localizedMessage, Snackbar.LENGTH_LONG).show()
+                            Snackbar.make(it, error.localizedMessage, Snackbar.LENGTH_LONG).show()
                         }
                     }
 
                 })
             }
-        }
-        else {
+        } else {
             view?.let {
                 Snackbar.make(it, "The card info you entered is not correct", Snackbar.LENGTH_LONG).show()
             }
