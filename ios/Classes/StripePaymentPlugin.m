@@ -26,7 +26,7 @@
 
 -(void)openStripeCardVC:(FlutterResult) result {
     flutterResult = result;
-    
+
     STPAddSourceViewController* addSourceVC = [[STPAddSourceViewController alloc] init];
     addSourceVC.srcDelegate = self;
     
@@ -42,9 +42,9 @@
 }
 
 - (void)addCardViewController:(STPAddSourceViewController *)addCardViewController
-              didCreateSource:(STPSource *)source
-                   completion:(STPErrorBlock)completion {
-    flutterResult(source.stripeID);
+              didCreatePaymentMethod:(nonnull STPPaymentMethod *)paymentMethod
+                   completion:(nonnull STPErrorBlock)completion {
+    flutterResult(paymentMethod.stripeId);
     
     [addCardViewController dismissViewControllerAnimated:true completion:nil];
 }

@@ -1,3 +1,7 @@
+## [0.2.0] - 13.08.2019
+
+* This plugin now uses the Payment Intent to create a payment method instead of creating a Source.
+
 ## [0.1.1] - 07.08.2019
 
 * Breaking: Minimum Android target is 19 (from 18)
