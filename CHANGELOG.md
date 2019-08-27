@@ -1,6 +1,10 @@
+## [0.2.1] - 27.08.2019
+
+* Update Stripe dependencies
+
 ## [0.2.0] - 13.08.2019
 
-* This plugin now uses the Payment Intent to create a payment method instead of creating a Source.
+* BREAKING: This plugin now uses the Payment Intent to create a payment method instead of creating a Source.
 
 ## [0.1.1] - 07.08.2019
 
