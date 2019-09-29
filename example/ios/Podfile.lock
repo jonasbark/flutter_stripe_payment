@@ -1,12 +1,16 @@
 PODS:
   - Flutter (1.0.0)
-  - Stripe (16.0.3)
+  - Stripe (16.0.6)
+  - stripe_native (0.0.1):
+    - Flutter
+    - Stripe (= 16.0.6)
   - stripe_payment (0.0.1):
     - Flutter
-    - Stripe (= 16.0.3)
+    - Stripe (= 16.0.6)
 
 DEPENDENCIES:
   - Flutter (from `/Users/boni/Documents/Programmieren/Dart/flutter/bin/cache/artifacts/engine/ios`)
+  - stripe_native (from `/Users/boni/.pub-cache/hosted/pub.dartlang.org/stripe_native-1.0.3/ios`)
   - stripe_payment (from `/Users/boni/Documents/Programmieren/Dart/stripe_payment/ios`)
 
 SPEC REPOS:
@@ -16,14 +20,17 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Flutter:
     :path: "/Users/boni/Documents/Programmieren/Dart/flutter/bin/cache/artifacts/engine/ios"
+  stripe_native:
+    :path: "/Users/boni/.pub-cache/hosted/pub.dartlang.org/stripe_native-1.0.3/ios"
   stripe_payment:
     :path: "/Users/boni/Documents/Programmieren/Dart/stripe_payment/ios"
 
 SPEC CHECKSUMS:
-  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
-  Stripe: 82a77b8dd26be83555f8ca9a3cc034dfda81fc40
-  stripe_payment: ad35272cff5c6c6d3cdaf88f34393536fe365870
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  Stripe: bbfdfb44bcc604bd3d29771f80d5d72710301fe3
+  stripe_native: f12b7f0c6e3a8402cad7241c107ee2275733a690
+  stripe_payment: c192adcd86c92cd86a14e7b043d858734c43020a
 
-PODFILE CHECKSUM: cc70c01bca487bebd110b87397f017f3b76a89f1
+PODFILE CHECKSUM: 9af100f59bc89ffea45f25ab613abff938292478
 
-COCOAPODS: 1.7.1
+COCOAPODS: 1.7.5

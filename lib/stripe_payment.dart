@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:stripe_native/stripe_native.dart';
 
 class StripePayment {
   static const MethodChannel _channel = const MethodChannel('stripe_payment');
@@ -15,6 +16,10 @@ class StripePayment {
   static void setSettings(StripeSettings settings) {
     _channel.invokeMethod('setSettings', settings.toJson());
     _settingsSet = true;
+    StripeNative.setPublishableKey(settings.publishableKey);
+    if (settings.merchantIdentifier != null) {
+      StripeNative.setMerchantIdentifier(settings.merchantIdentifier);
+    }
   }
 
   /// opens the stripe dialog to add a new card
@@ -37,24 +42,28 @@ class StripePayment {
       "clientSecret": clientSecret,
     });
   }
+
+  static Future<String> useNativePay(Order anOrder) => StripeNative.useNativePay(anOrder);
+
+  static Future<String> useReceiptNativePay(Receipt aReceipt) => StripeNative.useReceiptNativePay(aReceipt);
 }
 
 class StripeSettings {
   final String publishableKey;
-  final String applePayMerchantIdentifier;
+  final String merchantIdentifier;
 
-  StripeSettings({@required this.publishableKey, this.applePayMerchantIdentifier});
+  StripeSettings({@required this.publishableKey, this.merchantIdentifier});
 
   factory StripeSettings.fromJson(Map<String, dynamic> json) {
     return StripeSettings(
-      applePayMerchantIdentifier: json['applePayMerchantIdentifier'],
+      merchantIdentifier: json['merchantIdentifier'],
       publishableKey: json['publishableKey'],
     );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['applePayMerchantIdentifier'] = this.applePayMerchantIdentifier;
+    data['merchantIdentifier'] = this.merchantIdentifier;
     data['publishableKey'] = this.publishableKey;
     return data;
   }
