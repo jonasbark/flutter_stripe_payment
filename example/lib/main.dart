@@ -12,11 +12,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  var _paymentMethodId = "";
+  var _setupPaymentId = "";
+  var _confirmPaymentId = "";
+
+  final _currentSecret = "";
+
   @override
   initState() {
     super.initState();
 
-    StripeSource.setPublishableKey("pk_test");
+    StripePayment.setSettings(StripeSettings(publishableKey: "pk_test_"));
   }
 
   @override
@@ -26,22 +32,46 @@ class _MyAppState extends State<MyApp> {
         appBar: new AppBar(
           title: new Text('Plugin example app'),
         ),
-        body: new Center(
-          child: RaisedButton(
-            child: Text("Add Card"),
-            onPressed: () {
-              print("Ready: ${StripeSource.ready}");
-              StripeSource.addSource().then((String token) {
-                _addSource(token);
-              });
-            },
-          ),
+        body: Column(
+          children: <Widget>[
+            RaisedButton(
+              child: Text("Add Card"),
+              onPressed: () {
+                StripePayment.addSource().then((String token) {
+                  setState(() {
+                    _paymentMethodId = token;
+                  });
+                });
+              },
+            ),
+            Text("Current payment method ID: $_paymentMethodId"),
+            Divider(),
+            RaisedButton(
+              child: Text("Setup payment"),
+              onPressed: () {
+                StripePayment.setupPayment(_paymentMethodId, _currentSecret).then((String token) {
+                  setState(() {
+                    _setupPaymentId = token;
+                  });
+                }).catchError(print);
+              },
+            ),
+            Text("Current setup payment ID: $_setupPaymentId"),
+            Divider(),
+            RaisedButton(
+              child: Text("Confirm payment"),
+              onPressed: () {
+                StripePayment.confirmPayment(_paymentMethodId, _currentSecret).then((String token) {
+                  setState(() {
+                    _confirmPaymentId = token;
+                  });
+                }).catchError(print);
+              },
+            ),
+            Text("Current confirm payment ID: $_confirmPaymentId"),
+          ],
         ),
       ),
     );
-  }
-
-  void _addSource(String token) {
-    print("Token => $token");
   }
 }

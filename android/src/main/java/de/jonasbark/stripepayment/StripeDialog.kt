@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.PaymentConfiguration
-import com.stripe.android.SourceCallback
 import com.stripe.android.Stripe
 import com.stripe.android.model.*
 import com.stripe.android.view.CardMultilineWidget
@@ -17,11 +16,10 @@ import java.lang.Exception
 class StripeDialog : androidx.fragment.app.DialogFragment() {
 
     companion object {
-        fun newInstance(title: String, publishableKey: String): StripeDialog {
+        fun newInstance(title: String): StripeDialog {
             val frag = StripeDialog()
             val args = Bundle()
             args.putString("title", title)
-            args.putString("publishableKey", publishableKey)
             frag.arguments = args
             return frag
         }
@@ -40,7 +38,7 @@ class StripeDialog : androidx.fragment.app.DialogFragment() {
         // Get field from view
         // Fetch arguments from bundle and set title
         val title = arguments?.getString("title", "Add Source")
-        dialog.setTitle(title)
+        dialog?.setTitle(title)
 
         view.findViewById<View>(R.id.buttonSave)?.setOnClickListener {
             getToken()
@@ -68,16 +66,14 @@ class StripeDialog : androidx.fragment.app.DialogFragment() {
                 view?.findViewById<View>(R.id.progress)?.visibility = View.VISIBLE
                 view?.findViewById<View>(R.id.buttonSave)?.visibility = View.GONE
 
-                val publishableKey = arguments?.getString("publishableKey", null) ?: ""
-                PaymentConfiguration.init(publishableKey)
-
                 val paymentMethodParamsCard = card.toPaymentMethodParamsCard()
                 val paymentMethodCreateParams = PaymentMethodCreateParams.create(
                     paymentMethodParamsCard,
                     PaymentMethod.BillingDetails.Builder().build()
                 )
 
-                val stripe = Stripe(activity!!, PaymentConfiguration.getInstance().publishableKey)
+                val stripe =
+                    Stripe(activity!!, PaymentConfiguration.getInstance(activity!!).publishableKey)
 
                 stripe.createPaymentMethod(
                     paymentMethodCreateParams,

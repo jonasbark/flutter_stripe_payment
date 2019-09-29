@@ -1,14 +1,16 @@
 package jonasbark.de.stripepaymentexample
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import de.jonasbark.stripepayment.StripeDialog
+import io.flutter.app.FlutterActivity
+import io.flutter.plugins.GeneratedPluginRegistrant
 
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
+class MainActivity : io.flutter.app.FlutterFragmentActivity() {
+
+
+    @Override
+    protected override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        GeneratedPluginRegistrant.registerWith(this)
-
-        StripeDialog.newInstance("Timmey", "pk_test_key").show(supportFragmentManager, "")
+        GeneratedPluginRegistrant.registerWith(this)
     }
 }
+
