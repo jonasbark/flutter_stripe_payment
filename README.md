@@ -1,6 +1,12 @@
 # stripe_payment
 
-A Flutter plugin to integrate the stripe plugin for iOS and Android. Currently only adding a credit card as paymet method is implemented.
+A Flutter plugin to integrate the stripe plugin for iOS and Android. 
+
+It supports:
+- Adding a credit card as payment method
+- SCA and 2FA (two factor authentication)
+- confirm + setup payments
+- Apple / Google Pay via stripe_native (https://pub.dev/packages/stripe_native)
 
 <img src="https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_android.png" width="300">
 <img src="https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_ios.png" width="300">
@@ -20,15 +26,33 @@ android.enableJetifier=true
 To set your publishable key set:
 ```dart
 import 'package:stripe_payment/stripe_payment.dart';
-StripeSource.setPublishableKey("pk_test");
+StripePayment.setSettings(StripeSettings(publishableKey: "pk_test_"));
 ```
 from somewhere in your code, e.g. your main.dart file.
 
-To open the dialog:
+To open the dialog for adding a credit card source:
 ```dart
 StripeSource.addSource().then((String token) {
     print(token); //your stripe card source token
 });
+```
+
+Confirming payments:
+```dart
+StripePayment.confirmPayment(_paymentMethodId, _currentSecret).then((String token) {
+                  setState(() {
+                    _confirmPaymentId = token;
+                  });
+                }).catchError(print);
+```
+
+Native payment (refer to https://pub.dev/packages/stripe_native#-readme-tab-)
+```dart
+StripePayment.useNativePay(Order(20, 1, 1, "Stripe Test")).then((String token) {
+                  setState(() {
+                    _confirmNativePay = token;
+                  });
+                }).catchError(print);
 ```
 
 ## TODO

@@ -1,3 +1,15 @@
+## [0.3.0] - 29.09.2019
+
+Breaking change:
+Initialize the plugin has changed:
+StripePayment.setSettings(StripeSettings(publishableKey: "pk_test_"));
+
+Added support for:
+* SCA and 2FA (two factor authentication)
+* confirm + setup payments
+* Apple / Google Pay via stripe_native (https://pub.dev/packages/stripe_native)
+
+
 ## [0.2.1] - 27.08.2019
 
 * Update Stripe dependencies
