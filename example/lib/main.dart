@@ -22,10 +22,8 @@ class _MyAppState extends State<MyApp> {
   initState() {
     super.initState();
 
-    StripePayment.setSettings(StripeSettings(
-        publishableKey: "pk_test_",
-        merchantIdentifier: "Test",
-        androidProductionEnvironment: false));
+    StripePayment.setSettings(
+        StripeSettings(publishableKey: "pk_test_", merchantIdentifier: "Test", androidProductionEnvironment: false));
   }
 
   @override

@@ -26,7 +26,7 @@ android.enableJetifier=true
 To set your publishable key set:
 ```dart
 import 'package:stripe_payment/stripe_payment.dart';
-StripePayment.setSettings(StripeSettings(publishableKey: "pk_test_"));
+StripePayment.setSettings(StripeSettings(publishableKey: "pk_test_", merchantIdentifier: "Test", androidProductionEnvironment: false));
 ```
 from somewhere in your code, e.g. your main.dart file.
 
@@ -48,7 +48,7 @@ StripePayment.confirmPayment(_paymentMethodId, _currentSecret).then((String toke
 
 Native payment (refer to https://pub.dev/packages/stripe_native#-readme-tab-)
 ```dart
-StripePayment.useNativePay(Order(20, 1, 1, "Stripe Test")).then((String token) {
+StripePayment.useNativePay(Order(20, 1, 1, "EUR")).then((String token) {
                   setState(() {
                     _confirmNativePay = token;
                   });
