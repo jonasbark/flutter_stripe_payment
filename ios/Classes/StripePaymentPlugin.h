@@ -1,6 +1,6 @@
 #import <Flutter/Flutter.h>
 #import "STPAddSourceViewController.h"
 
-@interface StripePaymentPlugin : NSObject<FlutterPlugin, STPAddPaymentMethodViewControllerDelegate, STPAuthenticationContext>
+@interface StripePaymentPlugin : NSObject<FlutterPlugin, STPAddPaymentMethodViewControllerDelegate, STPAuthenticationContext, PKPaymentAuthorizationViewControllerDelegate>
 
 @end

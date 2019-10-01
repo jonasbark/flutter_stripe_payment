@@ -6,7 +6,7 @@ It supports:
 - Adding a credit card as payment method
 - SCA and 2FA (two factor authentication)
 - confirm + setup payments
-- Apple / Google Pay via stripe_native (https://pub.dev/packages/stripe_native)
+- Apple / Google Pay (check setup instructions on https://pub.dev/packages/stripe_native)
 
 <img src="https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_android.png" width="300">
 <img src="https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_ios.png" width="300">

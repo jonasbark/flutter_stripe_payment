@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:stripe_payment/stripe_payment.dart';
-import 'package:stripe_native/stripe_native.dart';
 
 void main() {
   runApp(new MyApp());
@@ -23,7 +22,10 @@ class _MyAppState extends State<MyApp> {
   initState() {
     super.initState();
 
-    StripePayment.setSettings(StripeSettings(publishableKey: "pk_test_"));
+    StripePayment.setSettings(StripeSettings(
+        publishableKey: "pk_test_",
+        merchantIdentifier: "Test",
+        androidProductionEnvironment: false));
   }
 
   @override
@@ -71,15 +73,19 @@ class _MyAppState extends State<MyApp> {
             ),
             Text("Current confirm payment ID: $_confirmPaymentId"),
             Divider(),
-            RaisedButton(
-              child: Text("Native payment"),
-              onPressed: () {
-                StripePayment.useNativePay(Order(20, 1, 1, "Stripe Test")).then((String token) {
-                  setState(() {
-                    _confirmNativePay = token;
+            LayoutBuilder(
+              builder: (context, constraints) => RaisedButton(
+                child: Text("Native payment"),
+                onPressed: () {
+                  StripePayment.useNativePay(Order(20, 1, 1, "EUR")).then((String token) {
+                    setState(() {
+                      _confirmNativePay = token;
+                    });
+                  }).catchError((e) {
+                    Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
                   });
-                }).catchError(print);
-              },
+                },
+              ),
             ),
             Text("Native payment: $_confirmNativePay"),
           ],

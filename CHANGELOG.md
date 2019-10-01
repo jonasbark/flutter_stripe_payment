@@ -1,3 +1,9 @@
+## [0.3.1] - 01.10.2019
+
+* Lowered iOS minimum deployment target to 9.0
+* removed dependency to stripe_native
+* removed useNativeReceipt method
+
 ## [0.3.0] - 29.09.2019
 
 Breaking change:
