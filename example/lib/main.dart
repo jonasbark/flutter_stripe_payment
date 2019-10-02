@@ -22,8 +22,8 @@ class _MyAppState extends State<MyApp> {
   initState() {
     super.initState();
 
-    StripePayment.setSettings(
-        StripeSettings(publishableKey: "pk_test_", merchantIdentifier: "Test", androidProductionEnvironment: false));
+    StripePayment.setOptions(
+        StripeOptions(publishableKey: "pk_test_", merchantId: "Test", androidPayMode: 'test'));
   }
 
   @override
@@ -35,7 +35,7 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Column(
           children: <Widget>[
-            RaisedButton(
+            /*RaisedButton(
               child: Text("Add Card"),
               onPressed: () {
                 StripePayment.addSource().then((String token) {
@@ -70,14 +70,16 @@ class _MyAppState extends State<MyApp> {
               },
             ),
             Text("Current confirm payment ID: $_confirmPaymentId"),
-            Divider(),
+            Divider(),*/
             LayoutBuilder(
               builder: (context, constraints) => RaisedButton(
                 child: Text("Native payment"),
                 onPressed: () {
-                  StripePayment.useNativePay(Order(20, 1, 1, "EUR")).then((String token) {
+                  StripePayment.paymentRequestWithAndroidPay(
+                          AndroidPayPaymentRequest(total_price: "1.20", currency_code: "EUR"))
+                      .then((token) {
                     setState(() {
-                      _confirmNativePay = token;
+                      _confirmNativePay = token.toJson().toString();
                     });
                   }).catchError((e) {
                     Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.toString())));

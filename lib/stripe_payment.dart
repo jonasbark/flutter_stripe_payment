@@ -2,6 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:stripe_payment/src/android_pay_payment_request.dart';
+import 'package:stripe_payment/src/card_form_payment_request.dart';
+import 'package:stripe_payment/src/source_params.dart';
+
+import 'src/token.dart';
+export 'src/token.dart';
+
+export 'package:stripe_payment/src/android_pay_payment_request.dart';
+export 'package:stripe_payment/src/card_form_payment_request.dart';
+export 'package:stripe_payment/src/source_params.dart';
 
 class StripePayment {
   static const MethodChannel _channel = const MethodChannel('stripe_payment');
@@ -10,74 +20,76 @@ class StripePayment {
 
   static bool get ready => _settingsSet;
 
+  /*
+            "setOptions" -> stripeModule.init(ReadableMap(call.arguments as Map<String, Any>), ReadableMap())
+            "deviceSupportsAndroidPay" -> stripeModule.deviceSupportsAndroidPay(Promise(result));
+            "canMakeAndroidPayPayments" -> stripeModule.canMakeAndroidPayPayments(Promise(result));
+            "paymentRequestWithAndroidPay" -> stripeModule.paymentRequestWithAndroidPay(
+                ReadableMap(call.arguments as Map<String, Any>),
+                Promise(result)
+            )
+            "paymentRequestWithCardForm" -> stripeModule.paymentRequestWithCardForm(
+                ReadableMap(call.arguments as Map<String, Any>),
+                Promise(result)
+            )
+            "createTokenWithCard" -> stripeModule.createTokenWithCard(
+                ReadableMap(call.arguments as Map<String, Any>),
+                Promise(result)
+            )
+            "createTokenWithBankAccount" -> stripeModule.createTokenWithBankAccount(
+                ReadableMap(call.arguments as Map<String, Any>),
+                Promise(result)
+            )
+            "createSourceWithParams" -> stripeModule.createSourceWithParams(
+                ReadableMap(call.arguments as Map<String, Any>),
+                Promise(result)
+            )
+   */
+
   /// set the publishable key that stripe should use
   /// call this once and before you use [addSource]
-  static void setSettings(StripeSettings settings) {
-    _channel.invokeMethod('setSettings', settings.toJson());
+  static void setOptions(StripeOptions settings) {
+    _channel.invokeMethod('setOptions', settings.toJson());
     _settingsSet = true;
   }
 
-  /// opens the stripe dialog to add a new card
-  /// if the source has been successfully added the card token will be returned
-  static Future<String> addSource() async {
-    final String token = await _channel.invokeMethod('addSource');
-    return token;
+  static Future<bool> deviceSupportsAndroidPay() => _channel.invokeMethod("deviceSupportsAndroidPay");
+
+  static Future<Token> paymentRequestWithAndroidPay(AndroidPayPaymentRequest options) async {
+    final token = await _channel.invokeMethod("paymentRequestWithAndroidPay", options.toJson());
+    return Token.fromJson(token);
   }
 
-  static Future<String> confirmPayment(String paymentMethodId, String clientSecret) async {
-    return await _channel.invokeMethod("confirmPayment", {
-      "paymentMethodId": paymentMethodId,
-      "clientSecret": clientSecret,
-    });
-  }
+  static Future<Map<String, Object>> paymentRequestWithCardForm(CardFormPaymentRequest options) =>
+      _channel.invokeMethod("paymentRequestWithCardForm", options.toJson());
 
-  static Future<String> setupPayment(String paymentMethodId, String clientSecret) async {
-    return await _channel.invokeMethod("setupPayment", {
-      "paymentMethodId": paymentMethodId,
-      "clientSecret": clientSecret,
-    });
-  }
+  static Future<Map<String, Object>> createTokenWithCard(Card options) =>
+      _channel.invokeMethod("createTokenWithCard", options.toJson());
 
-  static Future<String> useNativePay(Order anOrder) async {
-    var orderMap = {"subtotal": anOrder.subtotal, "tax": anOrder.tax, "tip": anOrder.tip, "currency": anOrder.currency};
-    final String nativeToken = await _channel.invokeMethod('nativePay', orderMap);
-    return nativeToken;
-  }
+  static Future<Map<String, Object>> createTokenWithBankAccount(BankAccount options) =>
+      _channel.invokeMethod("createTokenWithBankAccount", options.toJson());
+
+  static Future<Map<String, Object>> createSourceWithParams(SourceParams options) =>
+      _channel.invokeMethod("createSourceWithParams", options.toJson());
 }
 
-class StripeSettings {
+class StripeOptions {
   final String publishableKey;
-  final String merchantIdentifier;
-  final bool androidProductionEnvironment;
+  final String merchantId;
+  final String androidPayMode;
 
-  StripeSettings({@required this.publishableKey, this.merchantIdentifier, this.androidProductionEnvironment});
+  StripeOptions({@required this.publishableKey, this.merchantId, this.androidPayMode});
 
-  factory StripeSettings.fromJson(Map<String, dynamic> json) {
-    return StripeSettings(
-        merchantIdentifier: json['merchantIdentifier'],
-        publishableKey: json['publishableKey'],
-        androidProductionEnvironment: json['androidProductionEnvironment']);
+  factory StripeOptions.fromJson(Map<String, dynamic> json) {
+    return StripeOptions(
+        merchantId: json['merchantId'], publishableKey: json['publishableKey'], androidPayMode: json['androidPayMode']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['merchantIdentifier'] = this.merchantIdentifier;
+    data['merchantId'] = this.merchantId;
     data['publishableKey'] = this.publishableKey;
-    data['androidProductionEnvironment'] = this.androidProductionEnvironment;
+    data['androidPayMode'] = this.androidPayMode;
     return data;
-  }
-}
-
-class Order {
-  double subtotal;
-  double tax;
-  double tip;
-  String currency;
-
-  Order(double subtotal, double tax, double tip, String currency) {
-    this.subtotal = subtotal;
-    this.tax = tax;
-    this.tip = tip;
-    this.currency = currency;
   }
 }

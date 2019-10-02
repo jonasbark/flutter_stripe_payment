@@ -1,14 +1,24 @@
 package com.facebook.react.bridge;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by FFuF, Jonas Bark on 2019-10-02.
  */
 public class ReadableMap extends HashMap<String, Object> {
 
+    public ReadableMap() {
+        super();
+    }
+
+    public ReadableMap(Map<String, Object> map) {
+        super();
+        putAll(map);
+    }
+
     public boolean hasKey(String key) {
-        return containsKey(key);
+        return containsKey(key) && get(key) != null;
     }
 
     public String getString(String key) {

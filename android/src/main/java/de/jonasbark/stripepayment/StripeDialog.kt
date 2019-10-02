@@ -73,7 +73,7 @@ class StripeDialog : androidx.fragment.app.DialogFragment() {
                 )
 
                 val stripe =
-                    Stripe(activity!!, PaymentConfiguration.getInstance(activity!!).publishableKey)
+                    Stripe(activity!!, PaymentConfiguration.getInstance().publishableKey)
 
                 stripe.createPaymentMethod(
                     paymentMethodCreateParams,

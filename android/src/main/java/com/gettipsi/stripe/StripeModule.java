@@ -111,17 +111,9 @@ public class StripeModule extends ReactContextBaseJavaModule {
   };
 
 
-  public StripeModule(PluginRegistry.Registrar registrar, MethodChannel channel, Activity activity) {
+  public StripeModule(PluginRegistry.Registrar registrar, Activity activity) {
     super(activity, registrar);
-
-      // Add the listener for `onActivityResult`
-      channel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
-        @Override
-        public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-
-        }
-      });
-      registrar.addActivityResultListener(mActivityEventListener);
+    registrar.addActivityResultListener(mActivityEventListener);
 
     sInstance = this;
   }
