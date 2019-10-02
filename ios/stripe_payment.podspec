@@ -17,5 +17,5 @@ A new flutter plugin project.
   s.dependency 'Flutter'
   s.dependency 'Stripe', '17.0.2'
 
-  s.ios.deployment_target = '9.0'
+  s.ios.deployment_target = '11.0'
 end

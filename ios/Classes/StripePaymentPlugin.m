@@ -3,6 +3,8 @@
 
 @implementation StripePaymentPlugin {
     FlutterResult flutterResult;
+    void (^applePayCompletion)(PKPaymentAuthorizationStatus);
+
 }
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
 
@@ -37,17 +39,26 @@
         [self fetchNativeToken:subtotal tax:tax tip:tip currency:currency result:result];
     }
     else if ([@"nativeConfirm" isEqualToString:call.method]) {
-        PKPaymentAuthorizationStatus authStatus;
-        if (call.arguments[@"isSuccess"]) {
-            authStatus = PKPaymentAuthorizationStatusSuccess;
-        } else {
-            authStatus = PKPaymentAuthorizationStatusFailure;
+        if (applePayCompletion) {
+            PKPaymentAuthorizationStatus authStatus;
+            if (call.arguments[@"isSuccess"]) {
+                [self resolveApplePayCompletion:PKPaymentAuthorizationStatusSuccess];
+            } else {
+                [self resolveApplePayCompletion:PKPaymentAuthorizationStatusFailure];
+            }
         }
-// XXX Here we need to call back the handler with the result and return success to flutter.... -- alexis@ww.net
+        result(nil);
     }
     else {
         result(FlutterMethodNotImplemented);
     }
+}
+
+- (void)resolveApplePayCompletion:(PKPaymentAuthorizationStatus)status {
+    if (applePayCompletion) {
+        applePayCompletion(status);
+    }
+    applePayCompletion = nil;
 }
 
 -(void) fetchNativeToken:(NSNumber*)subtotal tax:(NSNumber*)tax tip:(NSNumber*)tip currency:(NSString*)currency result:(FlutterResult)result {
@@ -138,15 +149,15 @@
 }
 
 #pragma mark PKPayment
--(void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController *)controller didAuthorizePayment:(nonnull PKPayment *)payment handler:(nonnull void (^)(PKPaymentAuthorizationResult * _Nonnull))completion {
+-(void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController *)controller didAuthorizePayment:(nonnull PKPayment *)payment completion:(void (^)(PKPaymentAuthorizationStatus))completion {
+
+    applePayCompletion = completion;
 
     [[STPAPIClient sharedClient] createTokenWithPayment:payment completion:^(STPToken * _Nullable token, NSError * _Nullable error) {
         if (error) {
             self->flutterResult([FlutterError errorWithCode:error.localizedDescription message:nil details:nil]);
         }
         else {
-             // XXX Here we need save the handler callback -- alexis@ww.net
-
             self->flutterResult(token.tokenId);
         }
     }];

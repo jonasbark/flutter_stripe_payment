@@ -45,7 +45,7 @@ class StripePayment {
   }
 
   static void confirmNativePayment(bool isSuccess) =>
-      _channel.invokeMethod("confirmNative", {"isSuccess": isSuccess});
+      _channel.invokeMethod("nativeConfirm", {"isSuccess": isSuccess});
 
 }
 

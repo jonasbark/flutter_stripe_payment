@@ -135,7 +135,7 @@ class StripePaymentPlugin(private val activity: FragmentActivity) : MethodCallHa
                 googlePay(total, currency)
 
             }
-            "nativeConfirm" - {
+            "nativeConfirm" -> {
                 result.success(null)
             }
             else -> result.notImplemented()
