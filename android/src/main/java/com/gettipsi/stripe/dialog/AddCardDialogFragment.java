@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.devmarvel.creditcardentry.fields.SecurityCodeText;
 import com.devmarvel.creditcardentry.library.CreditCard;
 import com.devmarvel.creditcardentry.library.CreditCardForm;
+import com.facebook.react.bridge.Promise;
 import com.gettipsi.stripe.StripeModule;
 import com.gettipsi.stripe.util.CardFlipAnimator;
 import com.gettipsi.stripe.util.Converters;
@@ -48,7 +49,7 @@ public class AddCardDialogFragment extends DialogFragment {
   private ImageView imageFlipedCard;
   private ImageView imageFlipedCardBack;
 
-  private volatile MethodChannel.Result promise;
+  private volatile Promise promise;
   private boolean successful;
   private CardFlipAnimator cardFlipAnimator;
   private Button doneButton;
@@ -67,7 +68,7 @@ public class AddCardDialogFragment extends DialogFragment {
   }
 
 
-  public void setPromise(MethodChannel.Result promise) {
+  public void setPromise(Promise promise) {
     this.promise = promise;
   }
 
@@ -116,7 +117,7 @@ public class AddCardDialogFragment extends DialogFragment {
   @Override
   public void onDismiss(DialogInterface dialog) {
     if (!successful && promise != null) {
-      promise.error(errorCode, errorDescription, null);
+      promise.reject(errorCode, errorDescription);
       promise = null;
     }
     super.onDismiss(dialog);
@@ -204,7 +205,7 @@ public class AddCardDialogFragment extends DialogFragment {
             @Override
             public void onSuccess(PaymentMethod paymentMethod) {
               if (promise != null) {
-                promise.success(Converters.convertPaymentMethodToWritableMap(paymentMethod));
+                promise.resolve(Converters.convertPaymentMethodToWritableMap(paymentMethod));
                 promise = null;
                 successful = true;
                 dismiss();

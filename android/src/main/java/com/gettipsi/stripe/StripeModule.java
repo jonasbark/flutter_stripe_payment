@@ -9,14 +9,11 @@ import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.ActivityEventListener;
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.gettipsi.stripe.dialog.AddCardDialogFragment;
 import com.gettipsi.stripe.util.ArgCheck;
 import com.gettipsi.stripe.util.Converters;
@@ -33,8 +30,12 @@ import com.stripe.android.model.Source.SourceStatus;
 import com.stripe.android.model.SourceParams;
 import com.stripe.android.model.StripeIntent;
 import com.stripe.android.model.Token;
+import io.flutter.plugin.common.MethodCall;
+import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.PluginRegistry;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import static com.gettipsi.stripe.Errors.AUTHENTICATION_FAILED;
@@ -65,6 +66,7 @@ import static com.stripe.android.model.StripeIntent.Status.RequiresConfirmation;
 import static com.stripe.android.model.StripeIntent.Status.Succeeded;
 
 public class StripeModule extends ReactContextBaseJavaModule {
+
 
   private static final String MODULE_NAME = StripeModule.class.getSimpleName();
 
@@ -99,30 +101,29 @@ public class StripeModule extends ReactContextBaseJavaModule {
   private PayFlow mPayFlow;
   private ReadableMap mErrorCodes;
 
-  private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
+  private final PluginRegistry.ActivityResultListener mActivityEventListener = new PluginRegistry.ActivityResultListener() {
 
     @Override
-    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
       boolean handled = getPayFlow().onActivityResult(activity, requestCode, resultCode, data);
-      if (!handled) {
-        super.onActivityResult(activity, requestCode, resultCode, data);
-      }
+      return handled;
     }
   };
 
 
-  public StripeModule(ReactApplicationContext reactContext) {
-    super(reactContext);
+  public StripeModule(PluginRegistry.Registrar registrar, MethodChannel channel, Activity activity) {
+    super(activity, registrar);
 
-    // Add the listener for `onActivityResult`
-    reactContext.addActivityEventListener(mActivityEventListener);
+      // Add the listener for `onActivityResult`
+      channel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
+        @Override
+        public void onMethodCall(MethodCall call, MethodChannel.Result result) {
+
+        }
+      });
+      registrar.addActivityResultListener(mActivityEventListener);
 
     sInstance = this;
-  }
-
-  @Override
-  public String getName() {
-    return MODULE_NAME;
   }
 
   @ReactMethod
@@ -260,7 +261,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
         mStripe.onPaymentResult(requestCode, data, new ApiResultCallback<PaymentIntentResult>() {
           @Override
           public void onSuccess(@NonNull PaymentIntentResult result) {
-            getReactApplicationContext().removeActivityEventListener(ael);
+            removeActivityEventListener(ael);
 
             StripeIntent.Status resultingStatus = result.getIntent().getStatus();
 
@@ -281,7 +282,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
 
           @Override
           public void onError(@NonNull Exception e) {
-            getReactApplicationContext().removeActivityEventListener(ael);
+            removeActivityEventListener(ael);
             e.printStackTrace();
             promise.reject(toErrorCode(e), e.getMessage());
           }
@@ -293,7 +294,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
         onActivityResult(null, requestCode, resultCode, data);
       }
     };
-    getReactApplicationContext().addActivityEventListener(ael);
+    addActivityEventListener(ael);
   }
 
   private void attachSetupResultActivityListener(final Promise promise) {
@@ -305,7 +306,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
         mStripe.onSetupResult(requestCode, data, new ApiResultCallback<SetupIntentResult>() {
           @Override
           public void onSuccess(@NonNull SetupIntentResult result) {
-            getReactApplicationContext().removeActivityEventListener(ael);
+            removeActivityEventListener(ael);
 
             try {
               switch (result.getIntent().getStatus()) {
@@ -332,7 +333,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
 
           @Override
           public void onError(@NonNull Exception e) {
-            getReactApplicationContext().removeActivityEventListener(ael);
+            removeActivityEventListener(ael);
             e.printStackTrace();
             promise.reject(toErrorCode(e), e.getMessage());
           }
@@ -344,7 +345,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
         onActivityResult(null, requestCode, resultCode, data);
       }
     };
-    getReactApplicationContext().addActivityEventListener(ael);
+    addActivityEventListener(ael);
   }
 
   @ReactMethod
@@ -549,9 +550,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
     Map<String, String> metadata = new HashMap<>();
 
     if (metadataParams != null) {
-      ReadableMapKeySetIterator iter = metadataParams.keySetIterator();
-      while (iter.hasNextKey()) {
-        String key = iter.nextKey();
+      for (String key : metadataParams.keySet()) {
         metadata.put(key, metadataParams.getString(key));
       }
     }

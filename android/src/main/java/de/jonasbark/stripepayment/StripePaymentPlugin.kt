@@ -3,6 +3,7 @@ package de.jonasbark.stripepayment
 import android.app.Activity
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
+import com.gettipsi.stripe.StripeModule
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.wallet.*
 import com.stripe.android.*
@@ -22,9 +23,7 @@ class StripePaymentPlugin(private val activity: FragmentActivity) : MethodCallHa
         @JvmStatic
         fun registerWith(registrar: Registrar) {
             val channel = MethodChannel(registrar.messenger(), "stripe_payment")
-            val plugin = StripePaymentPlugin(registrar.activity() as FragmentActivity)
-            channel.setMethodCallHandler(plugin)
-            registrar.addActivityResultListener(plugin)
+            StripeModule(registrar, channel, registrar.activity() as FragmentActivity)
         }
 
         private const val LOAD_PAYMENT_DATA_REQUEST_CODE: Int = 13873

@@ -20,4 +20,8 @@ public class Promise {
     public void reject(String errorCode, String message) {
         this.result.error(errorCode, message, null);
     }
+
+    public void reject(String errorCode) {
+        this.reject(errorCode, null);
+    }
 }
