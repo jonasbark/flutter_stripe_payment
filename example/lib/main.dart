@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     StripePayment.setSettings(
-        StripeSettings(publishableKey: "pk_test_", merchantIdentifier: "Test", androidProductionEnvironment: false));
+        StripeSettings(publishableKey: "pk_test_yZuUz6Sqm83H4lA7SrlAvYCh003MvJiJlR", merchantIdentifier: "merchant.rbii.stripe-example", androidProductionEnvironment: false));
   }
 
   @override
@@ -75,10 +75,11 @@ class _MyAppState extends State<MyApp> {
               builder: (context, constraints) => RaisedButton(
                 child: Text("Native payment"),
                 onPressed: () {
-                  StripePayment.useNativePay(Order(20, 1, 1, "EUR")).then((String token) {
+                  StripePayment.useNativePay(Order(20, 1, 1, "EUR", "Example Store")).then((String token) {
                     setState(() {
                       _confirmNativePay = token;
                     });
+                    StripePayment.confirmNativePay(true);
                   }).catchError((e) {
                     Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
                   });

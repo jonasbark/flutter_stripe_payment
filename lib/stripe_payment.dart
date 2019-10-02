@@ -39,9 +39,13 @@ class StripePayment {
   }
 
   static Future<String> useNativePay(Order anOrder) async {
-    var orderMap = {"subtotal": anOrder.subtotal, "tax": anOrder.tax, "tip": anOrder.tip, "currency": anOrder.currency};
+    var orderMap = {"subtotal": anOrder.subtotal, "tax": anOrder.tax, "tip": anOrder.tip, "currency": anOrder.currency, "merchantName": anOrder.merchantName};
     final String nativeToken = await _channel.invokeMethod('nativePay', orderMap);
     return nativeToken;
+  }
+
+  static void confirmNativePay(bool isSuccess) {
+    _channel.invokeMethod('completeNativePay', {"isSuccess": isSuccess});
   }
 }
 
@@ -73,11 +77,13 @@ class Order {
   double tax;
   double tip;
   String currency;
+  String merchantName;
 
-  Order(double subtotal, double tax, double tip, String currency) {
+  Order(double subtotal, double tax, double tip, String currency, String merchantName) {
     this.subtotal = subtotal;
     this.tax = tax;
     this.tip = tip;
     this.currency = currency;
+    this.merchantName = merchantName;
   }
 }
