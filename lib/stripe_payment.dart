@@ -43,6 +43,10 @@ class StripePayment {
     final String nativeToken = await _channel.invokeMethod('nativePay', orderMap);
     return nativeToken;
   }
+
+  static void confirmNativePayment(bool isSuccess) =>
+      _channel.invokeMethod("confirmNative", {"isSuccess": isSuccess});
+
 }
 
 class StripeSettings {
