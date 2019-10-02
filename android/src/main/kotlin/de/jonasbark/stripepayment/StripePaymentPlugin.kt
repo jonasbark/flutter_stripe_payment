@@ -113,6 +113,9 @@ class StripePaymentPlugin(private val activity: FragmentActivity) : MethodCallHa
                 googlePay(total, currency)
 
             }
+            "completeNativePay" -> {
+                result.success(null)
+            }
             "nativePay" -> {
                 if (!settingsSet) {
                     result.error("You have to set a publishable key first", null, null)
