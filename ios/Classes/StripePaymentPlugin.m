@@ -3,7 +3,9 @@
 
 @implementation StripePaymentPlugin {
     FlutterResult flutterResult;
+    
 }
+
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
     
     FlutterMethodChannel* channel = [FlutterMethodChannel methodChannelWithName:@"stripe_payment" binaryMessenger:[registrar messenger]];
@@ -33,15 +35,21 @@
         NSNumber* tax = call.arguments[@"tax"];
         NSNumber* tip = call.arguments[@"tip"];
         NSString* currency = call.arguments[@"currency"];
+        NSString* merchantName = call.arguments[@"merchantName"];
 
-        [self fetchNativeToken:subtotal tax:tax tip:tip currency:currency result:result];
+        [self fetchNativeToken:subtotal tax:tax tip:tip currency:currency merchantName:merchantName result:result];
+    } else if ([@"completeNativePay" isEqualToString:call.method]) {
+        bool isSuccess = call.arguments[@"isSuccess"];
+        PKPaymentAuthorizationStatus status = isSuccess ? PKPaymentAuthorizationStatusSuccess : PKPaymentAuthorizationStatusFailure;
+        PKPaymentAuthorizationResult* result = [[PKPaymentAuthorizationResult alloc] initWithStatus:status errors:nil];
+        self.nativeCompletion(result);
     }
     else {
         result(FlutterMethodNotImplemented);
     }
 }
 
--(void) fetchNativeToken:(NSNumber*)subtotal tax:(NSNumber*)tax tip:(NSNumber*)tip currency:(NSString*)currency result:(FlutterResult)result {
+-(void) fetchNativeToken:(NSNumber*)subtotal tax:(NSNumber*)tax tip:(NSNumber*)tip currency:(NSString*)currency merchantName:(NSString*)merchantName result:(FlutterResult)result {
 
     flutterResult = result;
 
@@ -53,7 +61,7 @@
        [PKPaymentSummaryItem summaryItemWithLabel:@"Tip" amount:[NSDecimalNumber decimalNumberWithDecimal:tip.decimalValue]],
        [PKPaymentSummaryItem summaryItemWithLabel:@"Tax" amount:[NSDecimalNumber decimalNumberWithDecimal:tax.decimalValue]],
        [PKPaymentSummaryItem summaryItemWithLabel:@"Subtotal" amount:[NSDecimalNumber decimalNumberWithDecimal:subtotal.decimalValue]],
-       [PKPaymentSummaryItem summaryItemWithLabel:paymentRequest.merchantIdentifier amount:[NSDecimalNumber decimalNumberWithDecimal:[NSNumber numberWithDouble:total].decimalValue]]
+       [PKPaymentSummaryItem summaryItemWithLabel:merchantName amount:[NSDecimalNumber decimalNumberWithDecimal:[NSNumber numberWithDouble:total].decimalValue]]
    ];
 
     if ([Stripe canSubmitPaymentRequest:paymentRequest]) {
@@ -129,7 +137,10 @@
 }
 
 #pragma mark PKPayment
--(void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController *)controller didAuthorizePayment:(nonnull PKPayment *)payment handler:(nonnull void (^)(PKPaymentAuthorizationResult * _Nonnull))completion {
+
+-(void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController *)controller didAuthorizePayment:(nonnull PKPayment *)payment handler:(nonnull void (^)(PKPaymentAuthorizationResult * _Nonnull))completion  API_AVAILABLE(ios(11.0)){
+
+    self.nativeCompletion = completion;
 
     [[STPAPIClient sharedClient] createTokenWithPayment:payment completion:^(STPToken * _Nullable token, NSError * _Nullable error) {
         if (error) {
