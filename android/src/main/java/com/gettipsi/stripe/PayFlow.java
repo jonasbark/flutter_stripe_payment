@@ -2,7 +2,7 @@ package com.gettipsi.stripe;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.facebook.react.bridge.Promise;
@@ -12,6 +12,7 @@ import com.gettipsi.stripe.util.Fun0;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.wallet.WalletConstants;
+import com.stripe.android.BuildConfig;
 
 public abstract class PayFlow {
 

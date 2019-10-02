@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.devmarvel.creditcardentry.fields.SecurityCodeText;
 import com.devmarvel.creditcardentry.library.CreditCard;
 import com.devmarvel.creditcardentry.library.CreditCardForm;
-import com.facebook.react.bridge.Promise;
 import com.gettipsi.stripe.StripeModule;
 import com.gettipsi.stripe.util.CardFlipAnimator;
 import com.gettipsi.stripe.util.Converters;
@@ -104,8 +103,8 @@ public class AddCardDialogFragment extends DialogFragment {
         onSaveCLick();
       }
     });
-    doneButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorAccent));
-    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorAccent));
+    //doneButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorAccent));
+    //dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivity(), R.color.colorAccent));
     doneButton.setEnabled(false);
 
     bindViews(view);
@@ -117,7 +116,7 @@ public class AddCardDialogFragment extends DialogFragment {
   @Override
   public void onDismiss(DialogInterface dialog) {
     if (!successful && promise != null) {
-      promise.reject(errorCode, errorDescription);
+      promise.error(errorCode, errorDescription, null);
       promise = null;
     }
     super.onDismiss(dialog);
@@ -205,7 +204,7 @@ public class AddCardDialogFragment extends DialogFragment {
             @Override
             public void onSuccess(PaymentMethod paymentMethod) {
               if (promise != null) {
-                promise.resolve(Converters.convertPaymentMethodToWritableMap(paymentMethod));
+                promise.success(Converters.convertPaymentMethodToWritableMap(paymentMethod));
                 promise = null;
                 successful = true;
                 dismiss();

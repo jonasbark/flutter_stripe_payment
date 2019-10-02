@@ -1,7 +1,7 @@
 package com.gettipsi.stripe.util;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.Arguments;
@@ -38,7 +38,7 @@ import java.util.Map;
 
 public class Converters {
 
-  public static Map<String, String> convertTokenToWritableMap(Token token) {
+  public static WritableMap convertTokenToWritableMap(Token token) {
     WritableMap newToken = Arguments.createMap();
 
     if (token == null) return newToken;
