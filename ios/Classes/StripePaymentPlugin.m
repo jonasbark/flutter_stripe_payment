@@ -5,9 +5,9 @@
     FlutterResult flutterResult;
 }
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-    
+
     FlutterMethodChannel* channel = [FlutterMethodChannel methodChannelWithName:@"stripe_payment" binaryMessenger:[registrar messenger]];
-    
+
     StripePaymentPlugin* instance = [[StripePaymentPlugin alloc] init];
     [registrar addMethodCallDelegate:instance channel:channel];
 }
@@ -35,6 +35,15 @@
         NSString* currency = call.arguments[@"currency"];
 
         [self fetchNativeToken:subtotal tax:tax tip:tip currency:currency result:result];
+    }
+    else if ([@"nativeConfirm" isEqualToString:call.method]) {
+        PKPaymentAuthorizationStatus authStatus;
+        if (call.arguments[@"isSuccess"]) {
+            authStatus = PKPaymentAuthorizationStatusSuccess;
+        } else {
+            authStatus = PKPaymentAuthorizationStatusFailure;
+        }
+// XXX Here we need to call back the handler with the result and return success to flutter.... -- alexis@ww.net
     }
     else {
         result(FlutterMethodNotImplemented);
@@ -136,6 +145,8 @@
             self->flutterResult([FlutterError errorWithCode:error.localizedDescription message:nil details:nil]);
         }
         else {
+             // XXX Here we need save the handler callback -- alexis@ww.net
+
             self->flutterResult(token.tokenId);
         }
     }];
