@@ -21,6 +21,43 @@
     }
     else if ([@"addSource" isEqualToString:call.method]) {
         [self openStripeCardVC:result];
+    } else if ([@"createTokenWithBankAccount" isEqualToString:call.method]) {
+        
+        NSDictionary* argDict = call.arguments;
+        NSString* accountHolderName = [argDict objectForKey:@"accountHolderName"];
+        NSString* accountHolderType = [argDict objectForKey:@"accountHolderType"];
+        NSString* accountNumber = [argDict objectForKey:@"accountNumber"];
+        NSString* bankName = [argDict objectForKey:@"bankName"];
+        NSString* countryCode = [argDict objectForKey:@"countryCode"];
+        NSString* currency = [argDict objectForKey:@"currency"];
+        NSString* fingerprint = [argDict objectForKey:@"fingerprint"];
+        NSString* last4 = [argDict objectForKey:@"last4"];
+        NSString* routingNumber = [argDict objectForKey:@"routingNumber"];
+        
+        STPBankAccountParams* params = [[STPBankAccountParams alloc] init];
+
+        params.accountHolderName = accountHolderName;
+        STPBankAccountHolderType holderType = STPBankAccountHolderTypeIndividual;
+        if ([accountHolderType caseInsensitiveCompare:@"company"]) {
+            holderType = STPBankAccountHolderTypeCompany;
+        }
+                
+        params.accountHolderType = holderType;
+        params.accountNumber = accountNumber;
+        params.country = countryCode;
+        params.currency = currency;
+        params.routingNumber = routingNumber;
+    
+        
+        [STPAPIClient.sharedClient createTokenWithBankAccount:params completion:^(STPToken * _Nullable token, NSError * _Nullable error) {
+            if (error) {
+                NSString* errorCode = [NSString stringWithFormat:@"%li", error.code];
+                FlutterError* flutterError = [FlutterError errorWithCode:errorCode message:error.localizedFailureReason details:nil];
+                result(flutterError);
+            } else {
+                result(token);
+            }
+        }];
     }
     else if ([@"confirmPayment" isEqualToString:call.method]) {
         [self confirmPayment:call.arguments[@"paymentMethodId"] clientSecret:call.arguments[@"clientSecret"] result:result];
