@@ -70,8 +70,10 @@ class StripePayment {
     return Token.fromJson(token);
   }
 
-  static Future<Map<String, Object>> createTokenWithBankAccount(BankAccount options) =>
-      _channel.invokeMethod("createTokenWithBankAccount", options.toJson());
+  static Future<Token> createTokenWithBankAccount(BankAccount options) async {
+    final token = await _channel.invokeMethod("createTokenWithBankAccount", options.toJson());
+    return Token.fromJson(token);
+  }
 
   static Future<Map<String, Object>> createSourceWithParams(SourceParams options) =>
       _channel.invokeMethod("createSourceWithParams", options.toJson());

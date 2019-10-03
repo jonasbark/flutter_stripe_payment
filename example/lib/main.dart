@@ -11,19 +11,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var _paymentMethodId = "";
-  var _setupPaymentId = "";
-  var _confirmPaymentId = "";
+  var _paymentToken = "";
   var _confirmNativePay = "";
-
-  final _currentSecret = "...";
 
   @override
   initState() {
     super.initState();
 
     stripe.StripePayment.setOptions(stripe.StripeOptions(
-        publishableKey: "pk_test_aSaULNS8cJU6Tvo20VAXy6rp", merchantId: "Test", androidPayMode: 'test'));
+        publishableKey: "pk_test_", merchantId: "Test", androidPayMode: 'test'));
   }
 
   @override
@@ -40,13 +36,11 @@ class _MyAppState extends State<MyApp> {
               onPressed: () {
                 stripe.StripePayment.paymentRequestWithCardForm(stripe.CardFormPaymentRequest()).then((token) {
                   setState(() {
-                    _paymentMethodId = token.toJson().toString();
+                    _paymentToken = token.toJson().toString();
                   });
                 });
               },
             ),
-            Text("Current payment method ID: $_paymentMethodId"),
-            Divider(),
             RaisedButton(
               child: Text("Add Card without Form"),
               onPressed: () {
@@ -54,12 +48,13 @@ class _MyAppState extends State<MyApp> {
                         stripe.Card(number: '4000002760003184', expMonth: 12, expYear: 21))
                     .then((token) {
                   setState(() {
-                    _setupPaymentId = token.toJson().toString();
+                    _paymentToken = token.toJson().toString();
                   });
                 }).catchError(print);
               },
             ),
-            Text("Current setup payment ID: $_setupPaymentId"),
+            Text("Current payment token: $_paymentToken"),
+            Divider(),
             /*RaisedButton(
               child: Text("Setup payment"),
               onPressed: () {
