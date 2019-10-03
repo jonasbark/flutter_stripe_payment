@@ -1,5 +1,6 @@
 package de.jonasbark.stripepayment
 
+import android.app.DialogFragment
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
@@ -13,9 +14,10 @@ import com.stripe.android.view.CardMultilineWidget
 import java.lang.Exception
 
 
-class StripeDialog : androidx.fragment.app.DialogFragment() {
+class StripeDialog : DialogFragment() {
 
     companion object {
+        @JvmStatic
         fun newInstance(title: String): StripeDialog {
             val frag = StripeDialog()
             val args = Bundle()
@@ -53,7 +55,8 @@ class StripeDialog : androidx.fragment.app.DialogFragment() {
         setStyle(STYLE_NO_TITLE, R.style.Theme_AppCompat_Light_Dialog)
     }
 
-    var tokenListener: ((String) -> (Unit))? = null
+    lateinit var stripeInstance: Stripe
+    var tokenListener: ((PaymentMethod) -> (Unit))? = null
 
     private fun getToken() {
         val mCardInputWidget =
@@ -72,20 +75,15 @@ class StripeDialog : androidx.fragment.app.DialogFragment() {
                     PaymentMethod.BillingDetails.Builder().build()
                 )
 
-                val stripe =
-                    Stripe(activity!!, PaymentConfiguration.getInstance().publishableKey)
-
-                stripe.createPaymentMethod(
+                stripeInstance.createPaymentMethod(
                     paymentMethodCreateParams,
                     object : ApiResultCallback<PaymentMethod> {
                         override fun onSuccess(result: PaymentMethod) {
                             view?.findViewById<View>(R.id.progress)?.visibility = View.GONE
                             view?.findViewById<View>(R.id.buttonSave)?.visibility = View.GONE
 
-                            if (result.id != null) {
-                                tokenListener?.invoke(result.id!!)
-                                dismiss()
-                            }
+                            tokenListener?.invoke(result)
+                            dismiss()
                         }
 
                         override fun onError(error: Exception) {

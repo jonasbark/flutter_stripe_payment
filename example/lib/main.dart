@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stripe_payment/stripe_payment.dart';
+import 'package:stripe_payment/stripe_payment.dart' as stripe;
 
 void main() {
   runApp(new MyApp());
@@ -22,7 +22,8 @@ class _MyAppState extends State<MyApp> {
   initState() {
     super.initState();
 
-    StripePayment.setOptions(StripeOptions(publishableKey: "pk_test_", merchantId: "Test", androidPayMode: 'test'));
+    stripe.StripePayment.setOptions(stripe.StripeOptions(
+        publishableKey: "pk_test_aSaULNS8cJU6Tvo20VAXy6rp", merchantId: "Test", androidPayMode: 'test'));
   }
 
   @override
@@ -34,12 +35,12 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Column(
           children: <Widget>[
-            /*RaisedButton(
-              child: Text("Add Card"),
+            RaisedButton(
+              child: Text("Add Card with Form"),
               onPressed: () {
-                StripePayment.addSource().then((String token) {
+                stripe.StripePayment.paymentRequestWithCardForm(stripe.CardFormPaymentRequest()).then((token) {
                   setState(() {
-                    _paymentMethodId = token;
+                    _paymentMethodId = token.toJson().toString();
                   });
                 });
               },
@@ -47,6 +48,19 @@ class _MyAppState extends State<MyApp> {
             Text("Current payment method ID: $_paymentMethodId"),
             Divider(),
             RaisedButton(
+              child: Text("Add Card without Form"),
+              onPressed: () {
+                stripe.StripePayment.createTokenWithCard(
+                        stripe.Card(number: '4000002760003184', expMonth: 12, expYear: 21))
+                    .then((token) {
+                  setState(() {
+                    _setupPaymentId = token.toJson().toString();
+                  });
+                }).catchError(print);
+              },
+            ),
+            Text("Current setup payment ID: $_setupPaymentId"),
+            /*RaisedButton(
               child: Text("Setup payment"),
               onPressed: () {
                 StripePayment.setupPayment(_paymentMethodId, _currentSecret).then((String token) {
@@ -74,8 +88,8 @@ class _MyAppState extends State<MyApp> {
               builder: (context, constraints) => RaisedButton(
                 child: Text("Native payment"),
                 onPressed: () {
-                  StripePayment.paymentRequestWithAndroidPay(
-                          AndroidPayPaymentRequest(total_price: "1.20", currency_code: "EUR"))
+                  stripe.StripePayment.paymentRequestWithAndroidPay(
+                          stripe.AndroidPayPaymentRequest(total_price: "1.20", currency_code: "EUR"))
                       .then((token) {
                     setState(() {
                       _confirmNativePay = token.toJson().toString();

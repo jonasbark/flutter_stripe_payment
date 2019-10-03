@@ -4,66 +4,30 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.text.TextUtils;
-
-import com.facebook.react.bridge.ActivityEventListener;
-import com.facebook.react.bridge.BaseActivityEventListener;
-import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableMap;
-import com.gettipsi.stripe.dialog.AddCardDialogFragment;
+import com.facebook.react.bridge.*;
 import com.gettipsi.stripe.util.ArgCheck;
 import com.gettipsi.stripe.util.Converters;
 import com.gettipsi.stripe.util.Fun0;
 import com.google.android.gms.wallet.WalletConstants;
 import com.stripe.android.*;
-import com.stripe.android.model.Address;
-import com.stripe.android.model.ConfirmPaymentIntentParams;
-import com.stripe.android.model.ConfirmSetupIntentParams;
-import com.stripe.android.model.PaymentMethod;
-import com.stripe.android.model.PaymentMethodCreateParams;
-import com.stripe.android.model.Source;
+import com.stripe.android.model.*;
 import com.stripe.android.model.Source.SourceStatus;
-import com.stripe.android.model.SourceParams;
-import com.stripe.android.model.StripeIntent;
-import com.stripe.android.model.Token;
-import io.flutter.plugin.common.MethodCall;
-import io.flutter.plugin.common.MethodChannel;
+import de.jonasbark.stripepayment.StripeDialog;
+import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.PluginRegistry;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
-import static com.gettipsi.stripe.Errors.AUTHENTICATION_FAILED;
-import static com.gettipsi.stripe.Errors.CANCELLED;
-import static com.gettipsi.stripe.Errors.FAILED;
-import static com.gettipsi.stripe.Errors.UNEXPECTED;
-import static com.gettipsi.stripe.Errors.getDescription;
-import static com.gettipsi.stripe.Errors.getErrorCode;
-import static com.gettipsi.stripe.Errors.toErrorCode;
-import static com.gettipsi.stripe.util.Converters.convertPaymentIntentResultToWritableMap;
-import static com.gettipsi.stripe.util.Converters.convertPaymentMethodToWritableMap;
-import static com.gettipsi.stripe.util.Converters.convertSetupIntentResultToWritableMap;
-import static com.gettipsi.stripe.util.Converters.convertSourceToWritableMap;
-import static com.gettipsi.stripe.util.Converters.convertTokenToWritableMap;
-import static com.gettipsi.stripe.util.Converters.createBankAccount;
-import static com.gettipsi.stripe.util.Converters.createCard;
-import static com.gettipsi.stripe.util.Converters.getBooleanOrNull;
-import static com.gettipsi.stripe.util.Converters.getMapOrNull;
-import static com.gettipsi.stripe.util.Converters.getStringOrNull;
-import static com.gettipsi.stripe.util.InitializationOptions.ANDROID_PAY_MODE_KEY;
-import static com.gettipsi.stripe.util.InitializationOptions.ANDROID_PAY_MODE_PRODUCTION;
-import static com.gettipsi.stripe.util.InitializationOptions.ANDROID_PAY_MODE_TEST;
-import static com.gettipsi.stripe.util.InitializationOptions.PUBLISHABLE_KEY;
-import static com.stripe.android.model.StripeIntent.Status.Canceled;
-import static com.stripe.android.model.StripeIntent.Status.RequiresAction;
-import static com.stripe.android.model.StripeIntent.Status.RequiresCapture;
-import static com.stripe.android.model.StripeIntent.Status.RequiresConfirmation;
-import static com.stripe.android.model.StripeIntent.Status.Succeeded;
+import static com.gettipsi.stripe.Errors.*;
+import static com.gettipsi.stripe.util.Converters.*;
+import static com.gettipsi.stripe.util.InitializationOptions.*;
+import static com.stripe.android.model.StripeIntent.Status.*;
 
 public class StripeModule extends ReactContextBaseJavaModule {
 
@@ -222,16 +186,21 @@ public class StripeModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void paymentRequestWithCardForm(ReadableMap params, final Promise promise) {
-    Activity currentActivity = getCurrentActivity();
+    FlutterActivity currentActivity = (FlutterActivity) getCurrentActivity();
     try {
       ArgCheck.nonNull(currentActivity);
       ArgCheck.notEmptyString(mPublicKey);
-
-      final AddCardDialogFragment cardDialog = AddCardDialogFragment.newInstance(
-        getErrorCode(mErrorCodes, "cancelled"),
-        getDescription(mErrorCodes, "cancelled")
+      final StripeDialog cardDialog = StripeDialog.newInstance(
+        ""
       );
-      cardDialog.setPromise(promise);
+      cardDialog.setStripeInstance(mStripe);
+      cardDialog.setTokenListener(new Function1<PaymentMethod, Unit>() {
+        @Override
+        public Unit invoke(PaymentMethod paymentMethod) {
+          promise.resolve(Converters.convertPaymentMethodToWritableMap(paymentMethod));
+          return Unit.INSTANCE;
+        }
+      });
       cardDialog.show(currentActivity.getFragmentManager(), "AddNewCard");
     } catch (Exception e) {
       promise.reject(toErrorCode(e), e.getMessage());

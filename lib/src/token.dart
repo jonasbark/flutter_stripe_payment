@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Token {
   BankAccount bankAccount;
   Card card;
@@ -11,7 +13,7 @@ class Token {
     return Token(
       bankAccount: json['bankAccount'] != null ? BankAccount.fromJson(json['bankAccount']) : null,
       card: json['card'] != null ? Card.fromJson(json['card']) : null,
-      created: json['created'],
+      created: json['created'] is int ? (json['created'] as int).toDouble() : json['created'],
       livemode: json['livemode'],
       tokenId: json['tokenId'],
     );
@@ -98,6 +100,8 @@ class Card {
   String funding;
   String last4;
   String name;
+  String number;
+  String cvc;
 
   Card(
       {this.addressCity,
@@ -109,8 +113,10 @@ class Card {
       this.brand,
       this.cardId,
       this.country,
-      this.expMonth,
-      this.expYear,
+      @required this.expMonth,
+      @required this.expYear,
+      @required this.number,
+      this.cvc,
       this.funding,
       this.last4,
       this.name});
@@ -131,6 +137,8 @@ class Card {
       funding: json['funding'],
       last4: json['last4'],
       name: json['name'],
+      cvc: json['cvc'],
+      number: json['number'],
     );
   }
 
@@ -150,6 +158,8 @@ class Card {
     data['funding'] = this.funding;
     data['last4'] = this.last4;
     data['name'] = this.name;
+    data['number'] = this.number;
+    data['cvc'] = this.cvc;
     return data;
   }
 }

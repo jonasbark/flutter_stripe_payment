@@ -55,7 +55,7 @@ class StripePaymentPlugin(private val stripeModule: StripeModule) : MethodCallHa
         @JvmStatic
         fun registerWith(registrar: Registrar) {
             val channel = MethodChannel(registrar.messenger(), "stripe_payment")
-            val stripeModule = StripeModule(registrar, registrar.activity() as FragmentActivity)
+            val stripeModule = StripeModule(registrar, registrar.activity())
             val plugin = StripePaymentPlugin(stripeModule)
             channel.setMethodCallHandler(plugin)
         }

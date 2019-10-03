@@ -9,13 +9,11 @@ import java.util.ArrayList;
 
 public class ReactContextBaseJavaModule implements PluginRegistry.ActivityResultListener {
     protected final Activity activity;
-    private final PluginRegistry.Registrar registrar;
 
     private final ArrayList<ActivityEventListener> eventListeners = new ArrayList<>();
 
     protected ReactContextBaseJavaModule(Activity activity, PluginRegistry.Registrar registrar) {
         this.activity = activity;
-        this.registrar = registrar;
         registrar.addActivityResultListener(this);
     }
 

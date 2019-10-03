@@ -60,11 +60,15 @@ class StripePayment {
     return Token.fromJson(token);
   }
 
-  static Future<Map<String, Object>> paymentRequestWithCardForm(CardFormPaymentRequest options) =>
-      _channel.invokeMethod("paymentRequestWithCardForm", options.toJson());
+  static Future<Token> paymentRequestWithCardForm(CardFormPaymentRequest options) async {
+    final token = await _channel.invokeMethod("paymentRequestWithCardForm", options.toJson());
+    return Token.fromJson(token);
+  }
 
-  static Future<Map<String, Object>> createTokenWithCard(Card options) =>
-      _channel.invokeMethod("createTokenWithCard", options.toJson());
+  static Future<Token> createTokenWithCard(Card options) async {
+    final token = await _channel.invokeMethod("createTokenWithCard", options.toJson());
+    return Token.fromJson(token);
+  }
 
   static Future<Map<String, Object>> createTokenWithBankAccount(BankAccount options) =>
       _channel.invokeMethod("createTokenWithBankAccount", options.toJson());
