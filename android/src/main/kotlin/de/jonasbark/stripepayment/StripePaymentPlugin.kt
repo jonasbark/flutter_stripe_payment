@@ -229,7 +229,7 @@ class StripePaymentPlugin(private val activity: FragmentActivity) : MethodCallHa
 
                 AutoResolveHelper.RESULT_ERROR -> {
                     AutoResolveHelper.getStatusFromIntent(data)?.let {
-                        currentResult?.error("Error", it.statusMessage, data)
+                        currentResult?.error("Error", it.statusMessage, null)
                     }
                 }
             }
