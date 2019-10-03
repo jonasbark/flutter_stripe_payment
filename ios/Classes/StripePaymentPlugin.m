@@ -21,6 +21,48 @@
     }
     else if ([@"addSource" isEqualToString:call.method]) {
         [self openStripeCardVC:result];
+    } else if ([@"createTokenWithCard" isEqualToString:call.method]) {
+        NSDictionary* argDict = call.arguments;
+        
+        NSString* addressCity = [argDict objectForKey:@"addressCity"];
+        NSString* addressCountry = [argDict objectForKey:@"addressCountry"];
+        NSString* addressLine1 = [argDict objectForKey:@"addressLine1"];
+        NSString* addressLine2 = [argDict objectForKey:@"addressLine2"];
+        NSString* addressState = [argDict objectForKey:@"addressState"];
+        NSString* addressZip = [argDict objectForKey:@"addressZip"];
+        NSString* cardId = [argDict objectForKey:@"cardId"];
+        NSString* country = [argDict objectForKey:@"country"];
+        NSNumber* expMonth = [argDict objectForKey:@"expMonth"];
+        NSNumber* expYear = [argDict objectForKey:@"expYear"];
+        NSString* funding = [argDict objectForKey:@"funding"];
+        NSString* last4 = [argDict objectForKey:@"last4"];
+        NSString* name = [argDict objectForKey:@"name"];
+        NSString* number = [argDict objectForKey:@"number"];
+        NSString* cvc = [argDict objectForKey:@"cvc"];
+        
+        STPCardParams* params = [[STPCardParams alloc] init];
+        params.address.line1 = addressLine1;
+        params.address.line2 = addressLine2;
+        params.address.city = addressCity;
+        params.address.country = addressCountry;
+        params.address.state = addressState;
+        params.address.postalCode = addressZip;
+        params.expMonth = expMonth.unsignedIntegerValue;
+        params.expYear = expMonth.unsignedIntegerValue;
+        params.name = name;
+        params.number = number;
+        params.cvc = cvc;
+        
+        [STPAPIClient.sharedClient createTokenWithCard:params completion:^(STPToken * _Nullable token, NSError * _Nullable error) {
+            if (error) {
+                NSString* errorCode = [NSString stringWithFormat:@"%li", error.code];
+                FlutterError* flutterError = [FlutterError errorWithCode:errorCode message:error.localizedFailureReason details:nil];
+                result(flutterError);
+            } else {
+                result(token);
+            }
+        }];
+
     } else if ([@"createTokenWithBankAccount" isEqualToString:call.method]) {
         
         NSDictionary* argDict = call.arguments;
