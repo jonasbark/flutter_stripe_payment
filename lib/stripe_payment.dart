@@ -28,6 +28,18 @@ class StripePayment {
                 ReadableMap(call.arguments as Map<String, Any>),
                 Promise(result)
             )
+
+            TODO
+            "deviceSupportsApplePay" -> stripeModule.deviceSupportsApplePay(Promise(result));
+            "canMakeApplePayPayments" -> stripeModule.canMakeAndroidPayPayments(Promise(result));
+            "paymentRequestWithApplePay" -> stripeModule.paymentRequestWithApplePay(
+                ReadableMap(call.arguments as Map<String, Any>),
+                Promise(result)
+            )
+            "completeApplePayRequest" -> stripeModule.completeApplePayRequest(Promise(result))
+            "cancelApplePayRequest" -> stripeModule.cancelApplePayRequest(Promise(result))
+            END TODO
+
             "paymentRequestWithCardForm" -> stripeModule.paymentRequestWithCardForm(
                 ReadableMap(call.arguments as Map<String, Any>),
                 Promise(result)
