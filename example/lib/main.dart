@@ -22,8 +22,7 @@ class _MyAppState extends State<MyApp> {
   initState() {
     super.initState();
 
-    StripePayment.setOptions(
-        StripeOptions(publishableKey: "pk_test_", merchantId: "Test", androidPayMode: 'test'));
+    StripePayment.setOptions(StripeOptions(publishableKey: "pk_test_", merchantId: "Test", androidPayMode: 'test'));
   }
 
   @override
