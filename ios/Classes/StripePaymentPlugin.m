@@ -22,7 +22,7 @@
     else if ([@"addSource" isEqualToString:call.method]) {
         [self openStripeCardVC:result];
     } else if ([@"createTokenWithCard" isEqualToString:call.method]) {
-        NSDictionary* argDict = call.arguments;
+        NSDictionary* argDict = [NSDictionary dictionaryWithDictionary:call.arguments];
         
         NSString* addressCity = [argDict objectForKey:@"addressCity"];
         NSString* addressCountry = [argDict objectForKey:@"addressCountry"];
@@ -65,7 +65,7 @@
 
     } else if ([@"createTokenWithBankAccount" isEqualToString:call.method]) {
         
-        NSDictionary* argDict = call.arguments;
+        NSDictionary* argDict = [NSDictionary dictionaryWithDictionary:call.arguments];
         NSString* accountHolderName = [argDict objectForKey:@"accountHolderName"];
         NSString* accountHolderType = [argDict objectForKey:@"accountHolderType"];
         NSString* accountNumber = [argDict objectForKey:@"accountNumber"];
@@ -100,8 +100,61 @@
                 result(token);
             }
         }];
-    }
-    else if ([@"confirmPayment" isEqualToString:call.method]) {
+        
+    } else if ([@"createSourceWithParams" isEqualToString:call.method]) {
+        
+        NSDictionary* argDict = [NSDictionary dictionaryWithDictionary:call.arguments];
+        NSNumber* amount = [argDict objectForKey:@"amount"];
+        NSString* currency = [argDict objectForKey:@"currency"];
+        NSString* returnURL = [argDict objectForKey:@"returnURL"];
+        NSString* type = [argDict objectForKey:@"type"];
+        
+        STPSourceParams* params = [[STPSourceParams alloc] init];
+        params.amount = amount;
+        params.currency = currency;
+        
+        STPSourceType sourceType = STPSourceTypeUnknown;
+        if ([type localizedCaseInsensitiveCompare:@"eps"]) {
+            sourceType = STPSourceTypeEPS;
+        } else if ([type localizedCaseInsensitiveCompare:@"p24"]) {
+            sourceType = STPSourceTypeP24;
+        } else if ([type localizedCaseInsensitiveCompare:@"card"]) {
+            sourceType = STPSourceTypeCard;
+        } else if ([type localizedCaseInsensitiveCompare:@"ideal"]) {
+            sourceType = STPSourceTypeIDEAL;
+        } else if ([type localizedCaseInsensitiveCompare:@"alipay"]) {
+            sourceType = STPSourceTypeAlipay;
+        } else if ([type localizedCaseInsensitiveCompare:@"wechatpay"]) {
+            sourceType = STPSourceTypeWeChatPay;
+        } else if ([type localizedCaseInsensitiveCompare:@"giropay"]) {
+            sourceType = STPSourceTypeGiropay;
+        } else if ([type localizedCaseInsensitiveCompare:@"sepadebit"]) {
+            sourceType = STPSourceTypeSEPADebit;
+        } else if ([type localizedCaseInsensitiveCompare:@"bancontact"]) {
+            sourceType = STPSourceTypeBancontact;
+        } else if ([type localizedCaseInsensitiveCompare:@"sofort"]) {
+            sourceType = STPSourceTypeSofort;
+        } else if ([type localizedCaseInsensitiveCompare:@"multibanco"]) {
+            sourceType = STPSourceTypeMultibanco;
+        } else if ([type localizedCaseInsensitiveCompare:@"threedsecure"]) {
+            sourceType = STPSourceTypeThreeDSecure;
+        }
+        
+        params.type = sourceType;
+        
+        params.redirect = @{@"flow": @"redirect", @"returnURL": returnURL};
+        
+        [STPAPIClient.sharedClient createSourceWithParams:params completion:^(STPSource * _Nullable source, NSError * _Nullable error) {
+            if (error) {
+                NSString* errorCode = [NSString stringWithFormat:@"%li", error.code];
+                FlutterError* flutterError = [FlutterError errorWithCode:errorCode message:error.localizedFailureReason details:nil];
+                result(flutterError);
+            } else {
+                result(source);
+            }
+        }];
+        
+    } else if ([@"confirmPayment" isEqualToString:call.method]) {
         [self confirmPayment:call.arguments[@"paymentMethodId"] clientSecret:call.arguments[@"clientSecret"] result:result];
     }
     else if ([@"setupPayment" isEqualToString:call.method]) {
