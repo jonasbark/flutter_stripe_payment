@@ -76,7 +76,7 @@ class StripePayment {
   }
 
   static Future<Token> paymentRequestWithApplePay(ApplePayPaymentRequest options) async {
-    final token = await _channel.invokeMethod("paymentRequestWithApplePay", options.toJson);
+    final token = await _channel.invokeMethod("paymentRequestWithApplePay", options.json);
     return Token.fromJson(token);
   }
 

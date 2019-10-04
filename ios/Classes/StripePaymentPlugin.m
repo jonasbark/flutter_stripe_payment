@@ -27,7 +27,7 @@
         result(isSupported);
         
     } else if ([@"paymentRequestWithApplePay" isEqualToString:call.method]) {
-        
+                
         
     } else if ([@"createTokenWithCard" isEqualToString:call.method]) {
         
