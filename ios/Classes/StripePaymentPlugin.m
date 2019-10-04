@@ -21,6 +21,14 @@
     }
     else if ([@"addSource" isEqualToString:call.method]) {
         [self openStripeCardVC:result];
+    } else if ([@"deviceSupportsApplePay" isEqualToString:call.method]) {
+        
+        NSNumber* isSupported = [NSNumber numberWithBool:[Stripe deviceSupportsApplePay]];
+        result(isSupported);
+        
+    } else if ([@"paymentRequestWithApplePay" isEqualToString:call.method]) {
+        
+        
     } else if ([@"createTokenWithCard" isEqualToString:call.method]) {
         
         NSString* addressCity = call.arguments[@"addressCity"];
