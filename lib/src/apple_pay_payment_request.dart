@@ -11,12 +11,12 @@ class ApplePayPaymentRequest {
 
   ApplePayPaymentRequest({this.items, this.options, this.billing_address_required, this.shipping_address_required});
 
-  Map<dynamic, dynamic> toJson() {
+  Map<dynamic, dynamic> get toJson {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['billing_address_required'] = this.billing_address_required;
     data['shipping_address_required'] = this.shipping_address_required;
-    if (this.items != null) { data['line_items'] = this.items.map((i) => i.toJson()).toList(); }
-    data['options'] = this.options.map((o) => o.toJson()).toList();
+    if (this.items != null) { data['line_items'] = this.items.map((i) => i.toJson).toList(); }
+    data['options'] = this.options.map((o) => o.toJson).toList();
     return data;
   }
 
@@ -30,7 +30,7 @@ class ApplePayOptions {
   double amount;
   ApplePayOptions({this.id, this.name, this.details, this.amount});
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> get toJson {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
@@ -48,7 +48,7 @@ class ApplePayItem {
   bool is_pending;
   ApplePayItem({this.name, this.amount, this.is_pending});
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> get toJson {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
     data['amount'] = this.amount;

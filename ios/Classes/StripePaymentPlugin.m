@@ -111,47 +111,43 @@
     } else if ([@"createSourceWithParams" isEqualToString:call.method]) {
         
         
-        id amount = call.arguments[@"amount"];
+        NSNumber* amount = call.arguments[@"amount"];
         NSString* currency = call.arguments[@"currency"];
         NSString* returnURL = call.arguments[@"returnURL"];
         NSString* type = call.arguments[@"type"];
+        NSString* name = call.arguments[@"name"];
+        NSString* statementDescriptor = call.arguments[@"statement_descriptor"];
+        NSString* country = call.arguments[@"country"];
+        NSString* email = call.arguments[@"email"];
+        NSString* card = call.arguments[@"card"];
         
-        STPSourceParams* params = [[STPSourceParams alloc] init];
-        params.amount = amount;
-        params.currency = currency;
+        NSUInteger cost = amount.unsignedIntegerValue;
         
-        STPSourceType sourceType = STPSourceTypeUnknown;
+        STPSourceParams *sourceParams;
         if ([type localizedCaseInsensitiveCompare:@"eps"]) {
-            sourceType = STPSourceTypeEPS;
+            sourceParams = [STPSourceParams epsParamsWithAmount:cost name:name returnURL:returnURL statementDescriptor:statementDescriptor];
         } else if ([type localizedCaseInsensitiveCompare:@"p24"]) {
-            sourceType = STPSourceTypeP24;
-        } else if ([type localizedCaseInsensitiveCompare:@"card"]) {
-            sourceType = STPSourceTypeCard;
+            sourceParams = [STPSourceParams epsParamsWithAmount:cost name:name returnURL:returnURL statementDescriptor:statementDescriptor];
         } else if ([type localizedCaseInsensitiveCompare:@"ideal"]) {
-            sourceType = STPSourceTypeIDEAL;
+            sourceParams = [STPSourceParams idealParamsWithAmount:cost name:name returnURL:returnURL statementDescriptor:statementDescriptor bank:nil];
         } else if ([type localizedCaseInsensitiveCompare:@"alipay"]) {
-            sourceType = STPSourceTypeAlipay;
+            sourceParams = [STPSourceParams alipayReusableParamsWithCurrency:currency returnURL:returnURL];
         } else if ([type localizedCaseInsensitiveCompare:@"wechatpay"]) {
-            sourceType = STPSourceTypeWeChatPay;
+            sourceParams = [STPSourceParams wechatPayParamsWithAmount:cost currency:currency appId:name statementDescriptor:statementDescriptor];
         } else if ([type localizedCaseInsensitiveCompare:@"giropay"]) {
-            sourceType = STPSourceTypeGiropay;
-        } else if ([type localizedCaseInsensitiveCompare:@"sepadebit"]) {
-            sourceType = STPSourceTypeSEPADebit;
+            sourceParams = [STPSourceParams giropayParamsWithAmount:cost name:name returnURL:returnURL statementDescriptor:statementDescriptor];
         } else if ([type localizedCaseInsensitiveCompare:@"bancontact"]) {
-            sourceType = STPSourceTypeBancontact;
+            sourceParams = [STPSourceParams bancontactParamsWithAmount:cost name:name returnURL:returnURL statementDescriptor:statementDescriptor];
         } else if ([type localizedCaseInsensitiveCompare:@"sofort"]) {
-            sourceType = STPSourceTypeSofort;
+            sourceParams = [STPSourceParams sofortParamsWithAmount:cost returnURL:returnURL country:country statementDescriptor:statementDescriptor];
         } else if ([type localizedCaseInsensitiveCompare:@"multibanco"]) {
-            sourceType = STPSourceTypeMultibanco;
+            sourceParams = [STPSourceParams multibancoParamsWithAmount:cost returnURL:returnURL email:email];
         } else if ([type localizedCaseInsensitiveCompare:@"threedsecure"]) {
-            sourceType = STPSourceTypeThreeDSecure;
+            sourceParams = [STPSourceParams threeDSecureParamsWithAmount:cost currency:currency returnURL:returnURL card:card];
         }
         
-        params.type = sourceType;
-        
-        params.redirect = @{@"flow": @"redirect", @"returnURL": returnURL};
-        
-        [STPAPIClient.sharedClient createSourceWithParams:params completion:^(STPSource * _Nullable source, NSError * _Nullable error) {
+                
+        [STPAPIClient.sharedClient createSourceWithParams:sourceParams completion:^(STPSource * _Nullable source, NSError * _Nullable error) {
             if (error) {
                 NSString* errorCode = [NSString stringWithFormat:@"%li", error.code];
                 FlutterError* flutterError = [FlutterError errorWithCode:errorCode message:error.localizedFailureReason details:nil];
