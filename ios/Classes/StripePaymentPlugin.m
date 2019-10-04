@@ -22,23 +22,22 @@
     else if ([@"addSource" isEqualToString:call.method]) {
         [self openStripeCardVC:result];
     } else if ([@"createTokenWithCard" isEqualToString:call.method]) {
-        NSDictionary* argDict = [NSDictionary dictionaryWithDictionary:call.arguments];
         
-        NSString* addressCity = [argDict objectForKey:@"addressCity"];
-        NSString* addressCountry = [argDict objectForKey:@"addressCountry"];
-        NSString* addressLine1 = [argDict objectForKey:@"addressLine1"];
-        NSString* addressLine2 = [argDict objectForKey:@"addressLine2"];
-        NSString* addressState = [argDict objectForKey:@"addressState"];
-        NSString* addressZip = [argDict objectForKey:@"addressZip"];
-        NSString* cardId = [argDict objectForKey:@"cardId"];
-        NSString* country = [argDict objectForKey:@"country"];
-        NSNumber* expMonth = [argDict objectForKey:@"expMonth"];
-        NSNumber* expYear = [argDict objectForKey:@"expYear"];
-        NSString* funding = [argDict objectForKey:@"funding"];
-        NSString* last4 = [argDict objectForKey:@"last4"];
-        NSString* name = [argDict objectForKey:@"name"];
-        NSString* number = [argDict objectForKey:@"number"];
-        NSString* cvc = [argDict objectForKey:@"cvc"];
+        NSString* addressCity = call.arguments[@"addressCity"];
+        NSString* addressCountry = call.arguments[@"addressCity"];
+        NSString* addressLine1 = call.arguments[@"addressLine1"];
+        NSString* addressLine2 = call.arguments[@"addressLine2"];
+        NSString* addressState = call.arguments[@"addressState"];
+        NSString* addressZip = call.arguments[@"addressZip"];
+        NSString* cardId = call.arguments[@"cardId"];
+        NSString* country = call.arguments[@"country"];
+        NSNumber* expMonth = call.arguments[@"expMonth"];
+        NSNumber* expYear = call.arguments[@"expYear"];
+        NSString* funding = call.arguments[@"funding"];
+        NSString* last4 = call.arguments[@"last4"];
+        NSString* name = call.arguments[@"name"];
+        NSString* number = call.arguments[@"number"];
+        NSString* cvc = call.arguments[@"cvc"];
         
         STPCardParams* params = [[STPCardParams alloc] init];
         params.address.line1 = addressLine1;
@@ -65,16 +64,16 @@
 
     } else if ([@"createTokenWithBankAccount" isEqualToString:call.method]) {
         
-        NSDictionary* argDict = [NSDictionary dictionaryWithDictionary:call.arguments];
-        NSString* accountHolderName = [argDict objectForKey:@"accountHolderName"];
-        NSString* accountHolderType = [argDict objectForKey:@"accountHolderType"];
-        NSString* accountNumber = [argDict objectForKey:@"accountNumber"];
-        NSString* bankName = [argDict objectForKey:@"bankName"];
-        NSString* countryCode = [argDict objectForKey:@"countryCode"];
-        NSString* currency = [argDict objectForKey:@"currency"];
-        NSString* fingerprint = [argDict objectForKey:@"fingerprint"];
-        NSString* last4 = [argDict objectForKey:@"last4"];
-        NSString* routingNumber = [argDict objectForKey:@"routingNumber"];
+        
+        NSString* accountHolderName = call.arguments[@"accountHolderName"];
+        NSString* accountHolderType = call.arguments[@"accountHolderType"];
+        NSString* accountNumber = call.arguments[@"accountNumber"];
+        NSString* bankName = call.arguments[@"bankName"];
+        NSString* countryCode = call.arguments[@"countryCode"];
+        NSString* currency = call.arguments[@"currency"];
+        NSString* fingerprint = call.arguments[@"fingerprint"];
+        NSString* last4 = call.arguments[@"last4"];
+        NSString* routingNumber = call.arguments[@"routingNumber"];
         
         STPBankAccountParams* params = [[STPBankAccountParams alloc] init];
 
@@ -103,11 +102,11 @@
         
     } else if ([@"createSourceWithParams" isEqualToString:call.method]) {
         
-        NSDictionary* argDict = [NSDictionary dictionaryWithDictionary:call.arguments];
-        NSNumber* amount = [argDict objectForKey:@"amount"];
-        NSString* currency = [argDict objectForKey:@"currency"];
-        NSString* returnURL = [argDict objectForKey:@"returnURL"];
-        NSString* type = [argDict objectForKey:@"type"];
+        
+        id amount = call.arguments[@"amount"];
+        NSString* currency = call.arguments[@"currency"];
+        NSString* returnURL = call.arguments[@"returnURL"];
+        NSString* type = call.arguments[@"type"];
         
         STPSourceParams* params = [[STPSourceParams alloc] init];
         params.amount = amount;
