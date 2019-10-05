@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -22,43 +23,6 @@ class StripePayment {
 
   static bool get ready => _settingsSet;
 
-  /*
-            "setOptions" -> stripeModule.init(ReadableMap(call.arguments as Map<String, Any>), ReadableMap())
-            "deviceSupportsAndroidPay" -> stripeModule.deviceSupportsAndroidPay(Promise(result));
-            "canMakeAndroidPayPayments" -> stripeModule.canMakeAndroidPayPayments(Promise(result));
-            "paymentRequestWithAndroidPay" -> stripeModule.paymentRequestWithAndroidPay(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
-            )
-
-            "deviceSupportsApplePay" -> stripeModule.deviceSupportsApplePay(Promise(result));
-            TODO
-            "paymentRequestWithApplePay" -> stripeModule.paymentRequestWithApplePay(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
-            )
-            "completeApplePayRequest" -> stripeModule.completeApplePayRequest(Promise(result))
-            "cancelApplePayRequest" -> stripeModule.cancelApplePayRequest(Promise(result))
-            END TODO
-
-            "paymentRequestWithCardForm" -> stripeModule.paymentRequestWithCardForm(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
-            )
-            "createTokenWithCard" -> stripeModule.createTokenWithCard(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
-            )
-            "createTokenWithBankAccount" -> stripeModule.createTokenWithBankAccount(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
-            )
-            "createSourceWithParams" -> stripeModule.createSourceWithParams(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
-            )
-   */
-
   /// set the publishable key that stripe should use
   /// call this once and before you use [addSource]
   static void setOptions(StripeOptions settings) {
@@ -66,16 +30,36 @@ class StripePayment {
     _settingsSet = true;
   }
 
-  static Future<bool> deviceSupportsAndroidPay() => _channel.invokeMethod("deviceSupportsAndroidPay");
+  static Future<bool> deviceSupportsNativePay() async {
+    if (Platform.isIOS) {
+      return _deviceSupportsApplePay();
+    } else if (Platform.isAndroid) {
+      return _deviceSupportsAndroidPay();
+    } else {
+      return false;
+    }
+  }
 
-  static Future<bool> deviceSupportsApplePay() => _channel.invokeMethod("deviceSupportsApplePay");
+  static Future<bool> _deviceSupportsAndroidPay() => _channel.invokeMethod("deviceSupportsAndroidPay");
 
-  static Future<Token> paymentRequestWithAndroidPay(AndroidPayPaymentRequest options) async {
+  static Future<bool> _deviceSupportsApplePay() => _channel.invokeMethod("deviceSupportsApplePay");
+
+  static Future<Token> paymentRequestWithNativePay(
+      {@required AndroidPayPaymentRequest androidPayOptions, @required ApplePayPaymentRequest applePayOptions}) {
+    if (Platform.isAndroid) {
+      return _paymentRequestWithAndroidPay(androidPayOptions);
+    } else if (Platform.isIOS) {
+      return _paymentRequestWithApplePay(applePayOptions);
+    } else
+      throw UnimplementedError();
+  }
+
+  static Future<Token> _paymentRequestWithAndroidPay(AndroidPayPaymentRequest options) async {
     final token = await _channel.invokeMethod("paymentRequestWithAndroidPay", options.toJson());
     return Token.fromJson(token);
   }
 
-  static Future<Token> paymentRequestWithApplePay(ApplePayPaymentRequest options) async {
+  static Future<Token> _paymentRequestWithApplePay(ApplePayPaymentRequest options) async {
     final token = await _channel.invokeMethod("paymentRequestWithApplePay", options.json);
     return Token.fromJson(token);
   }

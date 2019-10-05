@@ -1,59 +1,84 @@
+import 'package:flutter/foundation.dart';
+
 enum RequiredBillingAddressFields { all, name, email, phone, postal_address }
 
 enum RequiredShippingAddressFields { all, name, email, phone, postal_address }
 
+enum ShippingType { shipping, delivery, store_pickup, service_pickup }
+
 class ApplePayPaymentRequest {
-
+  List<RequiredBillingAddressFields> requiredBillingAddressFields;
+  List<RequiredShippingAddressFields> requiredShippingAddressFields;
+  List<ShippingMethod> shippingMethod;
+  String currencyCode;
+  String countryCode;
+  ShippingType shippingType;
   List<ApplePayItem> items;
-  List<ApplePayOptions> options;
-  List<RequiredBillingAddressFields> billing_address_required;
-  List<RequiredShippingAddressFields> shipping_address_required;
 
-  ApplePayPaymentRequest({this.items, this.options, this.billing_address_required, this.shipping_address_required});
+  ApplePayPaymentRequest(
+      {this.requiredBillingAddressFields,
+      this.requiredShippingAddressFields,
+      this.shippingMethod,
+      this.currencyCode,
+      this.countryCode,
+      this.shippingType,
+      this.items});
 
   Map<dynamic, dynamic> get json {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.billing_address_required != null) { data['billing_address_required'] = this.billing_address_required.map((b) => b.toString().split('.').last).toList(); }
-    if (this.shipping_address_required != null) { data['shipping_address_required'] = this.shipping_address_required.map((s) => s.toString().split('.').last).toList(); }
-    if (this.items != null) { data['line_items'] = this.items.map((i) => i.json).toList(); }
-    if (this.options != null) { data['options'] = this.options.map((o) => o.json).toList(); }
+    if (this.requiredBillingAddressFields != null) {
+      data['requiredBillingAddressFields'] = this.requiredBillingAddressFields.map((b) => describeEnum(b)).toList();
+    }
+    if (this.requiredShippingAddressFields != null) {
+      data['requiredShippingAddressFields'] = this.requiredShippingAddressFields.map((s) => describeEnum(s)).toList();
+    }
+    data['currencyCode'] = currencyCode;
+    data['shippingType'] = shippingType;
+    if (this.items != null) {
+      data['line_items'] = this.items.map((i) => i.json).toList();
+    }
     return data;
   }
-
 }
 
-class ApplePayOptions {
-
+class ShippingMethod {
+  String amount;
+  String detail;
   String id;
-  String name;
-  String details;
-  num amount;
-  ApplePayOptions({this.id, this.name, this.details, this.amount});
+  String label;
 
-  Map<String, dynamic> get json {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['details'] = this.details;
-    data['amount'] = this.amount;
-    return data;
+  ShippingMethod({this.amount, this.detail, this.id, this.label});
+
+  factory ShippingMethod.fromJson(Map<String, dynamic> json) {
+    return ShippingMethod(
+      amount: json['amount'],
+      detail: json['detail'],
+      id: json['id'],
+      label: json['label'],
+    );
   }
 
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['amount'] = this.amount;
+    data['detail'] = this.detail;
+    data['id'] = this.id;
+    data['label'] = this.label;
+    return data;
+  }
 }
 
 class ApplePayItem {
-
-  String name;
+  String label;
   num amount;
-  bool is_pending;
-  ApplePayItem({this.name, this.amount, this.is_pending});
+  String type;
+  ApplePayItem({this.label, this.amount, this.type});
 
   Map<String, dynamic> get json {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
+    data['name'] = this.label;
     data['amount'] = this.amount;
-    data['is_pending'] = this.is_pending;
+    data['type'] = this.type;
     return data;
   }
-
 }
