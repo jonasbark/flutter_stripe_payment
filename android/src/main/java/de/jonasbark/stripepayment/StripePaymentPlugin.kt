@@ -48,6 +48,22 @@ class StripePaymentPlugin(private val stripeModule: StripeModule) : MethodCallHa
                 ReadableMap(call.arguments as Map<String, Any>),
                 Promise(result)
             )
+            "createPaymentMethod" -> stripeModule.createPaymentMethod(
+                ReadableMap(call.arguments as Map<String, Any>),
+                Promise(result)
+            )
+            "authenticatePaymentIntent" -> stripeModule.authenticatePaymentIntent(
+                ReadableMap(call.arguments as Map<String, Any>),
+                Promise(result)
+            )
+            "authenticateSetupIntent" -> stripeModule.authenticateSetupIntent(
+                ReadableMap(call.arguments as Map<String, Any>),
+                Promise(result)
+            )
+            "confirmSetupIntent" -> stripeModule.confirmSetupIntent(
+                ReadableMap(call.arguments as Map<String, Any>),
+                Promise(result)
+            )
         }
     }
 
