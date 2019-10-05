@@ -7,8 +7,6 @@
 //
 
 #import "TPSStripeManager.h"
-#import <React/RCTUtils.h>
-#import <React/RCTConvert.h>
 #import <Stripe/Stripe.h>
 
 #import "TPSError.h"
@@ -44,13 +42,13 @@ TPSErrorKeyDefine(NoAmount, @"noAmount");
 
 @implementation RCTConvert (STPBankAccountHolderType)
 
-RCT_ENUM_CONVERTER(STPBankAccountHolderType,
+/*RCT_ENUM_CONVERTER(STPBankAccountHolderType,
                    (@{
                       @"individual": @(STPBankAccountHolderTypeIndividual),
                       @"company": @(STPBankAccountHolderTypeCompany),
                       }),
                    STPBankAccountHolderTypeCompany,
-                   integerValue)
+                   integerValue)*/
 
 + (NSString *)STPBankAccountHolderTypeString:(STPBankAccountHolderType)type {
     NSString *string = nil;
@@ -72,7 +70,7 @@ RCT_ENUM_CONVERTER(STPBankAccountHolderType,
 
 @implementation RCTConvert (STPBankAccountStatus)
 
-RCT_ENUM_CONVERTER(STPBankAccountStatus,
+/*RCT_ENUM_CONVERTER(STPBankAccountStatus,
                    (@{
                       @"new": @(STPBankAccountStatusNew),
                       @"validated": @(STPBankAccountStatusValidated),
@@ -80,7 +78,7 @@ RCT_ENUM_CONVERTER(STPBankAccountStatus,
                       @"errored": @(STPBankAccountStatusErrored),
                       }),
                    STPBankAccountStatusNew,
-                   integerValue)
+                   integerValue)*/
 
 + (NSString *)STPBankAccountStatusString:(STPBankAccountStatus)status {
     NSString *string = nil;
@@ -110,7 +108,7 @@ RCT_ENUM_CONVERTER(STPBankAccountStatus,
 
 @implementation RCTConvert (STPPaymentMethodType)
 
-RCT_ENUM_CONVERTER(STPPaymentMethodType,
+/*RCT_ENUM_CONVERTER(STPPaymentMethodType,
                    (@{
                       @"card": @(STPPaymentMethodTypeCard),
                       @"iDEAL": @(STPPaymentMethodTypeiDEAL),
@@ -119,7 +117,7 @@ RCT_ENUM_CONVERTER(STPPaymentMethodType,
                       @"unknown": @(STPPaymentMethodTypeUnknown),
                       }),
                    STPPaymentMethodTypeUnknown,
-                   integerValue)
+                   integerValue)*/
 
 + (NSString *)STPPaymentMethodTypeString:(STPPaymentMethodType)type {
     switch (type) {
@@ -137,7 +135,7 @@ RCT_ENUM_CONVERTER(STPPaymentMethodType,
 @implementation RCTConvert (STPIntentStatus)
 
 #define TPSEntry(key, Enum) TPSStripeParam(PaymentIntentStatus, key): @(STPPaymentIntentStatus##Enum)
-RCT_ENUM_CONVERTER(STPPaymentIntentStatus,
+/*RCT_ENUM_CONVERTER(STPPaymentIntentStatus,
                    (@{
                       TPSEntry(unknown, Unknown),
                       TPSEntry(canceled, Canceled),
@@ -149,7 +147,7 @@ RCT_ENUM_CONVERTER(STPPaymentIntentStatus,
                       TPSEntry(succeeded, Succeeded)
                       }),
                    STPPaymentIntentStatusUnknown,
-                   integerValue)
+                   integerValue)*/
 #undef TPSEntry
 
 + (NSString *)STPPaymentIntentStatusString:(STPPaymentIntentStatus)status {
@@ -169,7 +167,7 @@ RCT_ENUM_CONVERTER(STPPaymentIntentStatus,
 }
 
 #define TPSEntry(key, Enum) TPSStripeParam(SetupIntentStatus, key): @(STPSetupIntentStatus##Enum)
-RCT_ENUM_CONVERTER(STPSetupIntentStatus,
+/*RCT_ENUM_CONVERTER(STPSetupIntentStatus,
                    (@{
                       TPSEntry(unknown, Unknown),
                       TPSEntry(canceled, Canceled),
@@ -181,7 +179,7 @@ RCT_ENUM_CONVERTER(STPSetupIntentStatus,
                       }),
                    STPSetupIntentStatusUnknown,
                    integerValue)
-#undef TPSEntry
+#undef TPSEntry*/
 
 + (NSString *)STPSetupIntentStatusString:(STPSetupIntentStatus)status {
 #define TPSEntry(key, Enum) case STPSetupIntentStatus##Enum: return TPSStripeParam(SetupIntentStatus, key);
@@ -203,7 +201,7 @@ RCT_ENUM_CONVERTER(STPSetupIntentStatus,
 typedef NSString * TPSPaymentNetwork NS_EXTENSIBLE_STRING_ENUM;
 
 // Add entries here when PKPaymentNetwork receives new keys!
-#define TPSPaymentNetworkDefine(Key, string) TPSPaymentNetwork const TPSPaymentNetwork ## Key = string
+/*#define TPSPaymentNetworkDefine(Key, string) TPSPaymentNetwork const TPSPaymentNetwork ## Key = string
 TPSPaymentNetworkDefine(Amex, @"american_express");
 TPSPaymentNetworkDefine(CartesBancaires, @"cartes_bancaires");
 TPSPaymentNetworkDefine(ChinaUnionPay, @"china_union_pay");
@@ -222,7 +220,7 @@ TPSPaymentNetworkDefine(QuicPay, @"quic_pay");
 TPSPaymentNetworkDefine(Suica, @"suica");
 TPSPaymentNetworkDefine(Visa, @"visa");
 TPSPaymentNetworkDefine(VPay, @"vpay");
-#undef TPSPaymentNetworkDefine
+#undef TPSPaymentNetworkDefine*/
 
 NSDictionary<TPSPaymentNetwork, PKPaymentNetwork> * mapTPSPaymentNetworkToPKPaymentNetwork = nil;
 __attribute__((constructor)) // This means this method will be called in file scope
@@ -230,7 +228,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     NSMutableDictionary<TPSPaymentNetwork, PKPaymentNetwork> * tmp = NSMutableDictionary.dictionary;
 
     // Inserts a key-value mapping into this dictionary guarding it by which iOS version the constant was added in
-#define TPSPaymentNetworkConditionalMapping(Key, iOSVersion) { if (@available(iOS iOSVersion, *)) { tmp[TPSPaymentNetwork##Key] = PKPaymentNetwork ## Key; }}
+/*#define TPSPaymentNetworkConditionalMapping(Key, iOSVersion) { if (@available(iOS iOSVersion, *)) { tmp[TPSPaymentNetwork##Key] = PKPaymentNetwork ## Key; }}
     TPSPaymentNetworkConditionalMapping(Amex, 8.0);
     TPSPaymentNetworkConditionalMapping(CartesBancaires, 11.2);
     TPSPaymentNetworkConditionalMapping(ChinaUnionPay, 9.2);
@@ -249,7 +247,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     TPSPaymentNetworkConditionalMapping(Suica, 10.1);
     TPSPaymentNetworkConditionalMapping(Visa, 8.0);
     TPSPaymentNetworkConditionalMapping(VPay, 12.0);
-#undef TPSPaymentNetworkConditionalMapping
+#undef TPSPaymentNetworkConditionalMapping*/
 
     mapTPSPaymentNetworkToPKPaymentNetwork = tmp;
 }
@@ -270,6 +268,8 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
 }
 @end
 @implementation StripeModule
+
+#define RCTPresentedViewController() [[[UIApplication sharedApplication] keyWindow] rootViewController]
 
 - (instancetype)init {
     if ((self = [super init])) {
@@ -295,23 +295,22 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
              };
 }
 
-RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(init:(NSDictionary *)options errorCodes:(NSDictionary *)errors) {
+-(void)init:(NSDictionary *)options errorCodes:(NSDictionary *)errors {
     publishableKey = options[@"publishableKey"];
     merchantId = options[@"merchantId"];
     errorCodes = errors;
     [Stripe setDefaultPublishableKey:publishableKey];
 }
 
-RCT_EXPORT_METHOD(deviceSupportsApplePay:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+-(void)deviceSupportsApplePay:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject {
     resolve(@([PKPaymentAuthorizationViewController canMakePayments]));
 }
 
-RCT_EXPORT_METHOD(canMakeApplePayPayments:(NSDictionary *)options
+-(void)canMakeApplePayPayments:(NSDictionary *)options
                   resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+                  rejecter:(RCTPromiseRejectBlock)reject {
     NSArray <NSString *> *paymentNetworksStrings =
     options[@"networks"] ?: [StripeModule applePaySupportedPaymentNetworksStrings];
 
@@ -319,8 +318,8 @@ RCT_EXPORT_METHOD(canMakeApplePayPayments:(NSDictionary *)options
     resolve(@([PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:networks]));
 }
 
-RCT_EXPORT_METHOD(potentiallyAvailableNativePayNetworks:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+-(void)potentiallyAvailableNativePayNetworks:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject {
     NSArray <NSString *> *paymentNetworksStrings = [StripeModule applePaySupportedPaymentNetworksStrings];
 
     NSArray <PKPaymentNetwork> *networks = [self paymentNetworks:paymentNetworksStrings];
@@ -328,9 +327,9 @@ RCT_EXPORT_METHOD(potentiallyAvailableNativePayNetworks:(RCTPromiseResolveBlock)
 }
 
 
-RCT_EXPORT_METHOD(createPaymentMethod:(NSDictionary<NSString *, id> *)untypedParams
+-(void)createPaymentMethod:(NSDictionary<NSString *, id> *)untypedParams
                   resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+                  rejecter:(RCTPromiseRejectBlock)reject {
     NSDictionary<TPSStripeType(createPaymentMethod), id> *params = untypedParams;
 
     STPPaymentMethodParams * parsed = [self extractCreatePaymentMethodParamsFromDictionary:params];
@@ -359,9 +358,9 @@ RCT_EXPORT_METHOD(createPaymentMethod:(NSDictionary<NSString *, id> *)untypedPar
                             }];
 }
 
-RCT_EXPORT_METHOD(confirmPaymentIntent:(NSDictionary<NSString*, id>*)untypedParams
+-(void)confirmPaymentIntent:(NSDictionary<NSString*, id>*)untypedParams
                   resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+                  rejecter:(RCTPromiseRejectBlock)reject {
     NSDictionary<TPSStripeType(confirmPaymentIntent), id> *params = untypedParams;
 
     STPPaymentIntentParams * parsed = [self extractConfirmPaymentIntentParamsFromDictionary:params];
@@ -429,9 +428,9 @@ RCT_EXPORT_METHOD(confirmPaymentIntent:(NSDictionary<NSString*, id>*)untypedPara
                              }];
 }
 
-RCT_EXPORT_METHOD(authenticatePaymentIntent:(NSDictionary<NSString*, id> *)untypedParams
+-(void)authenticatePaymentIntent:(NSDictionary<NSString*, id> *)untypedParams
                   resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+                  rejecter:(RCTPromiseRejectBlock)reject {
     NSDictionary<TPSStripeType(authenticatePaymentIntent), id> *params = untypedParams;
 
     NSString * clientSecret = params[TPSStripeParam(authenticatePaymentIntent, clientSecret)];
@@ -472,9 +471,9 @@ RCT_EXPORT_METHOD(authenticatePaymentIntent:(NSDictionary<NSString*, id> *)untyp
                                                        }];
 }
 
-RCT_EXPORT_METHOD(confirmSetupIntent:(NSDictionary<NSString*, id> *)untypedParams
+-(void)confirmSetupIntent:(NSDictionary<NSString*, id> *)untypedParams
                   resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+                  rejecter:(RCTPromiseRejectBlock)reject {
     NSDictionary<TPSStripeType(confirmSetupIntent), id> *params = untypedParams;
 
     STPSetupIntentConfirmParams * parsed = [self extractConfirmSetupIntentParamsFromDictionary:params];
@@ -540,9 +539,9 @@ RCT_EXPORT_METHOD(confirmSetupIntent:(NSDictionary<NSString*, id> *)untypedParam
                            }];
 }
 
-RCT_EXPORT_METHOD(authenticateSetupIntent:(NSDictionary<NSString*, id>*)params
+-(void)authenticateSetupIntent:(NSDictionary<NSString*, id>*)params
                   resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+                  rejecter:(RCTPromiseRejectBlock)reject {
 
     NSString * clientSecret = TPSStripeParam(authenticateSetupIntent, clientSecret);
     NSString * returnURL = [RCTConvert NSString:TPSStripeParam(authenticateSetupIntent, returnURL)];
@@ -583,8 +582,8 @@ RCT_EXPORT_METHOD(authenticateSetupIntent:(NSDictionary<NSString*, id>*)params
 }
 
 
-RCT_EXPORT_METHOD(completeApplePayRequest:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+-(void)completeApplePayRequest:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject {
     if (applePayCompletion) {
         promiseResolver = resolve;
         [self resolveApplePayCompletion:PKPaymentAuthorizationStatusSuccess];
@@ -593,8 +592,8 @@ RCT_EXPORT_METHOD(completeApplePayRequest:(RCTPromiseResolveBlock)resolve
     }
 }
 
-RCT_EXPORT_METHOD(cancelApplePayRequest:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+-(void)cancelApplePayRequest:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject {
     if (applePayCompletion) {
         promiseResolver = resolve;
         [self resolveApplePayCompletion:PKPaymentAuthorizationStatusFailure];
@@ -603,9 +602,9 @@ RCT_EXPORT_METHOD(cancelApplePayRequest:(RCTPromiseResolveBlock)resolve
     }
 }
 
-RCT_EXPORT_METHOD(createTokenWithCard:(NSDictionary *)params
+-(void)createTokenWithCard:(NSDictionary *)params
                   resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+                  rejecter:(RCTPromiseRejectBlock)reject {
     if(!requestIsCompleted) {
         NSDictionary *error = [errorCodes valueForKey:kErrorKeyBusy];
         reject(error[kErrorKeyCode], error[kErrorKeyDescription], nil);
@@ -632,9 +631,9 @@ RCT_EXPORT_METHOD(createTokenWithCard:(NSDictionary *)params
     }];
 }
 
-RCT_EXPORT_METHOD(createTokenWithBankAccount:(NSDictionary *)params
+-(void)createTokenWithBankAccount:(NSDictionary *)params
                   resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+                  rejecter:(RCTPromiseRejectBlock)reject {
     if(!requestIsCompleted) {
         NSDictionary *error = [errorCodes valueForKey:kErrorKeyBusy];
         reject(error[kErrorKeyCode], error[kErrorKeyDescription], nil);
@@ -651,9 +650,8 @@ RCT_EXPORT_METHOD(createTokenWithBankAccount:(NSDictionary *)params
     [bankAccount setCurrency: params[@"currency"]];
     [bankAccount setRoutingNumber: params[@"routingNumber"]];
     [bankAccount setAccountHolderName: params[@"accountHolderName"]];
-    STPBankAccountHolderType accountHolderType =
-    [RCTConvert STPBankAccountHolderType:params[@"accountHolderType"]];
-    [bankAccount setAccountHolderType: accountHolderType];
+    //STPBankAccountHolderType accountHolderType = [RCTConvert STPBankAccountHolderType:params[@"accountHolderType"]]; //TODO
+    //[bankAccount setAccountHolderType: accountHolderType];
 
     STPAPIClient *stripeAPIClient = [self newAPIClient];
 
@@ -669,9 +667,9 @@ RCT_EXPORT_METHOD(createTokenWithBankAccount:(NSDictionary *)params
     }];
 }
 
-RCT_EXPORT_METHOD(createSourceWithParams:(NSDictionary *)params
+-(void)createSourceWithParams:(NSDictionary *)params
                   resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+                  rejecter:(RCTPromiseRejectBlock)reject {
     if(!requestIsCompleted) {
         NSDictionary *error = [errorCodes valueForKey:kErrorKeyBusy];
         reject(error[kErrorKeyCode], error[kErrorKeyDescription], nil);
@@ -764,9 +762,9 @@ RCT_EXPORT_METHOD(createSourceWithParams:(NSDictionary *)params
     }];
 }
 
-RCT_EXPORT_METHOD(paymentRequestWithCardForm:(NSDictionary *)options
+-(void)paymentRequestWithCardForm:(NSDictionary *)options
                   resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+                  rejecter:(RCTPromiseRejectBlock)reject {
     if(!requestIsCompleted) {
         NSDictionary *error = [errorCodes valueForKey:kErrorKeyBusy];
         reject(error[kErrorKeyCode], error[kErrorKeyDescription], nil);
@@ -805,10 +803,10 @@ RCT_EXPORT_METHOD(paymentRequestWithCardForm:(NSDictionary *)options
     });
 }
 
-RCT_EXPORT_METHOD(paymentRequestWithApplePay:(NSArray *)items
+-(void)paymentRequestWithApplePay:(NSArray *)items
                   withOptions:(NSDictionary *)options
                   resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+                  rejecter:(RCTPromiseRejectBlock)reject {
     if(!requestIsCompleted) {
         NSDictionary *error = [errorCodes valueForKey:kErrorKeyBusy];
         reject(error[kErrorKeyCode], error[kErrorKeyDescription], nil);
@@ -873,7 +871,7 @@ RCT_EXPORT_METHOD(paymentRequestWithApplePay:(NSArray *)items
     }
 }
 
-RCT_EXPORT_METHOD(openApplePaySetup) {
+-(void)openApplePaySetup {
     PKPassLibrary *library = [[PKPassLibrary alloc] init];
 
     // Here we should check, if openPaymentSetup selector exist
@@ -1811,7 +1809,7 @@ RCT_EXPORT_METHOD(openApplePaySetup) {
     dispatch_once(&onceToken, ^{
         NSMutableDictionary *mutableMap = [@{} mutableCopy];
 
-        if ((&PKPaymentNetworkAmex) != NULL) {
+        /*if ((&PKPaymentNetworkAmex) != NULL) {
             mutableMap[TPSPaymentNetworkAmex] = PKPaymentNetworkAmex;
         }
 
@@ -1825,7 +1823,7 @@ RCT_EXPORT_METHOD(openApplePaySetup) {
 
         if ((&PKPaymentNetworkVisa) != NULL) {
             mutableMap[TPSPaymentNetworkVisa] = PKPaymentNetworkVisa;
-        }
+        }*/
 
         paymentNetworksMap = [mutableMap copy];
     });
