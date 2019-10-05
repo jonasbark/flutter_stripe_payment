@@ -1,5 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:stripe_payment/stripe_payment.dart' as stripe;
+import 'package:stripe_payment/stripe_payment.dart';
 
 void main() {
   runApp(new MyApp());
@@ -11,99 +13,170 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var _paymentToken = "";
-  var _confirmNativePay = "";
+  Token _paymentToken;
+  PaymentMethod _paymentMethod;
+  String _error;
+  final String _currentSecret = null; //set this yourself, e.g using curl
+
+  final CreditCard testCard = CreditCard(
+    number: '4000002760003184',
+    expMonth: 12,
+    expYear: 21,
+  );
+
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   initState() {
     super.initState();
 
-    stripe.StripePayment.setOptions(
-        stripe.StripeOptions(publishableKey: "pk_test_", merchantId: "Test", androidPayMode: 'test'));
+    StripePayment.setOptions(
+        StripeOptions(publishableKey: "pk_test_", merchantId: "Test", androidPayMode: 'test'));
+  }
+
+  void setError(dynamic error) {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(error.toString())));
+    setState(() {
+      _error = error.toString();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       home: new Scaffold(
+        key: _scaffoldKey,
         appBar: new AppBar(
           title: new Text('Plugin example app'),
         ),
-        body: Column(
+        body: ListView(
+          padding: const EdgeInsets.all(20),
           children: <Widget>[
             RaisedButton(
-              child: Text("Add Card with Form"),
+              child: Text("Create Token with Card Form"),
               onPressed: () {
-                stripe.StripePayment.paymentRequestWithCardForm(stripe.CardFormPaymentRequest()).then((token) {
+                StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest()).then((token) {
                   setState(() {
-                    _paymentToken = token.toJson().toString();
+                    _paymentToken = token;
                   });
                 });
               },
             ),
             RaisedButton(
-              child: Text("Add Card without Form"),
+              child: Text("Create Token with Card"),
               onPressed: () {
-                stripe.StripePayment.createTokenWithCard(
-                        stripe.Card(number: '4000002760003184', expMonth: 12, expYear: 21))
-                    .then((token) {
+                StripePayment.createTokenWithCard(
+                  testCard,
+                ).then((token) {
                   setState(() {
-                    _paymentToken = token.toJson().toString();
+                    _paymentToken = token;
                   });
-                }).catchError(print);
+                }).catchError(setError);
               },
             ),
-            Text("Current payment token: $_paymentToken"),
-            Divider(),
-            /*RaisedButton(
-              child: Text("Setup payment"),
-              onPressed: () {
-                StripePayment.setupPayment(_paymentMethodId, _currentSecret).then((String token) {
-                  setState(() {
-                    _setupPaymentId = token;
-                  });
-                }).catchError(print);
-              },
-            ),
-            Text("Current setup payment ID: $_setupPaymentId"),
             Divider(),
             RaisedButton(
-              child: Text("Confirm payment"),
+              child: Text("Create Payment Method with Card"),
               onPressed: () {
-                StripePayment.confirmPayment(_paymentMethodId, _currentSecret).then((String token) {
+                StripePayment.createPaymentMethod(
+                  PaymentMethodRequest(
+                    card: testCard,
+                  ),
+                ).then((paymentMethod) {
                   setState(() {
-                    _confirmPaymentId = token;
+                    _paymentMethod = paymentMethod;
                   });
-                }).catchError(print);
+                }).catchError(setError);
               },
             ),
-            Text("Current confirm payment ID: $_confirmPaymentId"),
-            Divider(),*/
-            LayoutBuilder(
-              builder: (context, constraints) => RaisedButton(
-                child: Text("Native payment"),
-                onPressed: () {
-                  stripe.StripePayment.paymentRequestWithNativePay(
-                      androidPayOptions: stripe.AndroidPayPaymentRequest(
-                        total_price: "1.20",
-                        currency_code: "EUR",
-                      ),
-                      applePayOptions: stripe.ApplePayPaymentRequest(countryCode: 'DE', currencyCode: 'EUR', items: [
-                        stripe.ApplePayItem(
-                          label: 'Test',
-                          amount: 13,
-                        )
-                      ])).then((token) {
-                    setState(() {
-                      _confirmNativePay = token.toJson().toString();
-                    });
-                  }).catchError((e) {
-                    Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+            RaisedButton(
+              child: Text("Create Payment Method with existing token"),
+              onPressed: () {
+                StripePayment.createPaymentMethod(
+                  PaymentMethodRequest(
+                    card: CreditCard(
+                      token: _paymentToken.tokenId,
+                    ),
+                  ),
+                ).then((paymentMethod) {
+                  setState(() {
+                    _paymentMethod = paymentMethod;
                   });
-                },
-              ),
+                }).catchError(setError);
+              },
             ),
-            Text("Native payment: $_confirmNativePay"),
+            Divider(),
+            RaisedButton(
+              child: Text("Confirm Payment Intent"),
+              onPressed: () {
+                StripePayment.confirmPaymentIntent(
+                  PaymentIntent(
+                    clientSecret: _currentSecret,
+                    paymentMethodId: _paymentMethod.id,
+                  ),
+                ).then((paymentIntent) {
+                  setState(() {
+                    paymentIntent = paymentIntent;
+                  });
+                }).catchError(setError);
+              },
+            ),
+            RaisedButton(
+              child: Text("Authenticate Payment Intent"),
+              onPressed: () {
+                StripePayment.authenticatePaymentIntent(clientSecret: _currentSecret).then((paymentIntent) {
+                  setState(() {
+                    paymentIntent = paymentIntent;
+                  });
+                }).catchError(setError);
+              },
+            ),
+            Divider(),
+            RaisedButton(
+              child: Text("Native payment"),
+              onPressed: () {
+                StripePayment.paymentRequestWithNativePay(
+                  androidPayOptions: AndroidPayPaymentRequest(
+                    total_price: "1.20",
+                    currency_code: "EUR",
+                  ),
+                  applePayOptions: ApplePayPaymentRequest(
+                    countryCode: 'DE',
+                    currencyCode: 'EUR',
+                    items: [
+                      ApplePayItem(
+                        label: 'Test',
+                        amount: 13,
+                      )
+                    ],
+                  ),
+                ).then((token) {
+                  setState(() {
+                    _paymentToken = token;
+                  });
+                }).catchError(setError);
+              },
+            ),
+            RaisedButton(
+              child: Text("Complete Native Payment"),
+              onPressed: () {
+                StripePayment.completeNativePayRequest().catchError(setError);
+              },
+            ),
+            Divider(),
+            Text('Current token:'),
+            Text(
+              JsonEncoder.withIndent('  ').convert(_paymentToken?.toJson() ?? {}),
+              style: TextStyle(fontFamily: "Monospace"),
+            ),
+            Divider(),
+            Text('Current payment method:'),
+            Text(
+              JsonEncoder.withIndent('  ').convert(_paymentMethod?.toJson() ?? {}),
+              style: TextStyle(fontFamily: "Monospace"),
+            ),
+            Divider(),
+            Text('Current error: $_error'),
           ],
         ),
       ),

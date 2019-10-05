@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Token {
   BankAccount bankAccount;
-  Card card;
+  CreditCard card;
   double created;
   bool livemode;
   String tokenId;
@@ -12,7 +12,7 @@ class Token {
   factory Token.fromJson(Map<dynamic, dynamic> json) {
     return Token(
       bankAccount: json['bankAccount'] != null ? BankAccount.fromJson(json['bankAccount']) : null,
-      card: json['card'] != null ? Card.fromJson(json['card']) : null,
+      card: json['card'] != null ? CreditCard.fromJson(json['card']) : null,
       created: json['created'] is int ? (json['created'] as int).toDouble() : json['created'],
       livemode: json['livemode'],
       tokenId: json['tokenId'],
@@ -85,7 +85,7 @@ class BankAccount {
   }
 }
 
-class Card {
+class CreditCard {
   String addressCity;
   String addressCountry;
   String addressLine1;
@@ -102,8 +102,9 @@ class Card {
   String name;
   String number;
   String cvc;
+  String token;
 
-  Card(
+  CreditCard(
       {this.addressCity,
       this.addressCountry,
       this.addressLine1,
@@ -113,33 +114,34 @@ class Card {
       this.brand,
       this.cardId,
       this.country,
-      @required this.expMonth,
-      @required this.expYear,
-      @required this.number,
+      this.expMonth,
+      this.expYear,
+      this.number,
+      this.token,
       this.cvc,
       this.funding,
       this.last4,
       this.name});
 
-  factory Card.fromJson(Map<dynamic, dynamic> json) {
-    return Card(
-      addressCity: json['addressCity'],
-      addressCountry: json['addressCountry'],
-      addressLine1: json['addressLine1'],
-      addressLine2: json['addressLine2'],
-      addressState: json['addressState'],
-      addressZip: json['addressZip'],
-      brand: json['brand'],
-      cardId: json['cardId'],
-      country: json['country'],
-      expMonth: json['expMonth'],
-      expYear: json['expYear'],
-      funding: json['funding'],
-      last4: json['last4'],
-      name: json['name'],
-      cvc: json['cvc'],
-      number: json['number'],
-    );
+  factory CreditCard.fromJson(Map<dynamic, dynamic> json) {
+    return CreditCard(
+        addressCity: json['addressCity'],
+        addressCountry: json['addressCountry'],
+        addressLine1: json['addressLine1'],
+        addressLine2: json['addressLine2'],
+        addressState: json['addressState'],
+        addressZip: json['addressZip'],
+        brand: json['brand'],
+        cardId: json['cardId'],
+        country: json['country'],
+        expMonth: json['expMonth'],
+        expYear: json['expYear'],
+        funding: json['funding'],
+        last4: json['last4'],
+        name: json['name'],
+        cvc: json['cvc'],
+        number: json['number'],
+        token: json['token']);
   }
 
   Map<String, dynamic> toJson() {
@@ -160,6 +162,7 @@ class Card {
     data['name'] = this.name;
     data['number'] = this.number;
     data['cvc'] = this.cvc;
+    data['token'] = this.token;
     return data;
   }
 }

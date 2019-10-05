@@ -1,31 +1,22 @@
 package de.jonasbark.stripepayment
 
-import android.accounts.Account
-import android.app.Activity
-import android.content.Intent
-import androidx.fragment.app.FragmentActivity
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableMap
 import com.gettipsi.stripe.StripeModule
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.wallet.*
-import com.stripe.android.*
-import com.stripe.android.model.*
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
-import org.json.JSONObject
-import java.text.Normalizer
-import java.util.HashMap
 
 class StripePaymentPlugin(private val stripeModule: StripeModule) : MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
-            "setOptions" -> stripeModule.init(ReadableMap(call.arguments as Map<String, Any>), ReadableMap())
+            "setOptions" -> stripeModule.init(
+                ReadableMap(call.argument("options")),
+                ReadableMap(call.argument("errorCodes"))
+            )
             "deviceSupportsAndroidPay" -> stripeModule.deviceSupportsAndroidPay(Promise(result));
             "canMakeAndroidPayPayments" -> stripeModule.canMakeAndroidPayPayments(Promise(result));
             "paymentRequestWithAndroidPay" -> stripeModule.paymentRequestWithAndroidPay(
@@ -53,6 +44,10 @@ class StripePaymentPlugin(private val stripeModule: StripeModule) : MethodCallHa
                 Promise(result)
             )
             "authenticatePaymentIntent" -> stripeModule.authenticatePaymentIntent(
+                ReadableMap(call.arguments as Map<String, Any>),
+                Promise(result)
+            )
+            "confirmPaymentIntent" -> stripeModule.confirmPaymentIntent(
                 ReadableMap(call.arguments as Map<String, Any>),
                 Promise(result)
             )

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:stripe_payment/src/android_pay_payment_request.dart';
 import 'package:stripe_payment/src/card_form_payment_request.dart';
+import 'package:stripe_payment/src/error_codes.dart';
 import 'package:stripe_payment/src/payment_intent.dart';
 import 'package:stripe_payment/src/payment_method.dart';
 import 'package:stripe_payment/src/source_params.dart';
@@ -13,6 +14,8 @@ import 'package:stripe_payment/src/apple_pay_payment_request.dart';
 import 'src/token.dart';
 export 'src/token.dart';
 export 'src/error_codes.dart';
+export 'src/payment_method.dart';
+export 'src/payment_intent.dart';
 
 export 'package:stripe_payment/src/android_pay_payment_request.dart';
 export 'package:stripe_payment/src/apple_pay_payment_request.dart';
@@ -29,7 +32,7 @@ class StripePayment {
   /// set the publishable key that stripe should use
   /// call this once and before you use [addSource]
   static void setOptions(StripeOptions settings) {
-    _channel.invokeMethod('setOptions', settings.toJson());
+    _channel.invokeMethod('setOptions', {"options": settings.toJson(), "errorCodes": Errors.mapping});
     _settingsSet = true;
   }
 
@@ -99,7 +102,7 @@ class StripePayment {
     return Token.fromJson(token);
   }
 
-  static Future<Token> createTokenWithCard(Card card) async {
+  static Future<Token> createTokenWithCard(CreditCard card) async {
     final token = await _channel.invokeMethod("createTokenWithCard", card.toJson());
     return Token.fromJson(token);
   }
@@ -112,17 +115,30 @@ class StripePayment {
   static Future<Map<String, Object>> createSourceWithParams(SourceParams options) =>
       _channel.invokeMethod("createSourceWithParams", options.toJson());
 
-  static Future<Map<String, Object>> createPaymentMethod(PaymentMethodRequest request) =>
-      _channel.invokeMethod("createPaymentMethod", request.toJson());
+  static Future<PaymentMethod> createPaymentMethod(PaymentMethodRequest request) async {
+    final paymentMethod = await _channel.invokeMethod("createPaymentMethod", request.toJson());
+    return PaymentMethod.fromJson(paymentMethod);
+  }
 
-  static Future<Map<String, Object>> authenticatePaymentIntent({@required String clientSecret}) =>
-      _channel.invokeMethod('authenticatePaymentIntent', {"clientSecret": clientSecret});
+  static Future<PaymentIntentResult> authenticatePaymentIntent({@required String clientSecret}) async {
+    final result = await _channel.invokeMethod('authenticatePaymentIntent', {"clientSecret": clientSecret});
+    return PaymentIntentResult.fromJson(result);
+  }
 
-  static Future<Map<String, Object>> confirmPaymentIntent(PaymentIntent intent) =>
-      _channel.invokeMethod('confirmPaymentIntent', intent.toJson());
+  static Future<PaymentIntentResult> confirmPaymentIntent(PaymentIntent intent) async {
+    final result = await _channel.invokeMethod('confirmPaymentIntent', intent.toJson());
+    return PaymentIntentResult.fromJson(result);
+  }
 
-  static Future<Map<String, Object>> confirmSetupIntent(PaymentIntent intent) =>
-      _channel.invokeMethod('confirmSetupIntent', intent.toJson());
+  static Future<SetupIntentResult> authenticateSetupIntent({@required String clientSecret}) async {
+    final result = await _channel.invokeMethod('authenticateSetupIntent', {"clientSecret": clientSecret});
+    return SetupIntentResult.fromJson(result);
+  }
+
+  static Future<SetupIntentResult> confirmSetupIntent(PaymentIntent intent) async {
+    final result = await _channel.invokeMethod('confirmSetupIntent', intent.toJson());
+    return SetupIntentResult.fromJson(result);
+  }
 }
 
 class StripeOptions {

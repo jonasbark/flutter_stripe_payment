@@ -25,3 +25,55 @@ class PaymentIntent {
     return data;
   }
 }
+
+class PaymentIntentResult {
+  String status;
+  String paymentIntentId;
+
+  PaymentIntentResult({
+    this.status,
+    this.paymentIntentId,
+  });
+
+  factory PaymentIntentResult.fromJson(Map<String, dynamic> json) {
+    return PaymentIntentResult(
+      status: json['status'],
+      paymentIntentId: json['paymentIntentId'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['paymentMethodId'] = this.paymentIntentId;
+    data['status'] = this.status;
+    return data;
+  }
+}
+
+class SetupIntentResult {
+  String status;
+  String paymentIntentId;
+  String setupIntentId;
+
+  SetupIntentResult({
+    this.status,
+    this.setupIntentId,
+    this.paymentIntentId,
+  });
+
+  factory SetupIntentResult.fromJson(Map<String, dynamic> json) {
+    return SetupIntentResult(
+      status: json['status'],
+      setupIntentId: json['setupIntentId'],
+      paymentIntentId: json['paymentIntentId'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['paymentMethodId'] = this.paymentIntentId;
+    data['setupIntentId'] = setupIntentId;
+    data['status'] = this.status;
+    return data;
+  }
+}
