@@ -10,6 +10,7 @@ import 'package:stripe_payment/src/apple_pay_payment_request.dart';
 
 import 'src/token.dart';
 export 'src/token.dart';
+export 'src/error_codes.dart';
 
 export 'package:stripe_payment/src/android_pay_payment_request.dart';
 export 'package:stripe_payment/src/apple_pay_payment_request.dart';
@@ -40,6 +41,15 @@ class StripePayment {
     }
   }
 
+  static Future<bool> canMakeNativePayPayments(List<String> networks) async {
+    if (Platform.isAndroid) {
+      return _channel.invokeMethod('canMakeAndroidPayPayments', networks);
+    } else if (Platform.isIOS) {
+      return _channel.invokeMethod('canMakeApplePayPayments');
+    } else
+      throw UnimplementedError();
+  }
+
   static Future<bool> _deviceSupportsAndroidPay() => _channel.invokeMethod("deviceSupportsAndroidPay");
 
   static Future<bool> _deviceSupportsApplePay() => _channel.invokeMethod("deviceSupportsApplePay");
@@ -62,6 +72,24 @@ class StripePayment {
   static Future<Token> _paymentRequestWithApplePay(ApplePayPaymentRequest options) async {
     final token = await _channel.invokeMethod("paymentRequestWithApplePay", options.json);
     return Token.fromJson(token);
+  }
+
+  static Future<void> completeNativePayRequest() async {
+    if (Platform.isIOS) {
+      return _channel.invokeMethod("completeNativePayRequest");
+    } else if (Platform.isAndroid) {
+      return null;
+    } else
+      throw UnimplementedError();
+  }
+
+  static Future<void> cancelNativePayRequest() async {
+    if (Platform.isIOS) {
+      return _channel.invokeMethod("cancelNativePayRequest");
+    } else if (Platform.isAndroid) {
+      return null;
+    } else
+      throw UnimplementedError();
   }
 
   static Future<Token> paymentRequestWithCardForm(CardFormPaymentRequest options) async {

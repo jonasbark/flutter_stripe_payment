@@ -18,8 +18,8 @@ class _MyAppState extends State<MyApp> {
   initState() {
     super.initState();
 
-    stripe.StripePayment.setOptions(stripe.StripeOptions(
-        publishableKey: "pk_test_", merchantId: "Test", androidPayMode: 'test'));
+    stripe.StripePayment.setOptions(
+        stripe.StripeOptions(publishableKey: "pk_test_", merchantId: "Test", androidPayMode: 'test'));
   }
 
   @override
@@ -83,9 +83,17 @@ class _MyAppState extends State<MyApp> {
               builder: (context, constraints) => RaisedButton(
                 child: Text("Native payment"),
                 onPressed: () {
-                  stripe.StripePayment.paymentRequestWithAndroidPay(
-                          stripe.AndroidPayPaymentRequest(total_price: "1.20", currency_code: "EUR"))
-                      .then((token) {
+                  stripe.StripePayment.paymentRequestWithNativePay(
+                      androidPayOptions: stripe.AndroidPayPaymentRequest(
+                        total_price: "1.20",
+                        currency_code: "EUR",
+                      ),
+                      applePayOptions: stripe.ApplePayPaymentRequest(countryCode: 'DE', currencyCode: 'EUR', items: [
+                        stripe.ApplePayItem(
+                          label: 'Test',
+                          amount: 13,
+                        )
+                      ])).then((token) {
                     setState(() {
                       _confirmNativePay = token.toJson().toString();
                     });
