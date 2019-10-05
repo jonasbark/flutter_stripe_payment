@@ -21,8 +21,143 @@
     }
     else if ([@"addSource" isEqualToString:call.method]) {
         [self openStripeCardVC:result];
-    }
-    else if ([@"confirmPayment" isEqualToString:call.method]) {
+    } else if ([@"deviceSupportsApplePay" isEqualToString:call.method]) {
+        
+        NSNumber* isSupported = [NSNumber numberWithBool:[Stripe deviceSupportsApplePay]];
+        result(isSupported);
+        
+    } else if ([@"paymentRequestWithApplePay" isEqualToString:call.method]) {
+                
+        
+    } else if ([@"createTokenWithCard" isEqualToString:call.method]) {
+        
+        NSString* addressCity = call.arguments[@"addressCity"];
+        NSString* addressCountry = call.arguments[@"addressCity"];
+        NSString* addressLine1 = call.arguments[@"addressLine1"];
+        NSString* addressLine2 = call.arguments[@"addressLine2"];
+        NSString* addressState = call.arguments[@"addressState"];
+        NSString* addressZip = call.arguments[@"addressZip"];
+        NSString* cardId = call.arguments[@"cardId"];
+        NSString* country = call.arguments[@"country"];
+        NSNumber* expMonth = call.arguments[@"expMonth"];
+        NSNumber* expYear = call.arguments[@"expYear"];
+        NSString* funding = call.arguments[@"funding"];
+        NSString* last4 = call.arguments[@"last4"];
+        NSString* name = call.arguments[@"name"];
+        NSString* number = call.arguments[@"number"];
+        NSString* cvc = call.arguments[@"cvc"];
+        
+        STPCardParams* params = [[STPCardParams alloc] init];
+        params.address.line1 = addressLine1;
+        params.address.line2 = addressLine2;
+        params.address.city = addressCity;
+        params.address.country = addressCountry;
+        params.address.state = addressState;
+        params.address.postalCode = addressZip;
+        params.expMonth = expMonth.unsignedIntegerValue;
+        params.expYear = expMonth.unsignedIntegerValue;
+        params.name = name;
+        params.number = number;
+        params.cvc = cvc;
+        
+        [STPAPIClient.sharedClient createTokenWithCard:params completion:^(STPToken * _Nullable token, NSError * _Nullable error) {
+            if (error) {
+                NSString* errorCode = [NSString stringWithFormat:@"%li", error.code];
+                FlutterError* flutterError = [FlutterError errorWithCode:errorCode message:error.localizedFailureReason details:nil];
+                result(flutterError);
+            } else {
+                result(token);
+            }
+        }];
+
+    } else if ([@"createTokenWithBankAccount" isEqualToString:call.method]) {
+        
+        
+        NSString* accountHolderName = call.arguments[@"accountHolderName"];
+        NSString* accountHolderType = call.arguments[@"accountHolderType"];
+        NSString* accountNumber = call.arguments[@"accountNumber"];
+        NSString* bankName = call.arguments[@"bankName"];
+        NSString* countryCode = call.arguments[@"countryCode"];
+        NSString* currency = call.arguments[@"currency"];
+        NSString* fingerprint = call.arguments[@"fingerprint"];
+        NSString* last4 = call.arguments[@"last4"];
+        NSString* routingNumber = call.arguments[@"routingNumber"];
+        
+        STPBankAccountParams* params = [[STPBankAccountParams alloc] init];
+
+        params.accountHolderName = accountHolderName;
+        STPBankAccountHolderType holderType = STPBankAccountHolderTypeIndividual;
+        if ([accountHolderType caseInsensitiveCompare:@"company"]) {
+            holderType = STPBankAccountHolderTypeCompany;
+        }
+                
+        params.accountHolderType = holderType;
+        params.accountNumber = accountNumber;
+        params.country = countryCode;
+        params.currency = currency;
+        params.routingNumber = routingNumber;
+    
+        
+        [STPAPIClient.sharedClient createTokenWithBankAccount:params completion:^(STPToken * _Nullable token, NSError * _Nullable error) {
+            if (error) {
+                NSString* errorCode = [NSString stringWithFormat:@"%li", error.code];
+                FlutterError* flutterError = [FlutterError errorWithCode:errorCode message:error.localizedFailureReason details:nil];
+                result(flutterError);
+            } else {
+                result(token);
+            }
+        }];
+        
+    } else if ([@"createSourceWithParams" isEqualToString:call.method]) {
+        
+        
+        NSNumber* amount = call.arguments[@"amount"];
+        NSString* currency = call.arguments[@"currency"];
+        NSString* returnURL = call.arguments[@"returnURL"];
+        NSString* type = call.arguments[@"type"];
+        NSString* name = call.arguments[@"name"];
+        NSString* statementDescriptor = call.arguments[@"statement_descriptor"];
+        NSString* country = call.arguments[@"country"];
+        NSString* email = call.arguments[@"email"];
+        NSString* card = call.arguments[@"card"];
+        
+        NSUInteger cost = amount.unsignedIntegerValue;
+        
+        STPSourceParams *sourceParams;
+        if ([type localizedCaseInsensitiveCompare:@"eps"]) {
+            sourceParams = [STPSourceParams epsParamsWithAmount:cost name:name returnURL:returnURL statementDescriptor:statementDescriptor];
+        } else if ([type localizedCaseInsensitiveCompare:@"p24"]) {
+            sourceParams = [STPSourceParams epsParamsWithAmount:cost name:name returnURL:returnURL statementDescriptor:statementDescriptor];
+        } else if ([type localizedCaseInsensitiveCompare:@"ideal"]) {
+            sourceParams = [STPSourceParams idealParamsWithAmount:cost name:name returnURL:returnURL statementDescriptor:statementDescriptor bank:nil];
+        } else if ([type localizedCaseInsensitiveCompare:@"alipay"]) {
+            sourceParams = [STPSourceParams alipayReusableParamsWithCurrency:currency returnURL:returnURL];
+        } else if ([type localizedCaseInsensitiveCompare:@"wechatpay"]) {
+            sourceParams = [STPSourceParams wechatPayParamsWithAmount:cost currency:currency appId:name statementDescriptor:statementDescriptor];
+        } else if ([type localizedCaseInsensitiveCompare:@"giropay"]) {
+            sourceParams = [STPSourceParams giropayParamsWithAmount:cost name:name returnURL:returnURL statementDescriptor:statementDescriptor];
+        } else if ([type localizedCaseInsensitiveCompare:@"bancontact"]) {
+            sourceParams = [STPSourceParams bancontactParamsWithAmount:cost name:name returnURL:returnURL statementDescriptor:statementDescriptor];
+        } else if ([type localizedCaseInsensitiveCompare:@"sofort"]) {
+            sourceParams = [STPSourceParams sofortParamsWithAmount:cost returnURL:returnURL country:country statementDescriptor:statementDescriptor];
+        } else if ([type localizedCaseInsensitiveCompare:@"multibanco"]) {
+            sourceParams = [STPSourceParams multibancoParamsWithAmount:cost returnURL:returnURL email:email];
+        } else if ([type localizedCaseInsensitiveCompare:@"threedsecure"]) {
+            sourceParams = [STPSourceParams threeDSecureParamsWithAmount:cost currency:currency returnURL:returnURL card:card];
+        }
+        
+                
+        [STPAPIClient.sharedClient createSourceWithParams:sourceParams completion:^(STPSource * _Nullable source, NSError * _Nullable error) {
+            if (error) {
+                NSString* errorCode = [NSString stringWithFormat:@"%li", error.code];
+                FlutterError* flutterError = [FlutterError errorWithCode:errorCode message:error.localizedFailureReason details:nil];
+                result(flutterError);
+            } else {
+                result(source);
+            }
+        }];
+        
+    } else if ([@"confirmPayment" isEqualToString:call.method]) {
         [self confirmPayment:call.arguments[@"paymentMethodId"] clientSecret:call.arguments[@"clientSecret"] result:result];
     }
     else if ([@"setupPayment" isEqualToString:call.method]) {

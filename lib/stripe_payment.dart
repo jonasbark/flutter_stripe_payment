@@ -5,11 +5,13 @@ import 'package:flutter/services.dart';
 import 'package:stripe_payment/src/android_pay_payment_request.dart';
 import 'package:stripe_payment/src/card_form_payment_request.dart';
 import 'package:stripe_payment/src/source_params.dart';
+import 'package:stripe_payment/src/apple_pay_payment_request.dart';
 
 import 'src/token.dart';
 export 'src/token.dart';
 
 export 'package:stripe_payment/src/android_pay_payment_request.dart';
+export 'package:stripe_payment/src/apple_pay_payment_request.dart';
 export 'package:stripe_payment/src/card_form_payment_request.dart';
 export 'package:stripe_payment/src/source_params.dart';
 
@@ -28,6 +30,17 @@ class StripePayment {
                 ReadableMap(call.arguments as Map<String, Any>),
                 Promise(result)
             )
+
+            "deviceSupportsApplePay" -> stripeModule.deviceSupportsApplePay(Promise(result));
+            TODO
+            "paymentRequestWithApplePay" -> stripeModule.paymentRequestWithApplePay(
+                ReadableMap(call.arguments as Map<String, Any>),
+                Promise(result)
+            )
+            "completeApplePayRequest" -> stripeModule.completeApplePayRequest(Promise(result))
+            "cancelApplePayRequest" -> stripeModule.cancelApplePayRequest(Promise(result))
+            END TODO
+
             "paymentRequestWithCardForm" -> stripeModule.paymentRequestWithCardForm(
                 ReadableMap(call.arguments as Map<String, Any>),
                 Promise(result)
@@ -55,8 +68,15 @@ class StripePayment {
 
   static Future<bool> deviceSupportsAndroidPay() => _channel.invokeMethod("deviceSupportsAndroidPay");
 
+  static Future<bool> deviceSupportsApplePay() => _channel.invokeMethod("deviceSupportsApplePay");
+
   static Future<Token> paymentRequestWithAndroidPay(AndroidPayPaymentRequest options) async {
     final token = await _channel.invokeMethod("paymentRequestWithAndroidPay", options.toJson());
+    return Token.fromJson(token);
+  }
+
+  static Future<Token> paymentRequestWithApplePay(ApplePayPaymentRequest options) async {
+    final token = await _channel.invokeMethod("paymentRequestWithApplePay", options.json);
     return Token.fromJson(token);
   }
 
