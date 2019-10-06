@@ -24,7 +24,7 @@ class PaymentMethodRequest {
       data['billingAddress'] = this.billingAddress.toJson();
     }
     if (this.metadata != null) {
-      data['metadata'] = this.metadata;
+      if (this.metadata != null) data['metadata'] = this.metadata;
     }
     return data;
   }
@@ -55,11 +55,11 @@ class PaymentMethod {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['created'] = this.created;
-    data['customerId'] = this.customerId;
-    data['id'] = this.id;
-    data['livemode'] = this.livemode;
-    data['type'] = this.type;
+    if (this.created != null) if (this.created != null) data['created'] = this.created;
+    if (this.customerId != null) data['customerId'] = this.customerId;
+    if (this.id != null) data['id'] = this.id;
+    if (this.livemode != null) data['livemode'] = this.livemode;
+    if (this.type != null) data['type'] = this.type;
     if (this.billingDetails != null) {
       data['billingDetails'] = this.billingDetails.toJson();
     }
@@ -89,9 +89,9 @@ class BillingDetails {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['email'] = this.email;
-    data['name'] = this.name;
-    data['phone'] = this.phone;
+    if (this.email != null) data['email'] = this.email;
+    if (this.name != null) data['name'] = this.name;
+    if (this.phone != null) data['phone'] = this.phone;
     if (this.address != null) {
       data['address'] = this.address.toJson();
     }

@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:stripe_payment/src/token.dart';
+
 class SourceParams {
   int amount;
   String currency;
@@ -7,13 +10,13 @@ class SourceParams {
   String statement_descriptor;
   String country;
   String email;
-  String card;
+  CreditCard card;
 
   SourceParams(
       {this.amount,
       this.currency,
-      this.returnURL,
-      this.type,
+      @required this.returnURL,
+      @required this.type,
       this.name,
       this.statement_descriptor,
       this.country,
@@ -35,15 +38,15 @@ class SourceParams {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['amount'] = this.amount;
-    data['currency'] = this.currency;
-    data['returnURL'] = this.returnURL;
-    data['type'] = this.type;
-    data['name'] = this.name;
-    data['statement_descriptor'] = this.statement_descriptor;
-    data['country'] = this.country;
-    data['email'] = this.email;
-    data['card'] = this.card;
+    if (this.amount != null) data['amount'] = this.amount;
+    if (this.currency != null) data['currency'] = this.currency;
+    if (this.returnURL != null) data['returnURL'] = this.returnURL;
+    if (this.type != null) data['type'] = this.type;
+    if (this.name != null) data['name'] = this.name;
+    if (this.statement_descriptor != null) data['statement_descriptor'] = this.statement_descriptor;
+    if (this.country != null) data['country'] = this.country;
+    if (this.email != null) data['email'] = this.email;
+    if (this.card != null) data['card'] = this.card.toJson();
     return data;
   }
 }

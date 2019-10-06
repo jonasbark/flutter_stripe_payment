@@ -14,7 +14,8 @@ class CardFormPaymentRequest {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['requiredBillingAddressFields'] = this.requiredBillingAddressFields;
+    if (this.requiredBillingAddressFields != null) if (this.requiredBillingAddressFields != null)
+      data['requiredBillingAddressFields'] = this.requiredBillingAddressFields;
     if (this.prefilledInformation != null) {
       data['prefilledInformation'] = this.prefilledInformation.toJson();
     }
@@ -67,13 +68,13 @@ class BillingAddress {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['city'] = this.city;
-    data['country'] = this.country;
-    data['line1'] = this.line1;
-    data['line2'] = this.line2;
-    data['name'] = this.name;
-    data['postalCode'] = this.postalCode;
-    data['state'] = this.state;
+    if (this.city != null) data['city'] = this.city;
+    if (this.country != null) data['country'] = this.country;
+    if (this.line1 != null) data['line1'] = this.line1;
+    if (this.line2 != null) data['line2'] = this.line2;
+    if (this.name != null) data['name'] = this.name;
+    if (this.postalCode != null) data['postalCode'] = this.postalCode;
+    if (this.state != null) data['state'] = this.state;
     return data;
   }
 }

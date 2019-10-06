@@ -158,9 +158,9 @@ class StripeOptions {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['merchantId'] = this.merchantId;
-    data['publishableKey'] = this.publishableKey;
-    data['androidPayMode'] = this.androidPayMode;
+    if (this.merchantId != null) data['merchantId'] = this.merchantId;
+    if (this.publishableKey != null) data['publishableKey'] = this.publishableKey;
+    if (this.androidPayMode != null) data['androidPayMode'] = this.androidPayMode;
     return data;
   }
 }

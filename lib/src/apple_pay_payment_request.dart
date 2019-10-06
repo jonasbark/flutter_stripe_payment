@@ -63,10 +63,10 @@ class ShippingMethod {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['amount'] = this.amount;
-    data['detail'] = this.detail;
-    data['id'] = this.id;
-    data['label'] = this.label;
+    if (this.amount != null) data['amount'] = this.amount;
+    if (this.detail != null) data['detail'] = this.detail;
+    if (this.id != null) data['id'] = this.id;
+    if (this.label != null) data['label'] = this.label;
     return data;
   }
 }
@@ -79,9 +79,9 @@ class ApplePayItem {
 
   Map<String, dynamic> get json {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['label'] = this.label;
-    data['amount'] = this.amount;
-    data['type'] = this.type;
+    if (this.label != null) data['label'] = this.label;
+    if (this.amount != null) data['amount'] = this.amount;
+    if (this.type != null) data['type'] = this.type;
     return data;
   }
 }

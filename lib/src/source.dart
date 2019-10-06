@@ -2,14 +2,14 @@ class Source {
   String object;
   Receiver receiver;
   AchCreditTransfer ach_credit_transfer;
-  String amount;
+  num amount;
   String client_secret;
-  int created;
+  num created;
   String currency;
   String flow;
-  String id;
+  String sourceId;
   bool livemode;
-  Metadata metadata;
+  Map<dynamic, dynamic> metadata;
   Owner owner;
   String statement_descriptor;
   String status;
@@ -25,7 +25,7 @@ class Source {
       this.created,
       this.currency,
       this.flow,
-      this.id,
+      this.sourceId,
       this.livemode,
       this.metadata,
       this.owner,
@@ -34,7 +34,7 @@ class Source {
       this.type,
       this.usage});
 
-  factory Source.fromJson(Map<String, dynamic> json) {
+  factory Source.fromJson(Map<dynamic, dynamic> json) {
     return Source(
       object: json['object'],
       receiver: json['receiver'] != null ? Receiver.fromJson(json['receiver']) : null,
@@ -45,9 +45,9 @@ class Source {
       created: json['created'],
       currency: json['currency'],
       flow: json['flow'],
-      id: json['id'],
+      sourceId: json['sourceId'],
       livemode: json['livemode'],
-      metadata: json['metadata'] != null ? Metadata.fromJson(json['metadata']) : null,
+      metadata: json['metadata'],
       owner: json['owner'] != null ? Owner.fromJson(json['owner']) : null,
       statement_descriptor: json['statement_descriptor'],
       status: json['status'],
@@ -58,43 +58,30 @@ class Source {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['object'] = this.object;
-    data['client_secret'] = this.client_secret;
-    data['created'] = this.created;
-    data['currency'] = this.currency;
-    data['flow'] = this.flow;
-    data['id'] = this.id;
-    data['livemode'] = this.livemode;
-    data['statement_descriptor'] = this.statement_descriptor;
-    data['status'] = this.status;
-    data['type'] = this.type;
-    data['usage'] = this.usage;
+    if (this.object != null) data['object'] = this.object;
+    if (this.client_secret != null) data['client_secret'] = this.client_secret;
+    if (this.created != null) data['created'] = this.created;
+    if (this.currency != null) data['currency'] = this.currency;
+    if (this.flow != null) data['flow'] = this.flow;
+    if (this.sourceId != null) data['sourceId'] = this.sourceId;
+    if (this.livemode != null) data['livemode'] = this.livemode;
+    if (this.statement_descriptor != null) data['statement_descriptor'] = this.statement_descriptor;
+    if (this.status != null) data['status'] = this.status;
+    if (this.type != null) data['type'] = this.type;
+    if (this.usage != null) data['usage'] = this.usage;
     if (this.receiver != null) {
       data['receiver'] = this.receiver.toJson();
     }
     if (this.ach_credit_transfer != null) {
       data['ach_credit_transfer'] = this.ach_credit_transfer.toJson();
     }
-    data['amount'] = this.amount;
+    if (this.amount != null) data['amount'] = this.amount;
     if (this.metadata != null) {
-      data['metadata'] = this.metadata.toJson();
+      if (this.metadata != null) data['metadata'] = this.metadata;
     }
     if (this.owner != null) {
       data['owner'] = this.owner.toJson();
     }
-    return data;
-  }
-}
-
-class Metadata {
-  Metadata();
-
-  factory Metadata.fromJson(Map<String, dynamic> json) {
-    return Metadata();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
     return data;
   }
 }
@@ -115,7 +102,7 @@ class Receiver {
       this.refund_attributes_method,
       this.refund_attributes_status});
 
-  factory Receiver.fromJson(Map<String, dynamic> json) {
+  factory Receiver.fromJson(Map<dynamic, dynamic> json) {
     return Receiver(
       address: json['address'],
       amount_charged: json['amount_charged'],
@@ -128,12 +115,12 @@ class Receiver {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['address'] = this.address;
-    data['amount_charged'] = this.amount_charged;
-    data['amount_received'] = this.amount_received;
-    data['amount_returned'] = this.amount_returned;
-    data['refund_attributes_method'] = this.refund_attributes_method;
-    data['refund_attributes_status'] = this.refund_attributes_status;
+    if (this.address != null) data['address'] = this.address;
+    if (this.amount_charged != null) data['amount_charged'] = this.amount_charged;
+    if (this.amount_received != null) data['amount_received'] = this.amount_received;
+    if (this.amount_returned != null) data['amount_returned'] = this.amount_returned;
+    if (this.refund_attributes_method != null) data['refund_attributes_method'] = this.refund_attributes_method;
+    if (this.refund_attributes_status != null) data['refund_attributes_status'] = this.refund_attributes_status;
     return data;
   }
 }
@@ -158,7 +145,7 @@ class Owner {
       this.verified_name,
       this.verified_phone});
 
-  factory Owner.fromJson(Map<String, dynamic> json) {
+  factory Owner.fromJson(Map<dynamic, dynamic> json) {
     return Owner(
       address: json['address'],
       email: json['email'],
@@ -173,14 +160,14 @@ class Owner {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['address'] = this.address;
-    data['email'] = this.email;
-    data['name'] = this.name;
-    data['phone'] = this.phone;
-    data['verified_address'] = this.verified_address;
-    data['verified_email'] = this.verified_email;
-    data['verified_name'] = this.verified_name;
-    data['verified_phone'] = this.verified_phone;
+    if (this.address != null) data['address'] = this.address;
+    if (this.email != null) data['email'] = this.email;
+    if (this.name != null) data['name'] = this.name;
+    if (this.phone != null) data['phone'] = this.phone;
+    if (this.verified_address != null) data['verified_address'] = this.verified_address;
+    if (this.verified_email != null) data['verified_email'] = this.verified_email;
+    if (this.verified_name != null) data['verified_name'] = this.verified_name;
+    if (this.verified_phone != null) data['verified_phone'] = this.verified_phone;
     return data;
   }
 }
@@ -194,7 +181,7 @@ class AchCreditTransfer {
 
   AchCreditTransfer({this.account_number, this.bank_name, this.fingerprint, this.routing_number, this.swift_code});
 
-  factory AchCreditTransfer.fromJson(Map<String, dynamic> json) {
+  factory AchCreditTransfer.fromJson(Map<dynamic, dynamic> json) {
     return AchCreditTransfer(
       account_number: json['account_number'],
       bank_name: json['bank_name'],
@@ -205,12 +192,12 @@ class AchCreditTransfer {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['account_number'] = this.account_number;
-    data['bank_name'] = this.bank_name;
-    data['fingerprint'] = this.fingerprint;
-    data['routing_number'] = this.routing_number;
-    data['swift_code'] = this.swift_code;
+    final Map<String, dynamic> data = new Map<dynamic, dynamic>();
+    if (this.account_number != null) data['account_number'] = this.account_number;
+    if (this.bank_name != null) data['bank_name'] = this.bank_name;
+    if (this.fingerprint != null) data['fingerprint'] = this.fingerprint;
+    if (this.routing_number != null) data['routing_number'] = this.routing_number;
+    if (this.swift_code != null) data['swift_code'] = this.swift_code;
     return data;
   }
 }

@@ -19,9 +19,9 @@ class Token {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['created'] = this.created;
-    data['livemode'] = this.livemode;
-    data['tokenId'] = this.tokenId;
+    if (this.created != null) data['created'] = this.created;
+    if (this.livemode != null) data['livemode'] = this.livemode;
+    if (this.tokenId != null) data['tokenId'] = this.tokenId;
     if (this.bankAccount != null) {
       data['bankAccount'] = this.bankAccount.toJson();
     }
@@ -70,15 +70,15 @@ class BankAccount {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['accountHolderName'] = this.accountHolderName;
-    data['accountHolderType'] = this.accountHolderType;
-    data['accountNumber'] = this.accountNumber;
-    data['bankName'] = this.bankName;
-    data['countryCode'] = this.countryCode;
-    data['currency'] = this.currency;
-    data['fingerprint'] = this.fingerprint;
+    if (this.accountHolderName != null) data['accountHolderName'] = this.accountHolderName;
+    if (this.accountHolderType != null) data['accountHolderType'] = this.accountHolderType;
+    if (this.accountNumber != null) data['accountNumber'] = this.accountNumber;
+    if (this.bankName != null) data['bankName'] = this.bankName;
+    if (this.countryCode != null) data['countryCode'] = this.countryCode;
+    if (this.currency != null) data['currency'] = this.currency;
+    if (this.fingerprint != null) data['fingerprint'] = this.fingerprint;
     data['last4'] = this.last4;
-    data['routingNumber'] = this.routingNumber;
+    if (this.routingNumber != null) data['routingNumber'] = this.routingNumber;
     return data;
   }
 }
@@ -144,23 +144,23 @@ class CreditCard {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['addressCity'] = this.addressCity;
-    data['addressCountry'] = this.addressCountry;
+    if (this.addressCity != null) data['addressCity'] = this.addressCity;
+    if (this.addressCountry != null) data['addressCountry'] = this.addressCountry;
     data['addressLine1'] = this.addressLine1;
     data['addressLine2'] = this.addressLine2;
-    data['addressState'] = this.addressState;
-    data['addressZip'] = this.addressZip;
-    data['brand'] = this.brand;
-    data['cardId'] = this.cardId;
-    data['country'] = this.country;
-    data['expMonth'] = this.expMonth;
-    data['expYear'] = this.expYear;
-    data['funding'] = this.funding;
+    if (this.addressState != null) data['addressState'] = this.addressState;
+    if (this.addressZip != null) data['addressZip'] = this.addressZip;
+    if (this.brand != null) data['brand'] = this.brand;
+    if (this.cardId != null) data['cardId'] = this.cardId;
+    if (this.country != null) data['country'] = this.country;
+    if (this.expMonth != null) data['expMonth'] = this.expMonth;
+    if (this.expYear != null) data['expYear'] = this.expYear;
+    if (this.funding != null) data['funding'] = this.funding;
     data['last4'] = this.last4;
-    data['name'] = this.name;
-    data['number'] = this.number;
-    data['cvc'] = this.cvc;
-    data['token'] = this.token;
+    if (this.name != null) data['name'] = this.name;
+    if (this.number != null) data['number'] = this.number;
+    if (this.cvc != null) data['cvc'] = this.cvc;
+    if (this.token != null) data['token'] = this.token;
     return data;
   }
 }
