@@ -1,62 +1,81 @@
 # stripe_payment
 
-A Flutter plugin to integrate the stripe plugin for iOS and Android. 
+#### Conveniently secure payments methods using Stripe.
 
-It supports:
-- Adding a credit card as payment method
-- SCA and 2FA (two factor authentication)
-- confirm + setup payments
-- Apple / Google Pay (check setup instructions on https://pub.dev/packages/stripe_native)
+## Quick Glance
 
-<img src="https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_android.png" width="300">
-<img src="https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_ios.png" width="300">
+- Collect chargable tokens from users' **Card Input** and **Apple & Google Pay**
+- For **SCA** compliant apps, setup payment intents for later confirmation.
 
-## Android
 
-**Please be aware that your main activity must extend from FlutterFragmentActivity. Otherwise the Android dialog would've looked very nasty.**
+<img src="https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_android.png">
 
-Include this into your project's android/gradle.properties file
+![Apple Pay](https://user-images.githubusercontent.com/7946558/65780165-02838700-e0fe-11e9-9db9-5fe4e44ed819.gif)
+
+
+## Dependencies
+
+### Android & iOS
+- Create a Stripe account and project
+- Retrieve a publishable key from the Stripe dashboard
+  
+![Stripe Dashboard](https://miro.medium.com/max/847/1*GPDsrgR6RXYuRCWiGxIF1g.png)
+
+### Android 
+- Requires AndroidX
+
+Include support in android/gradle.properties
 ```properties
 android.useAndroidX=true
 android.enableJetifier=true
 ```
 
-## Usage
+#### (Optional) Create a merchant identifier on the Google Play console
 
-To set your publishable key set:
-```dart
-import 'package:stripe_payment/stripe_payment.dart';
-StripePayment.setSettings(StripeSettings(publishableKey: "pk_test_", merchantIdentifier: "Test", androidProductionEnvironment: false));
-```
-from somewhere in your code, e.g. your main.dart file.
+### iOS (Apple Pay)
 
-To open the dialog for adding a credit card source:
-```dart
-StripeSource.addSource().then((String token) {
-    print(token); //your stripe card source token
-});
-```
+1) On the Stripe dashboard, go to Settings -> Apple Pay -> Add Application.
+2) Follow the instructions that popup to link Stripe with Apple.
 
-Confirming payments:
+![Stripe Apple Pay Setup](https://miro.medium.com/max/396/1*YXaDZi1VYkfNXfM9Px6dIA.png)
+
+3) Take note of your merchant identifier, and open the iOS module in Xcode.
+4) Navigate the project panel, add Apple Pay under signing capabilites with the merchant identifer created in step 1.
+
+![Apple Signing Capabilites](https://miro.medium.com/max/735/1*1-qwONvN5qMSsRYZyP57Hw.png)
+
+## Setup
+
+Using **publishable key** and **merchant identifier**, ready the app for collecting user payment information. This needs to be done prior to opening card input or a native payment sheet.
+
 ```dart
-StripePayment.confirmPayment(_paymentMethodId, _currentSecret).then((String token) {
-                  setState(() {
-                    _confirmPaymentId = token;
-                  });
-                }).catchError(print);
+var settings = StripeSettings(publishableKey:"pk_test_yZuUz6SqmH4lA7SrlAvYCh003MvJiJlR", merchantIdentifier: "merchant.stripe-example", androidProductionEnvironment: false);
+StripePayment.setSettings(settings);
 ```
 
-Native payment (refer to https://pub.dev/packages/stripe_native#-readme-tab-)
+## Card Input
+
+Using **addSource**, collect a chargable token from the user's card information. This token can be used as a source by the [Stripe Charge API](https://stripe.com/docs/charges).
+
 ```dart
-StripePayment.useNativePay(Order(20, 1, 1, "EUR")).then((String token) {
-                  setState(() {
-                    _confirmNativePay = token;
-                  });
-                }).catchError(print);
+var token = await StripeSource.addSource();
 ```
 
-## TODO
+## Native Payment
 
-- [ ] better error handling
-- [ ] internationalization
-- [ ] more stripe library implementations?
+Opening Apple & Google pay is done with **useNativePay**. 
+
+```dart
+var order = Order(20, 1, 1, "EUR");
+var token = await StripePayment.useNativePay(order)
+```
+
+### iOS Payment Sheet Animation
+
+The Apple Pay sheet spins infront of the user, after using the token, show the user whether the transaction was successful or not.
+
+```dart
+var chargeSucceeded = AppAPI.charge(token, amount);
+StripePayment.confirmNativePay(chargeSucceeded);
+```
+

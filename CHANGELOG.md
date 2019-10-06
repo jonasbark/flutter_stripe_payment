@@ -1,3 +1,8 @@
+## [0.3.2]
+
+* Add native iOS confirmation
+* readme update
+
 ## [0.3.1] - 01.10.2019
 
 * Lowered iOS minimum deployment target to 9.0
