@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 
@@ -11,82 +13,182 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var _paymentMethodId = "";
-  var _setupPaymentId = "";
-  var _confirmPaymentId = "";
-  var _confirmNativePay = "";
+  Token _paymentToken;
+  PaymentMethod _paymentMethod;
+  String _error;
+  final String _currentSecret = null; //set this yourself, e.g using curl
+  PaymentIntentResult _paymentIntent;
 
-  final _currentSecret = "...";
+  final CreditCard testCard = CreditCard(
+    number: '4000002760003184',
+    expMonth: 12,
+    expYear: 21,
+  );
+
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   initState() {
     super.initState();
 
-    StripePayment.setSettings(
-        StripeSettings(publishableKey: "pk_test_yZuUz6Sqm83H4lA7SrlAvYCh003MvJiJlR", merchantIdentifier: "merchant.rbii.stripe-example", androidProductionEnvironment: false));
+    StripePayment.setOptions(StripeOptions(publishableKey: "pk_test_", merchantId: "Test", androidPayMode: 'test'));
+  }
+
+  void setError(dynamic error) {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(error.toString())));
+    setState(() {
+      _error = error.toString();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       home: new Scaffold(
+        key: _scaffoldKey,
         appBar: new AppBar(
           title: new Text('Plugin example app'),
         ),
-        body: Column(
+        body: ListView(
+          padding: const EdgeInsets.all(20),
           children: <Widget>[
             RaisedButton(
-              child: Text("Add Card"),
+              child: Text("Create Token with Card Form"),
               onPressed: () {
-                StripePayment.addSource().then((String token) {
+                StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest()).then((token) {
                   setState(() {
-                    _paymentMethodId = token;
+                    _paymentToken = token;
                   });
                 });
               },
             ),
-            Text("Current payment method ID: $_paymentMethodId"),
-            Divider(),
             RaisedButton(
-              child: Text("Setup payment"),
+              child: Text("Create Token with Card"),
               onPressed: () {
-                StripePayment.setupPayment(_paymentMethodId, _currentSecret).then((String token) {
+                StripePayment.createTokenWithCard(
+                  testCard,
+                ).then((token) {
                   setState(() {
-                    _setupPaymentId = token;
+                    _paymentToken = token;
                   });
-                }).catchError(print);
+                }).catchError(setError);
               },
             ),
-            Text("Current setup payment ID: $_setupPaymentId"),
             Divider(),
             RaisedButton(
-              child: Text("Confirm payment"),
+              child: Text("Create Payment Method with Card"),
               onPressed: () {
-                StripePayment.confirmPayment(_paymentMethodId, _currentSecret).then((String token) {
+                StripePayment.createPaymentMethod(
+                  PaymentMethodRequest(
+                    card: testCard,
+                  ),
+                ).then((paymentMethod) {
                   setState(() {
-                    _confirmPaymentId = token;
+                    _paymentMethod = paymentMethod;
                   });
-                }).catchError(print);
+                }).catchError(setError);
               },
             ),
-            Text("Current confirm payment ID: $_confirmPaymentId"),
-            Divider(),
-            LayoutBuilder(
-              builder: (context, constraints) => RaisedButton(
-                child: Text("Native payment"),
-                onPressed: () {
-                  StripePayment.useNativePay(Order(20, 1, 1, "EUR", "Example Store")).then((String token) {
-                    setState(() {
-                      _confirmNativePay = token;
-                    });
-                    StripePayment.confirmNativePay(true);
-                  }).catchError((e) {
-                    Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
-                  });
-                },
-              ),
+            RaisedButton(
+              child: Text("Create Payment Method with existing token"),
+              onPressed: _paymentToken == null
+                  ? null
+                  : () {
+                      StripePayment.createPaymentMethod(
+                        PaymentMethodRequest(
+                          card: CreditCard(
+                            token: _paymentToken.tokenId,
+                          ),
+                        ),
+                      ).then((paymentMethod) {
+                        setState(() {
+                          _paymentMethod = paymentMethod;
+                        });
+                      }).catchError(setError);
+                    },
             ),
-            Text("Native payment: $_confirmNativePay"),
+            Divider(),
+            RaisedButton(
+              child: Text("Confirm Payment Intent"),
+              onPressed: _paymentMethod == null || _currentSecret == null
+                  ? null
+                  : () {
+                      StripePayment.confirmPaymentIntent(
+                        PaymentIntent(
+                          clientSecret: _currentSecret,
+                          paymentMethodId: _paymentMethod.id,
+                        ),
+                      ).then((paymentIntent) {
+                        setState(() {
+                          _paymentIntent = paymentIntent;
+                        });
+                      }).catchError(setError);
+                    },
+            ),
+            RaisedButton(
+              child: Text("Authenticate Payment Intent"),
+              onPressed: _currentSecret == null
+                  ? null
+                  : () {
+                      StripePayment.authenticatePaymentIntent(clientSecret: _currentSecret).then((paymentIntent) {
+                        setState(() {
+                          paymentIntent = paymentIntent;
+                        });
+                      }).catchError(setError);
+                    },
+            ),
+            Divider(),
+            RaisedButton(
+              child: Text("Native payment"),
+              onPressed: () {
+                StripePayment.paymentRequestWithNativePay(
+                  androidPayOptions: AndroidPayPaymentRequest(
+                    total_price: "1.20",
+                    currency_code: "EUR",
+                  ),
+                  applePayOptions: ApplePayPaymentOptions(
+                    countryCode: 'DE',
+                    currencyCode: 'EUR',
+                    items: [
+                      ApplePayItem(
+                        label: 'Test',
+                        amount: '13',
+                      )
+                    ],
+                  ),
+                ).then((token) {
+                  setState(() {
+                    _paymentToken = token;
+                  });
+                }).catchError(setError);
+              },
+            ),
+            RaisedButton(
+              child: Text("Complete Native Payment"),
+              onPressed: () {
+                StripePayment.completeNativePayRequest().catchError(setError);
+              },
+            ),
+            Divider(),
+            Text('Current token:'),
+            Text(
+              JsonEncoder.withIndent('  ').convert(_paymentToken?.toJson() ?? {}),
+              style: TextStyle(fontFamily: "Monospace"),
+            ),
+            Divider(),
+            Text('Current payment method:'),
+            Text(
+              JsonEncoder.withIndent('  ').convert(_paymentMethod?.toJson() ?? {}),
+              style: TextStyle(fontFamily: "Monospace"),
+            ),
+            Divider(),
+            Text('Current payment intent:'),
+            Text(
+              JsonEncoder.withIndent('  ').convert(_paymentIntent?.toJson() ?? {}),
+              style: TextStyle(fontFamily: "Monospace"),
+            ),
+            Divider(),
+            Text('Current error: $_error'),
           ],
         ),
       ),
