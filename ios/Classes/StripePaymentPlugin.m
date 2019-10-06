@@ -26,7 +26,7 @@
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
 
     id rejecter = ^(NSString *code, NSString *message, NSError *error) {
-        result([FlutterError errorWithCode:code ?: @"-" message:message details:error]);
+        result([FlutterError errorWithCode:code ?: @"-" message:message details:error.localizedDescription]);
     };
     if ([@"setOptions" isEqualToString: call.method]) {
         [stripeModule init:call.arguments[@"options"] errorCodes:call.arguments[@"errorCodes"]];

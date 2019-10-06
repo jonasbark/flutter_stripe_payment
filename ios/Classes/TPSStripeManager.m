@@ -42,13 +42,13 @@ TPSErrorKeyDefine(NoAmount, @"noAmount");
 
 @implementation RCTConvert (STPBankAccountHolderType)
 
-/*RCT_ENUM_CONVERTER(STPBankAccountHolderType,
+RCT_ENUM_CONVERTER(STPBankAccountHolderType,
                    (@{
                       @"individual": @(STPBankAccountHolderTypeIndividual),
                       @"company": @(STPBankAccountHolderTypeCompany),
                       }),
                    STPBankAccountHolderTypeCompany,
-                   integerValue)*/
+                   integerValue)
 
 + (NSString *)STPBankAccountHolderTypeString:(STPBankAccountHolderType)type {
     NSString *string = nil;
@@ -70,7 +70,7 @@ TPSErrorKeyDefine(NoAmount, @"noAmount");
 
 @implementation RCTConvert (STPBankAccountStatus)
 
-/*RCT_ENUM_CONVERTER(STPBankAccountStatus,
+RCT_ENUM_CONVERTER(STPBankAccountStatus,
                    (@{
                       @"new": @(STPBankAccountStatusNew),
                       @"validated": @(STPBankAccountStatusValidated),
@@ -78,7 +78,7 @@ TPSErrorKeyDefine(NoAmount, @"noAmount");
                       @"errored": @(STPBankAccountStatusErrored),
                       }),
                    STPBankAccountStatusNew,
-                   integerValue)*/
+                   integerValue)
 
 + (NSString *)STPBankAccountStatusString:(STPBankAccountStatus)status {
     NSString *string = nil;
@@ -108,7 +108,7 @@ TPSErrorKeyDefine(NoAmount, @"noAmount");
 
 @implementation RCTConvert (STPPaymentMethodType)
 
-/*RCT_ENUM_CONVERTER(STPPaymentMethodType,
+RCT_ENUM_CONVERTER(STPPaymentMethodType,
                    (@{
                       @"card": @(STPPaymentMethodTypeCard),
                       @"iDEAL": @(STPPaymentMethodTypeiDEAL),
@@ -117,7 +117,7 @@ TPSErrorKeyDefine(NoAmount, @"noAmount");
                       @"unknown": @(STPPaymentMethodTypeUnknown),
                       }),
                    STPPaymentMethodTypeUnknown,
-                   integerValue)*/
+                   integerValue)
 
 + (NSString *)STPPaymentMethodTypeString:(STPPaymentMethodType)type {
     switch (type) {
@@ -135,7 +135,7 @@ TPSErrorKeyDefine(NoAmount, @"noAmount");
 @implementation RCTConvert (STPIntentStatus)
 
 #define TPSEntry(key, Enum) TPSStripeParam(PaymentIntentStatus, key): @(STPPaymentIntentStatus##Enum)
-/*RCT_ENUM_CONVERTER(STPPaymentIntentStatus,
+RCT_ENUM_CONVERTER(STPPaymentIntentStatus,
                    (@{
                       TPSEntry(unknown, Unknown),
                       TPSEntry(canceled, Canceled),
@@ -147,7 +147,7 @@ TPSErrorKeyDefine(NoAmount, @"noAmount");
                       TPSEntry(succeeded, Succeeded)
                       }),
                    STPPaymentIntentStatusUnknown,
-                   integerValue)*/
+                   integerValue)
 #undef TPSEntry
 
 + (NSString *)STPPaymentIntentStatusString:(STPPaymentIntentStatus)status {
@@ -167,7 +167,7 @@ TPSErrorKeyDefine(NoAmount, @"noAmount");
 }
 
 #define TPSEntry(key, Enum) TPSStripeParam(SetupIntentStatus, key): @(STPSetupIntentStatus##Enum)
-/*RCT_ENUM_CONVERTER(STPSetupIntentStatus,
+RCT_ENUM_CONVERTER(STPSetupIntentStatus,
                    (@{
                       TPSEntry(unknown, Unknown),
                       TPSEntry(canceled, Canceled),
@@ -179,7 +179,7 @@ TPSErrorKeyDefine(NoAmount, @"noAmount");
                       }),
                    STPSetupIntentStatusUnknown,
                    integerValue)
-#undef TPSEntry*/
+#undef TPSEntry
 
 + (NSString *)STPSetupIntentStatusString:(STPSetupIntentStatus)status {
 #define TPSEntry(key, Enum) case STPSetupIntentStatus##Enum: return TPSStripeParam(SetupIntentStatus, key);
@@ -201,7 +201,7 @@ TPSErrorKeyDefine(NoAmount, @"noAmount");
 typedef NSString * TPSPaymentNetwork NS_EXTENSIBLE_STRING_ENUM;
 
 // Add entries here when PKPaymentNetwork receives new keys!
-/*#define TPSPaymentNetworkDefine(Key, string) TPSPaymentNetwork const TPSPaymentNetwork ## Key = string
+#define TPSPaymentNetworkDefine(Key, string) TPSPaymentNetwork const TPSPaymentNetwork ## Key = string
 TPSPaymentNetworkDefine(Amex, @"american_express");
 TPSPaymentNetworkDefine(CartesBancaires, @"cartes_bancaires");
 TPSPaymentNetworkDefine(ChinaUnionPay, @"china_union_pay");
@@ -220,7 +220,7 @@ TPSPaymentNetworkDefine(QuicPay, @"quic_pay");
 TPSPaymentNetworkDefine(Suica, @"suica");
 TPSPaymentNetworkDefine(Visa, @"visa");
 TPSPaymentNetworkDefine(VPay, @"vpay");
-#undef TPSPaymentNetworkDefine*/
+#undef TPSPaymentNetworkDefine
 
 NSDictionary<TPSPaymentNetwork, PKPaymentNetwork> * mapTPSPaymentNetworkToPKPaymentNetwork = nil;
 __attribute__((constructor)) // This means this method will be called in file scope
@@ -228,7 +228,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     NSMutableDictionary<TPSPaymentNetwork, PKPaymentNetwork> * tmp = NSMutableDictionary.dictionary;
 
     // Inserts a key-value mapping into this dictionary guarding it by which iOS version the constant was added in
-/*#define TPSPaymentNetworkConditionalMapping(Key, iOSVersion) { if (@available(iOS iOSVersion, *)) { tmp[TPSPaymentNetwork##Key] = PKPaymentNetwork ## Key; }}
+#define TPSPaymentNetworkConditionalMapping(Key, iOSVersion) { if (@available(iOS iOSVersion, *)) { tmp[TPSPaymentNetwork##Key] = PKPaymentNetwork ## Key; }}
     TPSPaymentNetworkConditionalMapping(Amex, 8.0);
     TPSPaymentNetworkConditionalMapping(CartesBancaires, 11.2);
     TPSPaymentNetworkConditionalMapping(ChinaUnionPay, 9.2);
@@ -247,7 +247,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     TPSPaymentNetworkConditionalMapping(Suica, 10.1);
     TPSPaymentNetworkConditionalMapping(Visa, 8.0);
     TPSPaymentNetworkConditionalMapping(VPay, 12.0);
-#undef TPSPaymentNetworkConditionalMapping*/
+#undef TPSPaymentNetworkConditionalMapping
 
     mapTPSPaymentNetworkToPKPaymentNetwork = tmp;
 }
@@ -977,7 +977,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
 
 - (STPPaymentIntentParams*)extractConfirmPaymentIntentParamsFromDictionary:(NSDictionary<TPSStripeType(confirmPaymentIntent), id> *)params {
 #define simpleUnpack(key) result.key = [RCTConvert NSString:params[TPSStripeParam(confirmPaymentIntent, key)]]
-    NSString* clientSecret = params[TPSStripeParam(confirmPaymentIntent, clientSecret)];
+    NSString* clientSecret = [RCTConvert NSString:params[TPSStripeParam(confirmPaymentIntent, clientSecret)]];
     NSParameterAssert(clientSecret);
 
     STPPaymentIntentParams * result = [[STPPaymentIntentParams alloc] initWithClientSecret:clientSecret];
@@ -1809,7 +1809,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     dispatch_once(&onceToken, ^{
         NSMutableDictionary *mutableMap = [@{} mutableCopy];
 
-        /*if ((&PKPaymentNetworkAmex) != NULL) {
+        if ((&PKPaymentNetworkAmex) != NULL) {
             mutableMap[TPSPaymentNetworkAmex] = PKPaymentNetworkAmex;
         }
 
@@ -1823,7 +1823,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
 
         if ((&PKPaymentNetworkVisa) != NULL) {
             mutableMap[TPSPaymentNetworkVisa] = PKPaymentNetworkVisa;
-        }*/
+        }
 
         paymentNetworksMap = [mutableMap copy];
     });

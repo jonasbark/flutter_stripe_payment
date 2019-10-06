@@ -122,6 +122,7 @@ class StripePayment {
   }
 
   static Future<PaymentIntentResult> authenticatePaymentIntent({@required String clientSecret}) async {
+    assert(clientSecret != null);
     final result = await _channel.invokeMethod('authenticatePaymentIntent', {"clientSecret": clientSecret});
     return PaymentIntentResult.fromJson(result);
   }
@@ -132,6 +133,7 @@ class StripePayment {
   }
 
   static Future<SetupIntentResult> authenticateSetupIntent({@required String clientSecret}) async {
+    assert(clientSecret != null);
     final result = await _channel.invokeMethod('authenticateSetupIntent', {"clientSecret": clientSecret});
     return SetupIntentResult.fromJson(result);
   }

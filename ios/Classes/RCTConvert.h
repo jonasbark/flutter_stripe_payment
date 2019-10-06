@@ -106,6 +106,7 @@ typedef BOOL css_backface_visibility_t;
 
 #define RCT_DEBUG false
 #define RCTLogError(...)
+NSNumber *RCTConvertEnumValue(const char *, NSDictionary *, NSNumber *, id); //TODO this won't work
 
 // Convert nil values to NSNull, and vice-versa
 #define RCTNullIfNil(value) (value ?: (id)kCFNull)

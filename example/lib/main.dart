@@ -17,6 +17,7 @@ class _MyAppState extends State<MyApp> {
   PaymentMethod _paymentMethod;
   String _error;
   final String _currentSecret = null; //set this yourself, e.g using curl
+  PaymentIntentResult _paymentIntent;
 
   final CreditCard testCard = CreditCard(
     number: '4000002760003184',
@@ -30,8 +31,7 @@ class _MyAppState extends State<MyApp> {
   initState() {
     super.initState();
 
-    StripePayment.setOptions(
-        StripeOptions(publishableKey: "pk_test_", merchantId: "Test", androidPayMode: 'test'));
+    StripePayment.setOptions(StripeOptions(publishableKey: "pk_test_", merchantId: "Test", androidPayMode: 'test'));
   }
 
   void setError(dynamic error) {
@@ -91,45 +91,51 @@ class _MyAppState extends State<MyApp> {
             ),
             RaisedButton(
               child: Text("Create Payment Method with existing token"),
-              onPressed: () {
-                StripePayment.createPaymentMethod(
-                  PaymentMethodRequest(
-                    card: CreditCard(
-                      token: _paymentToken.tokenId,
-                    ),
-                  ),
-                ).then((paymentMethod) {
-                  setState(() {
-                    _paymentMethod = paymentMethod;
-                  });
-                }).catchError(setError);
-              },
+              onPressed: _paymentToken == null
+                  ? null
+                  : () {
+                      StripePayment.createPaymentMethod(
+                        PaymentMethodRequest(
+                          card: CreditCard(
+                            token: _paymentToken.tokenId,
+                          ),
+                        ),
+                      ).then((paymentMethod) {
+                        setState(() {
+                          _paymentMethod = paymentMethod;
+                        });
+                      }).catchError(setError);
+                    },
             ),
             Divider(),
             RaisedButton(
               child: Text("Confirm Payment Intent"),
-              onPressed: () {
-                StripePayment.confirmPaymentIntent(
-                  PaymentIntent(
-                    clientSecret: _currentSecret,
-                    paymentMethodId: _paymentMethod.id,
-                  ),
-                ).then((paymentIntent) {
-                  setState(() {
-                    paymentIntent = paymentIntent;
-                  });
-                }).catchError(setError);
-              },
+              onPressed: _paymentMethod == null || _currentSecret == null
+                  ? null
+                  : () {
+                      StripePayment.confirmPaymentIntent(
+                        PaymentIntent(
+                          clientSecret: _currentSecret,
+                          paymentMethodId: _paymentMethod.id,
+                        ),
+                      ).then((paymentIntent) {
+                        setState(() {
+                          _paymentIntent = paymentIntent;
+                        });
+                      }).catchError(setError);
+                    },
             ),
             RaisedButton(
               child: Text("Authenticate Payment Intent"),
-              onPressed: () {
-                StripePayment.authenticatePaymentIntent(clientSecret: _currentSecret).then((paymentIntent) {
-                  setState(() {
-                    paymentIntent = paymentIntent;
-                  });
-                }).catchError(setError);
-              },
+              onPressed: _currentSecret == null
+                  ? null
+                  : () {
+                      StripePayment.authenticatePaymentIntent(clientSecret: _currentSecret).then((paymentIntent) {
+                        setState(() {
+                          paymentIntent = paymentIntent;
+                        });
+                      }).catchError(setError);
+                    },
             ),
             Divider(),
             RaisedButton(
@@ -173,6 +179,12 @@ class _MyAppState extends State<MyApp> {
             Text('Current payment method:'),
             Text(
               JsonEncoder.withIndent('  ').convert(_paymentMethod?.toJson() ?? {}),
+              style: TextStyle(fontFamily: "Monospace"),
+            ),
+            Divider(),
+            Text('Current payment intent:'),
+            Text(
+              JsonEncoder.withIndent('  ').convert(_paymentIntent?.toJson() ?? {}),
               style: TextStyle(fontFamily: "Monospace"),
             ),
             Divider(),
