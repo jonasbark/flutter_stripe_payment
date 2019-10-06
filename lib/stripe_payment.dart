@@ -60,7 +60,7 @@ class StripePayment {
   static Future<bool> _deviceSupportsApplePay() => _channel.invokeMethod("deviceSupportsApplePay");
 
   static Future<Token> paymentRequestWithNativePay(
-      {@required AndroidPayPaymentRequest androidPayOptions, @required ApplePayPaymentRequest applePayOptions}) {
+      {@required AndroidPayPaymentRequest androidPayOptions, @required ApplePayPaymentOptions applePayOptions}) {
     if (Platform.isAndroid) {
       return _paymentRequestWithAndroidPay(androidPayOptions);
     } else if (Platform.isIOS) {
@@ -74,8 +74,9 @@ class StripePayment {
     return Token.fromJson(token);
   }
 
-  static Future<Token> _paymentRequestWithApplePay(ApplePayPaymentRequest options) async {
-    final token = await _channel.invokeMethod("paymentRequestWithApplePay", options.json);
+  static Future<Token> _paymentRequestWithApplePay(ApplePayPaymentOptions options) async {
+    final token = await _channel.invokeMethod("paymentRequestWithApplePay",
+        {"options": options.json, "items": options.items.map((item) => item.json).toList()});
     return Token.fromJson(token);
   }
 

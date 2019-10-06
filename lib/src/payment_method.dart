@@ -31,7 +31,7 @@ class PaymentMethodRequest {
 class PaymentMethod {
   BillingDetails billingDetails;
   CreditCard card;
-  int created;
+  num created;
   String customerId;
   String id;
   bool livemode;

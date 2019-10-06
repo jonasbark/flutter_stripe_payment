@@ -6,7 +6,7 @@ enum RequiredShippingAddressFields { all, name, email, phone, postal_address }
 
 enum ShippingType { shipping, delivery, store_pickup, service_pickup }
 
-class ApplePayPaymentRequest {
+class ApplePayPaymentOptions {
   List<RequiredBillingAddressFields> requiredBillingAddressFields;
   List<RequiredShippingAddressFields> requiredShippingAddressFields;
   List<ShippingMethod> shippingMethod;
@@ -15,7 +15,7 @@ class ApplePayPaymentRequest {
   ShippingType shippingType;
   List<ApplePayItem> items;
 
-  ApplePayPaymentRequest(
+  ApplePayPaymentOptions(
       {this.requiredBillingAddressFields,
       this.requiredShippingAddressFields,
       this.shippingMethod,
@@ -32,11 +32,14 @@ class ApplePayPaymentRequest {
     if (this.requiredShippingAddressFields != null) {
       data['requiredShippingAddressFields'] = this.requiredShippingAddressFields.map((s) => describeEnum(s)).toList();
     }
-    data['currencyCode'] = currencyCode;
-    data['shippingType'] = shippingType;
-    if (this.items != null) {
-      data['line_items'] = this.items.map((i) => i.json).toList();
+    if (this.shippingMethod != null) {
+      data['shippingMethod'] = this.shippingMethod.map((s) => s.toJson());
     }
+    data['currencyCode'] = currencyCode;
+    if (this.shippingType != null) {
+      data['shippingType'] = shippingType;
+    }
+    data['countryCode'] = countryCode;
     return data;
   }
 }
@@ -70,13 +73,13 @@ class ShippingMethod {
 
 class ApplePayItem {
   String label;
-  num amount;
+  String amount;
   String type;
   ApplePayItem({this.label, this.amount, this.type});
 
   Map<String, dynamic> get json {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.label;
+    data['label'] = this.label;
     data['amount'] = this.amount;
     data['type'] = this.type;
     return data;

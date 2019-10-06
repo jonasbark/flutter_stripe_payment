@@ -776,7 +776,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     promiseResolver = resolve;
     promiseRejector = reject;
 
-    NSUInteger requiredBillingAddressFields = [self billingType:options[@"requiredBillingAddressFields"]];
+    NSUInteger requiredBillingAddressFields = [self billingType:[RCTConvert NSString:options[@"requiredBillingAddressFields"]]];
     NSString *companyName = options[@"companyName"] ? options[@"companyName"] : @"";
     STPUserInformation *prefilledInformation = [self userInformation:options[@"prefilledInformation"]];
     NSString *nextPublishableKey = options[@"publishableKey"] ? options[@"publishableKey"] : publishableKey;
