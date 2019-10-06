@@ -140,13 +140,13 @@ class _MyAppState extends State<MyApp> {
                     total_price: "1.20",
                     currency_code: "EUR",
                   ),
-                  applePayOptions: ApplePayPaymentRequest(
+                  applePayOptions: ApplePayPaymentOptions(
                     countryCode: 'DE',
                     currencyCode: 'EUR',
                     items: [
                       ApplePayItem(
                         label: 'Test',
-                        amount: 13,
+                        amount: '13',
                       )
                     ],
                   ),

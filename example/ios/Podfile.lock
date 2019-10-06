@@ -1,9 +1,9 @@
 PODS:
   - Flutter (1.0.0)
-  - Stripe (16.0.7)
+  - Stripe (18.0.0)
   - stripe_payment (0.0.1):
     - Flutter
-    - Stripe (>= 16.0.7)
+    - Stripe (>= 17.0.1)
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
@@ -21,8 +21,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  Stripe: 67f64f64314503b396a71c55535d5307d7e5c9ff
-  stripe_payment: 2faeafea79aabb39ffcca19298b907516f59d01f
+  Stripe: 8c9ac6b717a38ed4f373d4db9204cfe8c4120d65
+  stripe_payment: a2b0c8f30a9990b26dca1cd2ad88acb89fffb902
 
 PODFILE CHECKSUM: 6df7b2151b00dd359d0386e1bc413232fa807b13
 
