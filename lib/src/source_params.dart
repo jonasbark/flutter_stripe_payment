@@ -9,20 +9,28 @@ class SourceParams {
   String email;
   String card;
 
-  SourceParams({this.amount, this.currency, this.returnURL, this.type, this.name, this.statement_descriptor, this.country, this.email, this.card});
+  SourceParams(
+      {this.amount,
+      this.currency,
+      this.returnURL,
+      this.type,
+      this.name,
+      this.statement_descriptor,
+      this.country,
+      this.email,
+      this.card});
 
   factory SourceParams.fromJson(Map<String, dynamic> json) {
     return SourceParams(
-      amount: json['amount'],
-      currency: json['currency'],
-      returnURL: json['returnURL'],
-      type: json['type'],
-      name: json['name'],
-      statement_descriptor: json['statement_descriptor'],
-      country: json['country'],
-      email: json['email'],
-      card: json['card']
-    );
+        amount: json['amount'],
+        currency: json['currency'],
+        returnURL: json['returnURL'],
+        type: json['type'],
+        name: json['name'],
+        statement_descriptor: json['statement_descriptor'],
+        country: json['country'],
+        email: json['email'],
+        card: json['card']);
   }
 
   Map<String, dynamic> toJson() {

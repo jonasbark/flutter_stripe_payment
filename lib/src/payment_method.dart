@@ -1,4 +1,6 @@
-import 'package:stripe_payment/stripe_payment.dart';
+import 'package:stripe_payment/src/token.dart';
+
+import 'card_form_payment_request.dart';
 
 class PaymentMethodRequest {
   final BillingAddress billingAddress;
