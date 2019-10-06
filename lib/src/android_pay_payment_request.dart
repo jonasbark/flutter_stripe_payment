@@ -30,15 +30,15 @@ class AndroidPayPaymentRequest {
 
   Map<dynamic, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['billing_address_required'] = this.billing_address_required;
-    data['currency_code'] = this.currency_code;
-    data['shipping_address_required'] = this.shipping_address_required;
-    data['total_price'] = this.total_price;
+    if (this.billing_address_required != null) data['billing_address_required'] = this.billing_address_required;
+    if (this.currency_code != null) data['currency_code'] = this.currency_code;
+    if (this.shipping_address_required != null) data['shipping_address_required'] = this.shipping_address_required;
+    if (this.total_price != null) data['total_price'] = this.total_price;
     if (this.line_items != null) {
       data['line_items'] = this.line_items.map((v) => v.toJson()).toList();
     }
     if (this.shipping_countries != null) {
-      data['shipping_countries'] = this.shipping_countries;
+      if (this.shipping_countries != null) data['shipping_countries'] = this.shipping_countries;
     }
     return data;
   }
@@ -65,11 +65,11 @@ class LineItem {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['currency_code'] = this.currency_code;
-    data['description'] = this.description;
-    data['quantity'] = this.quantity;
-    data['total_price'] = this.total_price;
-    data['unit_price'] = this.unit_price;
+    if (this.currency_code != null) data['currency_code'] = this.currency_code;
+    if (this.description != null) data['description'] = this.description;
+    if (this.quantity != null) data['quantity'] = this.quantity;
+    if (this.total_price != null) data['total_price'] = this.total_price;
+    if (this.unit_price != null) data['unit_price'] = this.unit_price;
     return data;
   }
 }

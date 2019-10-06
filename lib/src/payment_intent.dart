@@ -19,9 +19,9 @@ class PaymentIntent {
     if (this.paymentMethod != null) {
       data['paymentMethod'] = this.paymentMethod.toJson();
     }
-    data['paymentMethodId'] = this.paymentMethodId;
-    data['returnURL'] = this.returnURL;
-    data['clientSecret'] = this.clientSecret;
+    if (this.paymentMethodId != null) data['paymentMethodId'] = this.paymentMethodId;
+    if (this.returnURL != null) data['returnURL'] = this.returnURL;
+    if (this.clientSecret != null) data['clientSecret'] = this.clientSecret;
     return data;
   }
 }
@@ -35,14 +35,17 @@ class PaymentIntentResult {
 
   factory PaymentIntentResult.fromJson(Map<dynamic, dynamic> json) {
     return PaymentIntentResult(
-        status: json['status'], paymentIntentId: json['paymentIntentId'], paymentMethodId: json['paymentMethodId']);
+      status: json['status'],
+      paymentIntentId: json['paymentIntentId'],
+      paymentMethodId: json['paymentMethodId'],
+    );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['paymentMethodId'] = this.paymentIntentId;
-    data['status'] = this.status;
-    data['paymentMethodId'] = this.paymentMethodId;
+    if (this.paymentIntentId != null) data['paymentIntentId'] = this.paymentIntentId;
+    if (this.status != null) data['status'] = this.status;
+    if (this.paymentMethodId != null) data['paymentMethodId'] = this.paymentMethodId;
     return data;
   }
 }
@@ -64,13 +67,5 @@ class SetupIntentResult {
       setupIntentId: json['setupIntentId'],
       paymentIntentId: json['paymentIntentId'],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['paymentMethodId'] = this.paymentIntentId;
-    data['setupIntentId'] = setupIntentId;
-    data['status'] = this.status;
-    return data;
   }
 }
