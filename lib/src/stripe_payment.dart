@@ -88,9 +88,9 @@ class StripePayment {
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/paymentRequestWithCardForm.html
-  static Future<Token> paymentRequestWithCardForm(CardFormPaymentRequest options) async {
+  static Future<PaymentMethod> paymentRequestWithCardForm(CardFormPaymentRequest options) async {
     final token = await _channel.invokeMethod("paymentRequestWithCardForm", options.toJson());
-    return Token.fromJson(token);
+    return PaymentMethod.fromJson(token);
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/createTokenWithCard.html

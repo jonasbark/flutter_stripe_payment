@@ -87,10 +87,10 @@ class _MyAppState extends State<MyApp> {
             RaisedButton(
               child: Text("Create Token with Card Form"),
               onPressed: () {
-                StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest()).then((token) {
-                  _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Received ${token.tokenId}')));
+                StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest()).then((paymentMethod) {
+                  _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Received ${paymentMethod.id}')));
                   setState(() {
-                    _paymentToken = token;
+                    _paymentMethod = paymentMethod;
                   });
                 }).catchError(setError);
               },
