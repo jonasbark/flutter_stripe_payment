@@ -9,9 +9,25 @@ keep the API as close as possible so the documentation applies this this plugin 
 - Collect chargable tokens from users' **Card Input** and **Apple & Google Pay**
 - For **SCA** compliant apps, setup payment intents for later confirmation.
 
+## Supported features:
 
-<img src="https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_android.png">
+# Native Pay -  & G
+.canMakeNativePayPayments()
+.deviceSupportsNativePay()
+.potentiallyAvailableNativePayNetworks()
+.completeNativePayRequest()
+.cancelNativePayRequest()
+# Card Form
+.paymentRequestWithCardForm()
+# Card Params Object
+.createTokenWithCard()
+# Bank Account Params Object
+.createTokenWithBankAccount()
+# Create Source Object With Params
+.createSourceWithParams()
 
+
+![Android Example](https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_android.png | width=400)
 ![Apple Pay](https://user-images.githubusercontent.com/7946558/65780165-02838700-e0fe-11e9-9db9-5fe4e44ed819.gif)
 
 
@@ -35,7 +51,7 @@ android.enableJetifier=true
 ## Documentation
 
 As this plugin is a port from tipsi-stripe for React Native you may consult their documentation:
-https://github.com/tipsi/tipsi-stripe
+https://github.com/tipsi/tipsi-stripe/tree/experimental-connect/website/docs-md
 It includes:
 - how to setup Google / Apple Pay
 - method documentations
