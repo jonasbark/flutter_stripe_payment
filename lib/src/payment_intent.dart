@@ -61,7 +61,7 @@ class SetupIntentResult {
     this.paymentIntentId,
   });
 
-  factory SetupIntentResult.fromJson(Map<String, dynamic> json) {
+  factory SetupIntentResult.fromJson(Map<dynamic, dynamic> json) {
     return SetupIntentResult(
       status: json['status'],
       setupIntentId: json['setupIntentId'],
