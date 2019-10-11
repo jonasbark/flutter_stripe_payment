@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:stripe_payment/stripe_payment.dart';
+import 'dart:io';
 
 void main() {
   runApp(new MyApp());
@@ -19,6 +20,8 @@ class _MyAppState extends State<MyApp> {
   final String _currentSecret = null; //set this yourself, e.g using curl
   PaymentIntentResult _paymentIntent;
   Source _source;
+
+  ScrollController _controller = ScrollController();
 
   final CreditCard testCard = CreditCard(
     number: '4000002760003184',
@@ -65,6 +68,7 @@ class _MyAppState extends State<MyApp> {
           ],
         ),
         body: ListView(
+          controller: _controller,
           padding: const EdgeInsets.all(20),
           children: <Widget>[
             RaisedButton(
@@ -181,6 +185,9 @@ class _MyAppState extends State<MyApp> {
             RaisedButton(
               child: Text("Native payment"),
               onPressed: () {
+                if (Platform.isIOS) {
+                  _controller.jumpTo(450);
+                }
                 StripePayment.paymentRequestWithNativePay(
                   androidPayOptions: AndroidPayPaymentRequest(
                     total_price: "1.20",
