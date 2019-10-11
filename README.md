@@ -11,23 +11,23 @@ keep the API as close as possible so the documentation applies this this plugin 
 
 ## Supported features:
 
-# Native Pay -  & G
-.canMakeNativePayPayments()
-.deviceSupportsNativePay()
-.potentiallyAvailableNativePayNetworks()
-.completeNativePayRequest()
-.cancelNativePayRequest()
-# Card Form
-.paymentRequestWithCardForm()
-# Card Params Object
-.createTokenWithCard()
-# Bank Account Params Object
-.createTokenWithBankAccount()
-# Create Source Object With Params
-.createSourceWithParams()
+### Native Pay -  & G
+- canMakeNativePayPayments()
+- deviceSupportsNativePay()
+- potentiallyAvailableNativePayNetworks()
+- completeNativePayRequest()
+- cancelNativePayRequest()
+### Card Form
+- paymentRequestWithCardForm()
+### Card Params Object
+- createTokenWithCard()
+### Bank Account Params Object
+- createTokenWithBankAccount()
+### Create Source Object With Params
+- createSourceWithParams()
 
 
-![Android Example](https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_android.png | width=400)
+<img src="https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_android.png" width="400">
 ![Apple Pay](https://user-images.githubusercontent.com/7946558/65780165-02838700-e0fe-11e9-9db9-5fe4e44ed819.gif)
 
 

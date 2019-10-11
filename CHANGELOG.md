@@ -3,20 +3,20 @@
 the stripe_payment plugin is now ported from tipsi-stripe React Native plugin: 
 https://github.com/tipsi/tipsi-stripe
 New features include:
-# Native Pay -  & G
-.canMakeNativePayPayments()
-.deviceSupportsNativePay()
-.potentiallyAvailableNativePayNetworks()
-.completeNativePayRequest()
-.cancelNativePayRequest()
-# Card Form
-.paymentRequestWithCardForm()
-# Card Params Object
-.createTokenWithCard()
-# Bank Account Params Object
-.createTokenWithBankAccount()
-# Create Source Object With Params
-.createSourceWithParams()
+### Native Pay -  & G
+- canMakeNativePayPayments()
+- deviceSupportsNativePay()
+- potentiallyAvailableNativePayNetworks()
+- completeNativePayRequest()
+- cancelNativePayRequest()
+### Card Form
+- paymentRequestWithCardForm()
+### Card Params Object
+- createTokenWithCard()
+### Bank Account Params Object
+- createTokenWithBankAccount()
+### Create Source Object With Params
+- createSourceWithParams()
 
 ## [0.3.2]
 
