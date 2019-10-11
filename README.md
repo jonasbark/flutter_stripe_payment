@@ -26,8 +26,8 @@ keep the API as close as possible so the documentation applies this this plugin 
 ### Create Source Object With Params
 - createSourceWithParams()
 
-
 <img src="https://github.com/jonasbark/flutter_stripe_payment/raw/master/screenshot_android.png" width="400">
+
 ![Apple Pay](https://user-images.githubusercontent.com/7946558/65780165-02838700-e0fe-11e9-9db9-5fe4e44ed819.gif)
 
 
