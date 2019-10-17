@@ -46,9 +46,9 @@
         [stripeModule confirmSetupIntent:call.arguments resolver:result rejecter:rejecter];
     } else if ([@"authenticateSetupIntent" isEqualToString:call.method]) {
         [stripeModule authenticateSetupIntent:call.arguments resolver:result rejecter:rejecter];
-    } else if ([@"completeApplePayRequest" isEqualToString:call.method]) {
+    } else if ([@"completeNativePayRequest" isEqualToString:call.method]) {
         [stripeModule completeApplePayRequest:result rejecter:rejecter];
-    } else if ([@"cancelApplePayRequest" isEqualToString:call.method]) {
+    } else if ([@"cancelNativePayRequest" isEqualToString:call.method]) {
         [stripeModule cancelApplePayRequest:result rejecter:rejecter];
     } else if ([@"createTokenWithCard" isEqualToString:call.method]) {
         [stripeModule createTokenWithCard:call.arguments resolver:result rejecter:rejecter];
