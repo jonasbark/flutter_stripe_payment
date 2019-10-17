@@ -2,15 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'android_pay_payment_request.dart';
+import 'apple_pay_payment_request.dart';
+import 'card_form_payment_request.dart';
+import 'error_codes.dart';
 import 'payment_intent.dart';
 import 'payment_method.dart';
 import 'source.dart';
 import 'source_params.dart';
 import 'token.dart';
-import 'android_pay_payment_request.dart';
-import 'apple_pay_payment_request.dart';
-import 'card_form_payment_request.dart';
-import 'error_codes.dart';
 
 class StripePayment {
   static const MethodChannel _channel = const MethodChannel('stripe_payment');
@@ -70,7 +71,7 @@ class StripePayment {
   /// https://tipsi.github.io/tipsi-stripe/docs/completeNativePayRequest.html
   static Future<void> completeNativePayRequest() async {
     if (Platform.isIOS) {
-      return _channel.invokeMethod("completeNativePayRequest");
+      return _channel.invokeMethod("completeApplePayRequest");
     } else if (Platform.isAndroid) {
       return null;
     } else
@@ -80,7 +81,7 @@ class StripePayment {
   /// https://tipsi.github.io/tipsi-stripe/docs/cancelNativePayRequest.html
   static Future<void> cancelNativePayRequest() async {
     if (Platform.isIOS) {
-      return _channel.invokeMethod("cancelNativePayRequest");
+      return _channel.invokeMethod("cancelApplePayRequest");
     } else if (Platform.isAndroid) {
       return null;
     } else
