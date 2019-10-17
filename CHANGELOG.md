@@ -1,4 +1,4 @@
-## [1.0.1]
+## [1.0.2]
 - cancelling paymentRequestWithCardForm will now return the Future on Android (fixes #55)
 - update minimum deployment target for iOS to 10.0
 
