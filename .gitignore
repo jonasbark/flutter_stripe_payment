@@ -9,3 +9,4 @@ packages
 pubspec.lock
 example/ios/Flutter/
 example/.dart_tool
+example/ios/.symlinks
