@@ -1,3 +1,5 @@
+[![pub package](https://img.shields.io/pub/v/stripe_payment.svg)](https://pub.dev/packages/stripe_payment)
+
 # stripe_payment
 
 #### Conveniently secure payments methods using Stripe.

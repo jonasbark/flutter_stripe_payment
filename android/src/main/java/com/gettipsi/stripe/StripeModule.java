@@ -1,6 +1,7 @@
 package com.gettipsi.stripe;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -202,6 +203,12 @@ public class StripeModule extends ReactContextBaseJavaModule {
         }
       });
       cardDialog.show(currentActivity.getFragmentManager(), "AddNewCard");
+      cardDialog.getDialog().setOnCancelListener(new DialogInterface.OnCancelListener() {
+        @Override
+        public void onCancel(DialogInterface dialog) {
+          promise.reject(CANCELLED, CANCELLED);
+        }
+      });
     } catch (Exception e) {
       promise.reject(toErrorCode(e), e.getMessage());
     }

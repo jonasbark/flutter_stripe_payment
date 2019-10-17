@@ -1,3 +1,7 @@
+## [1.0.1]
+- cancelling paymentRequestWithCardForm will now return the Future on Android (fixes #55)
+- update minimum deployment target for iOS to 10.0
+
 ## [1.0.0]
 
 the stripe_payment plugin is now ported from tipsi-stripe React Native plugin: 
