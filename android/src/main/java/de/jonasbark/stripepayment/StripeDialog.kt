@@ -1,6 +1,7 @@
 package de.jonasbark.stripepayment
 
 import android.app.DialogFragment
+import android.content.DialogInterface
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
@@ -41,11 +42,9 @@ class StripeDialog : DialogFragment() {
         // Fetch arguments from bundle and set title
         val title = arguments?.getString("title", "Add Source")
         dialog?.setTitle(title)
-
         view.findViewById<View>(R.id.buttonSave)?.setOnClickListener {
             getToken()
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +54,12 @@ class StripeDialog : DialogFragment() {
         setStyle(STYLE_NO_TITLE, R.style.Theme_AppCompat_Light_Dialog)
     }
 
+    override fun onCancel(dialog: DialogInterface?) {
+        super.onCancel(dialog)
+        onCancelListener.onCancel(dialog)
+    }
+
+    lateinit var onCancelListener: DialogInterface.OnCancelListener
     lateinit var stripeInstance: Stripe
     var tokenListener: ((PaymentMethod) -> (Unit))? = null
 

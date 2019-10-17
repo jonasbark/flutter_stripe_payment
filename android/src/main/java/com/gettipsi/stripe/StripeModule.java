@@ -202,13 +202,13 @@ public class StripeModule extends ReactContextBaseJavaModule {
           return Unit.INSTANCE;
         }
       });
-      cardDialog.show(currentActivity.getFragmentManager(), "AddNewCard");
-      cardDialog.getDialog().setOnCancelListener(new DialogInterface.OnCancelListener() {
+      cardDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
         @Override
         public void onCancel(DialogInterface dialog) {
           promise.reject(CANCELLED, CANCELLED);
         }
       });
+      cardDialog.show(currentActivity.getFragmentManager(), "AddNewCard");
     } catch (Exception e) {
       promise.reject(toErrorCode(e), e.getMessage());
     }
