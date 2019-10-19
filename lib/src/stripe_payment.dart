@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'payment_intent.dart';
 import 'payment_method.dart';
 import 'source.dart';
@@ -70,7 +71,7 @@ class StripePayment {
   /// https://tipsi.github.io/tipsi-stripe/docs/completeNativePayRequest.html
   static Future<void> completeNativePayRequest() async {
     if (Platform.isIOS) {
-      return _channel.invokeMethod("completeNativePayRequest");
+      return _channel.invokeMethod("completeApplePayRequest");
     } else if (Platform.isAndroid) {
       return null;
     } else
@@ -80,7 +81,7 @@ class StripePayment {
   /// https://tipsi.github.io/tipsi-stripe/docs/cancelNativePayRequest.html
   static Future<void> cancelNativePayRequest() async {
     if (Platform.isIOS) {
-      return _channel.invokeMethod("cancelNativePayRequest");
+      return _channel.invokeMethod("cancelApplePayRequest");
     } else if (Platform.isAndroid) {
       return null;
     } else
