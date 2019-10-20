@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="save">Enregistrer</string>
+    <string name="add_source">Ajouter une source</string>
+    <string name="incorrect_card">Les informations de cette carte bancaire sont invalides</string>
 </resources>

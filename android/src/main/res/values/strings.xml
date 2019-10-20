@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="save">Save</string>
+    <string name="incorrect_card">The card info you entered is not correct</string>
+    <string name="add_source">Add Source</string>
 </resources>

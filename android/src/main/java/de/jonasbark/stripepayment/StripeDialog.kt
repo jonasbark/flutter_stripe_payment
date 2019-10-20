@@ -3,16 +3,15 @@ package de.jonasbark.stripepayment
 import android.app.DialogFragment
 import android.content.DialogInterface
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.snackbar.Snackbar
 import com.stripe.android.ApiResultCallback
-import com.stripe.android.PaymentConfiguration
 import com.stripe.android.Stripe
-import com.stripe.android.model.*
+import com.stripe.android.model.PaymentMethod
+import com.stripe.android.model.PaymentMethodCreateParams
 import com.stripe.android.view.CardMultilineWidget
-import java.lang.Exception
 
 
 class StripeDialog : DialogFragment() {
@@ -40,7 +39,7 @@ class StripeDialog : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         // Get field from view
         // Fetch arguments from bundle and set title
-        val title = arguments?.getString("title", "Add Source")
+        val title = arguments?.getString("title", getString(R.string.add_source))
         dialog?.setTitle(title)
         view.findViewById<View>(R.id.buttonSave)?.setOnClickListener {
             getToken()
@@ -48,7 +47,6 @@ class StripeDialog : DialogFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState)
 
         setStyle(STYLE_NO_TITLE, R.style.Theme_AppCompat_Light_Dialog)
@@ -105,7 +103,7 @@ class StripeDialog : DialogFragment() {
             }
         } else {
             view?.let {
-                Snackbar.make(it, "The card info you entered is not correct", Snackbar.LENGTH_LONG)
+                Snackbar.make(it, getString(R.string.incorrect_card), Snackbar.LENGTH_LONG)
                     .show()
             }
         }
