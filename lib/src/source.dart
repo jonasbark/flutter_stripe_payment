@@ -1,3 +1,5 @@
+import 'package:stripe_payment/src/card_form_payment_request.dart';
+
 class Source {
   String object;
   Receiver receiver;
@@ -126,11 +128,11 @@ class Receiver {
 }
 
 class Owner {
-  String address;
+  BillingAddress address;
   String email;
   String name;
   String phone;
-  String verified_address;
+  BillingAddress verified_address;
   String verified_email;
   String verified_name;
   String verified_phone;
@@ -147,11 +149,11 @@ class Owner {
 
   factory Owner.fromJson(Map<dynamic, dynamic> json) {
     return Owner(
-      address: json['address'],
+      address: json['address'] != null ? BillingAddress.fromJson(json['address']) : null,
       email: json['email'],
       name: json['name'],
       phone: json['phone'],
-      verified_address: json['verified_address'],
+      verified_address: json['verified_address'] != null ? BillingAddress.fromJson(json['verified_address']) : null,
       verified_email: json['verified_email'],
       verified_name: json['verified_name'],
       verified_phone: json['verified_phone'],

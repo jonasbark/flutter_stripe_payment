@@ -15,7 +15,7 @@ import com.gettipsi.stripe.util.Fun0;
 import com.google.android.gms.wallet.WalletConstants;
 import com.stripe.android.*;
 import com.stripe.android.model.*;
-import com.stripe.android.model.Source.SourceStatus;
+
 import de.jonasbark.stripepayment.StripeDialog;
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.PluginRegistry;
@@ -678,37 +678,39 @@ public class StripeModule extends ReactContextBaseJavaModule {
     mCreatedSource = null;
     mCreateSourcePromise = null;
 
-    new AsyncTask<Void, Void, Void>() {
+    new AsyncTask<Void, Void, Source>() {
       @Override
-      protected Void doInBackground(Void... voids) {
-        Source source = null;
+      protected Source doInBackground(Void... voids) {
         try {
-          source = mStripe.retrieveSourceSynchronous(sourceId, clientSecret);
+          return mStripe.retrieveSourceSynchronous(sourceId, clientSecret);
         } catch (Exception e) {
-
           return null;
         }
+      }
 
-        switch (source.getStatus()) {
-          case SourceStatus.CHARGEABLE:
-          case SourceStatus.CONSUMED:
-            promise.resolve(convertSourceToWritableMap(source));
-            break;
-          case SourceStatus.CANCELED:
-            promise.reject(
-              getErrorCode(mErrorCodes, "redirectCancelled"),
-              getDescription(mErrorCodes, "redirectCancelled")
-            );
-            break;
-          case SourceStatus.PENDING:
-          case SourceStatus.FAILED:
-          default:
-            promise.reject(
-              getErrorCode(mErrorCodes, "redirectFailed"),
-              getDescription(mErrorCodes, "redirectFailed")
-            );
+      @Override
+      protected void onPostExecute(Source source) {
+        if (source != null) {
+          switch (source.getStatus()) {
+            case Source.SourceStatus.CHARGEABLE:
+            case Source.SourceStatus.CONSUMED:
+              promise.resolve(convertSourceToWritableMap(source));
+              break;
+            case Source.SourceStatus.CANCELED:
+              promise.reject(
+                      getErrorCode(mErrorCodes, "redirectCancelled"),
+                      getDescription(mErrorCodes, "redirectCancelled")
+              );
+              break;
+            case Source.SourceStatus.PENDING:
+            case Source.SourceStatus.FAILED:
+            default:
+              promise.reject(
+                      getErrorCode(mErrorCodes, "redirectFailed"),
+                      getDescription(mErrorCodes, "redirectFailed")
+              );
+          }
         }
-        return null;
       }
     }.execute();
   }
