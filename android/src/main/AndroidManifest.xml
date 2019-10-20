@@ -8,6 +8,25 @@
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />
+
+        <activity
+            android:name="com.gettipsi.stripe.OpenBrowserActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:name="com.gettipsi.stripe.RedirectUriReceiver"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="${tipsiStripeRedirectScheme}" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

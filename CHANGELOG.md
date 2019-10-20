@@ -1,3 +1,6 @@
+## [1.0.4]
+- fix Android configuration for Activities (#68)
+
 ## [1.0.3]
 - fix completeNativePayRequest + cancelNativePayRequest methods (thanks @jocelyngirard)
 
