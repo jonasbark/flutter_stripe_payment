@@ -18,7 +18,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@android:string/s"
+        android:text="@string/save"
         android:id="@+id/buttonSave"/>
 
     <androidx.core.widget.ContentLoadingProgressBar
