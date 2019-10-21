@@ -33,11 +33,11 @@ class StripePayment {
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/canMakeNativePayPayments.html
-  static Future<bool> canMakeNativePayPayments(List<String> networks) async {
+  static Future<bool> canMakeNativePayPayments(Map<String, dynamic> options) async {
     if (Platform.isAndroid) {
       return _channel.invokeMethod('canMakeAndroidPayPayments');
     } else if (Platform.isIOS) {
-      return _channel.invokeMethod('canMakeApplePayPayments', networks);
+      return _channel.invokeMethod('canMakeApplePayPayments', options);
     } else
       throw UnimplementedError();
   }
