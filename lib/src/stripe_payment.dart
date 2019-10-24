@@ -17,8 +17,8 @@ class StripePayment {
   static const MethodChannel _channel = const MethodChannel('stripe_payment');
 
   /// https://tipsi.github.io/tipsi-stripe/docs/usage.html
-  static void setOptions(StripeOptions settings) {
-    _channel.invokeMethod('setOptions', {"options": settings.toJson(), "errorCodes": Errors.mapping});
+  static Future<void> setOptions(StripeOptions settings) {
+    return _channel.invokeMethod('setOptions', {"options": settings.toJson(), "errorCodes": Errors.mapping});
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/usage.html
@@ -167,7 +167,7 @@ class StripeOptions {
     if (this.merchantId != null) data['merchantId'] = this.merchantId;
     if (this.publishableKey != null) data['publishableKey'] = this.publishableKey;
     if (this.androidPayMode != null) data['androidPayMode'] = this.androidPayMode;
-    if (this.stripeAccount != null) data['stripeAccountId'] = this.stripeAccount;
+    if (this.stripeAccount != null) data['stripeAccount'] = this.stripeAccount;
     return data;
   }
 }
