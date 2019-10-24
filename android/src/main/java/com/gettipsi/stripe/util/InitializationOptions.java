@@ -7,6 +7,7 @@ package com.gettipsi.stripe.util;
 public abstract class InitializationOptions {
 
   public static final String PUBLISHABLE_KEY = "publishableKey";
+  public static final String STRIPE_ACCOUNT = "stripeAccount";
   public static final String ANDROID_PAY_MODE_KEY = "androidPayMode";
   public static final String ANDROID_PAY_MODE_PRODUCTION = "production";
   public static final String ANDROID_PAY_MODE_TEST = "test";

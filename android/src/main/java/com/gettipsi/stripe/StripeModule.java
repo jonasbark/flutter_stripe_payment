@@ -62,6 +62,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
   private Source mCreatedSource;
 
   private String mPublicKey;
+  private String mStripeAccount;
   private Stripe mStripe;
   private PayFlow mPayFlow;
   private ReadableMap mErrorCodes;
@@ -75,7 +76,6 @@ public class StripeModule extends ReactContextBaseJavaModule {
     }
   };
 
-
   public StripeModule(PluginRegistry.Registrar registrar, Activity activity) {
     super(activity, registrar);
     registrar.addActivityResultListener(mActivityEventListener);
@@ -84,18 +84,26 @@ public class StripeModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void init(@NonNull ReadableMap options, @NonNull ReadableMap errorCodes) {
+  public void init(@NonNull ReadableMap options, @NonNull ReadableMap errorCodes, final Promise result) {
     ArgCheck.nonNull(options);
 
     String newPubKey = Converters.getStringOrNull(options, PUBLISHABLE_KEY);
     String newAndroidPayMode = Converters.getStringOrNull(options, ANDROID_PAY_MODE_KEY);
+    String newStripeAccount = Converters.getStringOrNull(options, STRIPE_ACCOUNT);
 
-    if (newPubKey != null && !TextUtils.equals(newPubKey, mPublicKey)) {
+    if (newPubKey != null && !TextUtils.equals(newPubKey, mPublicKey) && !TextUtils.equals(newStripeAccount, mStripeAccount)) {
       ArgCheck.notEmptyString(newPubKey);
 
       mPublicKey = newPubKey;
       Stripe.setAppInfo(AppInfo.create(APP_INFO_NAME, APP_INFO_VERSION, APP_INFO_URL));
-      mStripe = new Stripe(getReactApplicationContext(), mPublicKey);
+
+      if (!TextUtils.isEmpty(newStripeAccount)) {
+        mStripeAccount = newStripeAccount;
+        mStripe = new Stripe(getReactApplicationContext(), mPublicKey, mStripeAccount);
+      } else {
+        mStripe = new Stripe(getReactApplicationContext(), mPublicKey);
+      }
+
       getPayFlow().setPublishableKey(mPublicKey);
     }
 
@@ -109,6 +117,8 @@ public class StripeModule extends ReactContextBaseJavaModule {
       mErrorCodes = errorCodes;
       getPayFlow().setErrorCodes(errorCodes);
     }
+
+    result.resolve(null);
   }
 
   private PayFlow getPayFlow() {

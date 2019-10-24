@@ -3,15 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'android_pay_payment_request.dart';
+import 'apple_pay_payment_request.dart';
+import 'card_form_payment_request.dart';
+import 'error_codes.dart';
 import 'payment_intent.dart';
 import 'payment_method.dart';
 import 'source.dart';
 import 'source_params.dart';
 import 'token.dart';
-import 'android_pay_payment_request.dart';
-import 'apple_pay_payment_request.dart';
-import 'card_form_payment_request.dart';
-import 'error_codes.dart';
 
 class StripePayment {
   static const MethodChannel _channel = const MethodChannel('stripe_payment');
@@ -153,12 +153,13 @@ class StripeOptions {
   final String publishableKey;
   final String merchantId;
   final String androidPayMode;
+  final String stripeAccount;
 
-  StripeOptions({@required this.publishableKey, this.merchantId, this.androidPayMode});
+  StripeOptions({@required this.publishableKey, this.merchantId, this.androidPayMode, this.stripeAccount});
 
   factory StripeOptions.fromJson(Map<String, dynamic> json) {
     return StripeOptions(
-        merchantId: json['merchantId'], publishableKey: json['publishableKey'], androidPayMode: json['androidPayMode']);
+        merchantId: json['merchantId'], publishableKey: json['publishableKey'], androidPayMode: json['androidPayMode'], stripeAccount: json['stripeAccount']);
   }
 
   Map<String, dynamic> toJson() {
@@ -166,6 +167,7 @@ class StripeOptions {
     if (this.merchantId != null) data['merchantId'] = this.merchantId;
     if (this.publishableKey != null) data['publishableKey'] = this.publishableKey;
     if (this.androidPayMode != null) data['androidPayMode'] = this.androidPayMode;
+    if (this.stripeAccount != null) data['stripeAccountId'] = this.stripeAccount;
     return data;
   }
 }
