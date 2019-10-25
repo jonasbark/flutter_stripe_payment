@@ -84,7 +84,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void init(@NonNull ReadableMap options, @NonNull ReadableMap errorCodes, final Promise result) {
+  public void init(@NonNull ReadableMap options, @NonNull ReadableMap errorCodes) {
     ArgCheck.nonNull(options);
 
     String newPubKey = Converters.getStringOrNull(options, PUBLISHABLE_KEY);
@@ -117,8 +117,6 @@ public class StripeModule extends ReactContextBaseJavaModule {
       mErrorCodes = errorCodes;
       getPayFlow().setErrorCodes(errorCodes);
     }
-
-    result.resolve(null);
   }
 
   private PayFlow getPayFlow() {
