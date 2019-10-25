@@ -62,7 +62,6 @@ public class StripeModule extends ReactContextBaseJavaModule {
   private Source mCreatedSource;
 
   private String mPublicKey;
-  private String mStripeAccount;
   private Stripe mStripe;
   private PayFlow mPayFlow;
   private ReadableMap mErrorCodes;
