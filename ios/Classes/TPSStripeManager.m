@@ -300,7 +300,6 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
 -(void)init:(NSDictionary *)options errorCodes:(NSDictionary *)errors {
     publishableKey = options[@"publishableKey"];
     merchantId = options[@"merchantId"];
-    stripeAccount = options[@"stripeAccount"];
     errorCodes = errors;
     [Stripe setDefaultPublishableKey:publishableKey];
 }
