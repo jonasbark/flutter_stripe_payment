@@ -89,21 +89,13 @@ public class StripeModule extends ReactContextBaseJavaModule {
 
     String newPubKey = Converters.getStringOrNull(options, PUBLISHABLE_KEY);
     String newAndroidPayMode = Converters.getStringOrNull(options, ANDROID_PAY_MODE_KEY);
-    String newStripeAccount = Converters.getStringOrNull(options, STRIPE_ACCOUNT);
 
-    if (newPubKey != null && !TextUtils.equals(newPubKey, mPublicKey) && !TextUtils.equals(newStripeAccount, mStripeAccount)) {
+    if (newPubKey != null && !TextUtils.equals(newPubKey, mPublicKey)) {
       ArgCheck.notEmptyString(newPubKey);
 
       mPublicKey = newPubKey;
       Stripe.setAppInfo(AppInfo.create(APP_INFO_NAME, APP_INFO_VERSION, APP_INFO_URL));
-
-      if (!TextUtils.isEmpty(newStripeAccount)) {
-        mStripeAccount = newStripeAccount;
-        mStripe = new Stripe(getReactApplicationContext(), mPublicKey, mStripeAccount);
-      } else {
-        mStripe = new Stripe(getReactApplicationContext(), mPublicKey);
-      }
-
+      mStripe = new Stripe(getReactApplicationContext(), mPublicKey);
       getPayFlow().setPublishableKey(mPublicKey);
     }
 
@@ -144,6 +136,16 @@ public class StripeModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void canMakeAndroidPayPayments(final Promise promise) {
     getPayFlow().deviceSupportsAndroidPay(true, promise);
+  }
+
+  @ReactMethod
+  public void setStripeAccount(final String stripeAccount) {
+    ArgCheck.notEmptyString(mPublicKey);
+    if (stripeAccount == null) {
+      mStripe = new Stripe(getReactApplicationContext(), mPublicKey);
+    } else {
+      mStripe = new Stripe(getReactApplicationContext(), mPublicKey, stripeAccount);
+    }
   }
 
   @ReactMethod

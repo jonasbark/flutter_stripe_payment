@@ -17,10 +17,13 @@ class StripePayment {
   static const MethodChannel _channel = const MethodChannel('stripe_payment');
 
   /// https://tipsi.github.io/tipsi-stripe/docs/usage.html
-  static Future<void> setOptions(StripeOptions settings) async {
-    return await Future(() {
-      _channel.invokeMethod('setOptions', {"options": settings.toJson(), "errorCodes": Errors.mapping});
-    }).then((_) => Future.delayed(Duration(microseconds: 250)));
+  static void setOptions(StripeOptions settings) async {
+    _channel.invokeMethod('setOptions', {"options": settings.toJson(), "errorCodes": Errors.mapping});
+  }
+
+  /// https://tipsi.github.io/tipsi-stripe/docs/usage.html
+  static void setStripeAccount(String stripeAccount) {
+    _channel.invokeMethod('setStripeAccount', {"stripeAccount": stripeAccount});
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/usage.html

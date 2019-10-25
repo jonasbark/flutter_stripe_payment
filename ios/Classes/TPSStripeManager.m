@@ -305,6 +305,10 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     [Stripe setDefaultPublishableKey:publishableKey];
 }
 
+-(void)setStripeAccount:(NSString *)_stripeAccount {
+    stripeAccount = _stripeAccount;
+}
+
 -(void)deviceSupportsApplePay:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject {
     resolve(@([PKPaymentAuthorizationViewController canMakePayments]));
@@ -1292,10 +1296,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
 
     STPAPIClient * client = [[STPAPIClient alloc] initWithPublishableKey:[Stripe defaultPublishableKey]];
     client.appInfo = info;
-    
-    if (![stripeAccount isEqualToString:@""]) {
-        client.stripeAccount = stripeAccount;
-    }
+    client.stripeAccount = stripeAccount;
 
     // Singleton sharedHandler should have the matching API Client!
     STPPaymentHandler.sharedHandler.apiClient = client;
