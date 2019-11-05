@@ -1,3 +1,7 @@
+## [1.0.5]
+- fix Android kotlin compilation problems (#72)
+- fix canMakeNativePayPayments request when it includes a list of networks (thanks @alexstuckey)
+
 ## [1.0.4]
 - fix Android configuration for Activities (#68)
 

@@ -37,6 +37,7 @@ public class ReadableMap extends HashMap<String, Object> {
         return (Integer) get(key);
     }
 
+    @SuppressWarnings("unchecked")
     public ReadableMap getMap(String key) {
         if (get(key) instanceof Map) {
             return new ReadableMap((Map<String, Object>) get(key));
