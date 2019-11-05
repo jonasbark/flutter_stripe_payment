@@ -42,7 +42,8 @@ class StripePayment {
     if (Platform.isAndroid) {
       return _channel.invokeMethod('canMakeAndroidPayPayments');
     } else if (Platform.isIOS) {
-      return _channel.invokeMethod('canMakeApplePayPayments', networks);
+      Map<String, dynamic> options = {"networks": networks};
+      return _channel.invokeMethod('canMakeApplePayPayments', options);
     } else
       throw UnimplementedError();
   }
