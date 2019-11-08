@@ -75,7 +75,6 @@ public class StripeModule extends ReactContextBaseJavaModule {
     }
   };
 
-
   public StripeModule(PluginRegistry.Registrar registrar, Activity activity) {
     super(activity, registrar);
     registrar.addActivityResultListener(mActivityEventListener);
@@ -136,6 +135,16 @@ public class StripeModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void canMakeAndroidPayPayments(final Promise promise) {
     getPayFlow().deviceSupportsAndroidPay(true, promise);
+  }
+
+  @ReactMethod
+  public void setStripeAccount(final String stripeAccount) {
+    ArgCheck.notEmptyString(mPublicKey);
+    if (stripeAccount == null) {
+      mStripe = new Stripe(getReactApplicationContext(), mPublicKey);
+    } else {
+      mStripe = new Stripe(getReactApplicationContext(), mPublicKey, stripeAccount);
+    }
   }
 
   @ReactMethod

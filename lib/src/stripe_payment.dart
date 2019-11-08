@@ -3,15 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'android_pay_payment_request.dart';
+import 'apple_pay_payment_request.dart';
+import 'card_form_payment_request.dart';
+import 'error_codes.dart';
 import 'payment_intent.dart';
 import 'payment_method.dart';
 import 'source.dart';
 import 'source_params.dart';
 import 'token.dart';
-import 'android_pay_payment_request.dart';
-import 'apple_pay_payment_request.dart';
-import 'card_form_payment_request.dart';
-import 'error_codes.dart';
 
 class StripePayment {
   static const MethodChannel _channel = const MethodChannel('stripe_payment');
@@ -19,6 +19,11 @@ class StripePayment {
   /// https://tipsi.github.io/tipsi-stripe/docs/usage.html
   static void setOptions(StripeOptions settings) {
     _channel.invokeMethod('setOptions', {"options": settings.toJson(), "errorCodes": Errors.mapping});
+  }
+
+  /// https://tipsi.github.io/tipsi-stripe/docs/usage.html
+  static void setStripeAccount(String stripeAccount) {
+    _channel.invokeMethod('setStripeAccount', {"stripeAccount": stripeAccount});
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/usage.html

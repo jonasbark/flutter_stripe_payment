@@ -32,6 +32,8 @@ typedef void (^RCTPromiseRejectBlock)(NSString *code, NSString *message, NSError
 
 -(void)init:(NSDictionary *)options errorCodes:(NSDictionary *)errors;
 
+-(void)setStripeAccount:(NSString *)_stripeAccount;
+
 -(void)deviceSupportsApplePay:(RCTPromiseResolveBlock)resolve
                      rejecter:(RCTPromiseRejectBlock)reject;
 
