@@ -187,7 +187,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void paymentRequestWithCardForm(ReadableMap params, final Promise promise) {
-    FlutterActivity currentActivity = (FlutterActivity) getCurrentActivity();
+    FlutterActivity currentActivity = (Activity) getCurrentActivity();
     try {
       ArgCheck.nonNull(currentActivity);
       ArgCheck.notEmptyString(mPublicKey);
