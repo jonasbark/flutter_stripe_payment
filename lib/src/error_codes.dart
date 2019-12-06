@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,7 @@ class Errors {
     ).toJson(),
     "deviceNotSupportsNativePay": ErrorCode(
             errorCode: 'deviceNotSupportsNativePay',
-            description:
+            description: kIsWeb ? "Native Pay isn't supported in a web browser" :
                 Platform.isIOS ? 'This device does not support Apple Pay' : 'This device does not support Google Pay')
         .toJson(),
     "noPaymentRequest": ErrorCode(

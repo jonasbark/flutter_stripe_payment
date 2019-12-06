@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 
 import 'android_pay_payment_request.dart';
 import 'apple_pay_payment_request.dart';
@@ -28,6 +29,10 @@ class StripePayment {
 
   /// https://tipsi.github.io/tipsi-stripe/docs/usage.html
   static Future<bool> deviceSupportsNativePay() async {
+    if (kIsWeb) {
+      return false;
+    }
+
     if (Platform.isIOS) {
       return _deviceSupportsApplePay();
     } else if (Platform.isAndroid) {
@@ -39,6 +44,10 @@ class StripePayment {
 
   /// https://tipsi.github.io/tipsi-stripe/docs/canMakeNativePayPayments.html
   static Future<bool> canMakeNativePayPayments(List<String> networks) async {
+    if (kIsWeb) {
+      throw UnimplementedError();
+    }
+
     if (Platform.isAndroid) {
       return _channel.invokeMethod('canMakeAndroidPayPayments');
     } else if (Platform.isIOS) {
@@ -55,6 +64,10 @@ class StripePayment {
   /// https://tipsi.github.io/tipsi-stripe/docs/paymentRequestWithNativePay.html
   static Future<Token> paymentRequestWithNativePay(
       {@required AndroidPayPaymentRequest androidPayOptions, @required ApplePayPaymentOptions applePayOptions}) {
+    if (kIsWeb) {
+      throw UnimplementedError();
+    }
+    
     if (Platform.isAndroid) {
       return _paymentRequestWithAndroidPay(androidPayOptions);
     } else if (Platform.isIOS) {
@@ -76,6 +89,10 @@ class StripePayment {
 
   /// https://tipsi.github.io/tipsi-stripe/docs/completeNativePayRequest.html
   static Future<void> completeNativePayRequest() async {
+    if (kIsWeb) {
+      throw UnimplementedError();
+    }
+
     if (Platform.isIOS) {
       return _channel.invokeMethod("completeApplePayRequest");
     } else if (Platform.isAndroid) {
@@ -86,6 +103,10 @@ class StripePayment {
 
   /// https://tipsi.github.io/tipsi-stripe/docs/cancelNativePayRequest.html
   static Future<void> cancelNativePayRequest() async {
+    if (kIsWeb) {
+      throw UnimplementedError();
+    }
+
     if (Platform.isIOS) {
       return _channel.invokeMethod("cancelApplePayRequest");
     } else if (Platform.isAndroid) {
