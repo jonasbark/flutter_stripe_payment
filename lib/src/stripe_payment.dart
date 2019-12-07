@@ -31,14 +31,14 @@ class StripePayment {
   static Future<bool> deviceSupportsNativePay() async {
     if (kIsWeb) {
       return false;
-    }
-
-    if (Platform.isIOS) {
-      return _deviceSupportsApplePay();
-    } else if (Platform.isAndroid) {
-      return _deviceSupportsAndroidPay();
     } else {
-      return false;
+      if (Platform.isIOS) {
+        return _deviceSupportsApplePay();
+      } else if (Platform.isAndroid) {
+        return _deviceSupportsAndroidPay();
+      } else {
+        return false;
+      }
     }
   }
 
@@ -46,15 +46,15 @@ class StripePayment {
   static Future<bool> canMakeNativePayPayments(List<String> networks) async {
     if (kIsWeb) {
       throw UnimplementedError();
+    } else {
+      if (Platform.isAndroid) {
+        return _channel.invokeMethod('canMakeAndroidPayPayments');
+      } else if (Platform.isIOS) {
+        Map<String, dynamic> options = {"networks": networks};
+        return _channel.invokeMethod('canMakeApplePayPayments', options);
+      } else
+        throw UnimplementedError();
     }
-
-    if (Platform.isAndroid) {
-      return _channel.invokeMethod('canMakeAndroidPayPayments');
-    } else if (Platform.isIOS) {
-      Map<String, dynamic> options = {"networks": networks};
-      return _channel.invokeMethod('canMakeApplePayPayments', options);
-    } else
-      throw UnimplementedError();
   }
 
   static Future<bool> _deviceSupportsAndroidPay() => _channel.invokeMethod("deviceSupportsAndroidPay");
@@ -66,14 +66,14 @@ class StripePayment {
       {@required AndroidPayPaymentRequest androidPayOptions, @required ApplePayPaymentOptions applePayOptions}) {
     if (kIsWeb) {
       throw UnimplementedError();
+    } else {
+      if (Platform.isAndroid) {
+        return _paymentRequestWithAndroidPay(androidPayOptions);
+      } else if (Platform.isIOS) {
+        return _paymentRequestWithApplePay(applePayOptions);
+      } else
+        throw UnimplementedError();
     }
-    
-    if (Platform.isAndroid) {
-      return _paymentRequestWithAndroidPay(androidPayOptions);
-    } else if (Platform.isIOS) {
-      return _paymentRequestWithApplePay(applePayOptions);
-    } else
-      throw UnimplementedError();
   }
 
   static Future<Token> _paymentRequestWithAndroidPay(AndroidPayPaymentRequest options) async {
@@ -91,28 +91,28 @@ class StripePayment {
   static Future<void> completeNativePayRequest() async {
     if (kIsWeb) {
       throw UnimplementedError();
+    } else {
+      if (Platform.isIOS) {
+        return _channel.invokeMethod("completeApplePayRequest");
+      } else if (Platform.isAndroid) {
+        return null;
+      } else
+        throw UnimplementedError();
     }
-
-    if (Platform.isIOS) {
-      return _channel.invokeMethod("completeApplePayRequest");
-    } else if (Platform.isAndroid) {
-      return null;
-    } else
-      throw UnimplementedError();
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/cancelNativePayRequest.html
   static Future<void> cancelNativePayRequest() async {
     if (kIsWeb) {
       throw UnimplementedError();
+    } else {
+      if (Platform.isIOS) {
+        return _channel.invokeMethod("cancelApplePayRequest");
+      } else if (Platform.isAndroid) {
+        return null;
+      } else
+        throw UnimplementedError();
     }
-
-    if (Platform.isIOS) {
-      return _channel.invokeMethod("cancelApplePayRequest");
-    } else if (Platform.isAndroid) {
-      return null;
-    } else
-      throw UnimplementedError();
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/paymentRequestWithCardForm.html
