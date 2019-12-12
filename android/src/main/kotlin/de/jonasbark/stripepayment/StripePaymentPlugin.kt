@@ -17,6 +17,9 @@ class StripePaymentPlugin(private val stripeModule: StripeModule) : MethodCallHa
                 ReadableMap(call.argument("options")),
                 ReadableMap(call.argument("errorCodes"))
             )
+            "setStripeAccount" -> stripeModule.setStripeAccount(
+                call.argument("stripeAccount")
+            )
             "deviceSupportsAndroidPay" -> stripeModule.deviceSupportsAndroidPay(Promise(result));
             "canMakeAndroidPayPayments" -> stripeModule.canMakeAndroidPayPayments(Promise(result));
             "paymentRequestWithAndroidPay" -> stripeModule.paymentRequestWithAndroidPay(

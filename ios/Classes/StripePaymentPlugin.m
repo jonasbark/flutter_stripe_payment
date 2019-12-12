@@ -30,6 +30,8 @@
     };
     if ([@"setOptions" isEqualToString: call.method]) {
         [stripeModule init:call.arguments[@"options"] errorCodes:call.arguments[@"errorCodes"]];
+    } else if ([@"setStripeAccount" isEqualToString:call.method]) {
+        [stripeModule setStripeAccount:call.arguments[@"stripeAccount"]];
     } else if ([@"deviceSupportsApplePay" isEqualToString:call.method]) {
         [stripeModule deviceSupportsApplePay:result rejecter:rejecter];
     } else if ([@"canMakeApplePayPayments" isEqualToString:call.method]) {

@@ -75,7 +75,6 @@ public class StripeModule extends ReactContextBaseJavaModule {
     }
   };
 
-
   public StripeModule(PluginRegistry.Registrar registrar, Activity activity) {
     super(activity, registrar);
     registrar.addActivityResultListener(mActivityEventListener);
@@ -139,6 +138,16 @@ public class StripeModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void setStripeAccount(final String stripeAccount) {
+    ArgCheck.notEmptyString(mPublicKey);
+    if (stripeAccount == null) {
+      mStripe = new Stripe(getReactApplicationContext(), mPublicKey);
+    } else {
+      mStripe = new Stripe(getReactApplicationContext(), mPublicKey, stripeAccount);
+    }
+  }
+
+  @ReactMethod
   public void createTokenWithCard(final ReadableMap cardData, final Promise promise) {
     try {
       ArgCheck.nonNull(mStripe);
@@ -187,7 +196,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void paymentRequestWithCardForm(ReadableMap params, final Promise promise) {
-    FlutterActivity currentActivity = (FlutterActivity) getCurrentActivity();
+    Activity currentActivity = getCurrentActivity();
     try {
       ArgCheck.nonNull(currentActivity);
       ArgCheck.notEmptyString(mPublicKey);
