@@ -305,7 +305,11 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
 }
 
 -(void)setStripeAccount:(NSString *)_stripeAccount {
-    stripeAccount = _stripeAccount;
+    NSString *_account;
+    if (_stripeAccount && _stripeAccount != [NSNull null]) {
+        _account = _stripeAccount;
+    }
+    stripeAccount = _account;
 }
 
 -(void)deviceSupportsApplePay:(RCTPromiseResolveBlock)resolve
