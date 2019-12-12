@@ -1,3 +1,7 @@
+## [1.0.6]
+- fix #97 (thanks @sandeep-at-airlift)
+- support Stripe Connected accounts (thanks @nicowernli)
+
 ## [1.0.5]
 - fix Android kotlin compilation problems (#72)
 - fix canMakeNativePayPayments request when it includes a list of networks (thanks @alexstuckey)

@@ -49,6 +49,7 @@ Include support in android/gradle.properties
 android.useAndroidX=true
 android.enableJetifier=true
 ```
+For proper setup also have a look at: https://github.com/jonasbark/flutter_stripe_payment/issues/88#issuecomment-553798157 
 
 ## Documentation
 
