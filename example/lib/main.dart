@@ -190,8 +190,8 @@ class _MyAppState extends State<MyApp> {
                 }
                 StripePayment.paymentRequestWithNativePay(
                   androidPayOptions: AndroidPayPaymentRequest(
-                    total_price: "1.20",
-                    currency_code: "EUR",
+                    totalPrice: "1.20",
+                    currencyCode: "EUR",
                   ),
                   applePayOptions: ApplePayPaymentOptions(
                     countryCode: 'DE',
