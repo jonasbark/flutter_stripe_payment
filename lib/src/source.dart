@@ -1,9 +1,11 @@
 import 'package:stripe_payment/src/card_form_payment_request.dart';
+import 'package:stripe_payment/src/token.dart';
 
 class Source {
   String object;
   Receiver receiver;
   AchCreditTransfer achCreditTransfer;
+  CreditCard card;
   num amount;
   String clientSecret;
   num created;
@@ -22,6 +24,7 @@ class Source {
       {this.object,
       this.receiver,
       this.achCreditTransfer,
+      this.card,
       this.amount,
       this.clientSecret,
       this.created,
@@ -40,8 +43,8 @@ class Source {
     return Source(
       object: json['object'],
       receiver: json['receiver'] != null ? Receiver.fromJson(json['receiver']) : null,
-      achCreditTransfer:
-          json['ach_credit_transfer'] != null ? AchCreditTransfer.fromJson(json['ach_credit_transfer']) : null,
+      achCreditTransfer: json['ach_credit_transfer'] != null ? AchCreditTransfer.fromJson(json['ach_credit_transfer']) : null,
+      card: json['card'] != null ? Card.fromJson(json['card']) : null,
       amount: json['amount'],
       clientSecret: json['client_secret'],
       created: json['created'],
