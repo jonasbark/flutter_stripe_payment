@@ -863,8 +863,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     [paymentRequest setShippingMethods:shippingMethods];
     [paymentRequest setShippingType:shippingType];
 
-    if ([self canSubmitPaymentRequest:paymentRequest rejecter:reject]) {
-        PKPaymentAuthorizationViewController *paymentAuthorizationVC = [[PKPaymentAuthorizationViewController alloc] initWithPaymentRequest:paymentRequest];
+    PKPaymentAuthorizationViewController *paymentAuthorizationVC = [[PKPaymentAuthorizationViewController alloc] initWithPaymentRequest:paymentRequest];
         paymentAuthorizationVC.delegate = self;
 
         // move to the end of main queue
@@ -873,11 +872,6 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
         dispatch_async(dispatch_get_main_queue(), ^{
             [RCTPresentedViewController() presentViewController:paymentAuthorizationVC animated:YES completion:nil];
         });
-    } else {
-        // There is a problem with your Apple Pay configuration.
-        [self resetPromiseCallbacks];
-        requestIsCompleted = YES;
-    }
 }
 
 -(void)openApplePaySetup {
