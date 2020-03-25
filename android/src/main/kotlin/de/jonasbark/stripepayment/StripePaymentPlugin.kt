@@ -1,78 +1,93 @@
 package de.jonasbark.stripepayment
 
-import com.facebook.react.bridge.Promise
-import com.facebook.react.bridge.ReadableMap
-import com.gettipsi.stripe.StripeModule
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
+import android.app.Activity
+import android.content.Context
+import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.plugin.common.BinaryMessenger
+import io.flutter.plugin.common.PluginRegistry.ActivityResultListener
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-class StripePaymentPlugin(private val stripeModule: StripeModule) : MethodCallHandler {
+interface ActivityRegistry {
+    fun addListener(handler: ActivityResultListener)
+    fun removeListener(handler: ActivityResultListener)
+}
 
-    override fun onMethodCall(call: MethodCall, result: Result) {
-        when (call.method) {
-            "setOptions" -> stripeModule.init(
-                ReadableMap(call.argument("options")),
-                ReadableMap(call.argument("errorCodes"))
-            )
-            "setStripeAccount" -> stripeModule.setStripeAccount(
-                call.argument("stripeAccount")
-            )
-            "deviceSupportsAndroidPay" -> stripeModule.deviceSupportsAndroidPay(Promise(result));
-            "canMakeAndroidPayPayments" -> stripeModule.canMakeAndroidPayPayments(Promise(result));
-            "paymentRequestWithAndroidPay" -> stripeModule.paymentRequestWithAndroidPay(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
-            )
-            "paymentRequestWithCardForm" -> stripeModule.paymentRequestWithCardForm(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
-            )
-            "createTokenWithCard" -> stripeModule.createTokenWithCard(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
-            )
-            "createTokenWithBankAccount" -> stripeModule.createTokenWithBankAccount(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
-            )
-            "createSourceWithParams" -> stripeModule.createSourceWithParams(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
-            )
-            "createPaymentMethod" -> stripeModule.createPaymentMethod(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
-            )
-            "authenticatePaymentIntent" -> stripeModule.authenticatePaymentIntent(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
-            )
-            "confirmPaymentIntent" -> stripeModule.confirmPaymentIntent(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
-            )
-            "authenticateSetupIntent" -> stripeModule.authenticateSetupIntent(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
-            )
-            "confirmSetupIntent" -> stripeModule.confirmSetupIntent(
-                ReadableMap(call.arguments as Map<String, Any>),
-                Promise(result)
+class StripePaymentPlugin() : FlutterPlugin, ActivityAware {
+    private var flutterPluginBinding: FlutterPluginBinding? = null
+    private var methodCallHandler: MethodCallHandlerImpl? = null
+
+    companion object {
+        /** Plugin registration.  */
+        fun registerWith(registrar: Registrar) {
+            val instance = StripePaymentPlugin()
+            instance.startListening(
+                    registrar.context(),
+                    registrar.activity(),
+                    registrar.messenger(),
+                    object : ActivityRegistry {
+                        override fun addListener(handler: ActivityResultListener) {
+                            registrar.addActivityResultListener(handler)
+                        }
+
+                        override fun removeListener(handler: ActivityResultListener) {
+                            // Not supported in V1 embedding.
+                        }
+                    }
             )
         }
     }
 
-    companion object {
+    override fun onAttachedToEngine(binding: FlutterPluginBinding) {
+        this.flutterPluginBinding = binding
+    }
 
-        @JvmStatic
-        fun registerWith(registrar: Registrar) {
-            val channel = MethodChannel(registrar.messenger(), "stripe_payment")
-            val stripeModule = StripeModule(registrar, registrar.activity())
-            val plugin = StripePaymentPlugin(stripeModule)
-            channel.setMethodCallHandler(plugin)
+    override fun onDetachedFromEngine(binding: FlutterPluginBinding) {
+        this.flutterPluginBinding = null
+    }
+
+    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        if (flutterPluginBinding == null) {
+            return
         }
+
+        startListening(
+                flutterPluginBinding!!.applicationContext,
+                binding.activity,
+                flutterPluginBinding!!.binaryMessenger,
+                object : ActivityRegistry {
+                    override fun addListener(handler: ActivityResultListener) {
+                        binding.addActivityResultListener(handler)
+                    }
+
+                    override fun removeListener(handler: ActivityResultListener) {
+                        binding.removeActivityResultListener(handler)
+                    }
+                }
+        )
+    }
+
+    override fun onDetachedFromActivityForConfigChanges() {
+        onDetachedFromActivity()
+    }
+
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+        onAttachedToActivity(binding)
+    }
+
+    override fun onDetachedFromActivity() {
+        methodCallHandler?.stopListening()
+        methodCallHandler = null
+    }
+
+    private fun startListening(applicationContext: Context, activity: Activity?, messenger: BinaryMessenger?, kFunction1: ActivityRegistry) {
+        methodCallHandler = MethodCallHandlerImpl(
+                applicationContext,
+                activity,
+                messenger,
+                kFunction1
+        )
     }
 }

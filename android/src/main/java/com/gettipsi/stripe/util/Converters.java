@@ -1,9 +1,8 @@
 package com.gettipsi.stripe.util;
 
+import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.text.TextUtils;
-
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -17,7 +16,11 @@ import com.stripe.android.PaymentIntentResult;
 import com.stripe.android.SetupIntentResult;
 import com.stripe.android.model.Address;
 import com.stripe.android.model.BankAccount;
+import com.stripe.android.model.BankAccountTokenParams;
+import com.stripe.android.model.BankAccountTokenParams.Type;
 import com.stripe.android.model.Card;
+import com.stripe.android.model.CardBrand;
+import com.stripe.android.model.CardFunding;
 import com.stripe.android.model.PaymentIntent;
 import com.stripe.android.model.PaymentMethod;
 import com.stripe.android.model.SetupIntent;
@@ -27,7 +30,6 @@ import com.stripe.android.model.SourceOwner;
 import com.stripe.android.model.SourceReceiver;
 import com.stripe.android.model.SourceRedirect;
 import com.stripe.android.model.Token;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -41,7 +43,9 @@ public class Converters {
   public static WritableMap convertTokenToWritableMap(Token token) {
     WritableMap newToken = Arguments.createMap();
 
-    if (token == null) return newToken;
+    if (token == null) {
+      return newToken;
+    }
 
     newToken.putString("tokenId", token.getId());
     newToken.putBoolean("livemode", token.getLivemode());
@@ -58,7 +62,8 @@ public class Converters {
     return newToken;
   }
 
-  public static WritableMap putExtraToTokenMap(final WritableMap tokenMap, UserAddress billingAddress, UserAddress shippingAddress, String emailAddress) {
+  public static WritableMap putExtraToTokenMap(final WritableMap tokenMap,
+      UserAddress billingAddress, UserAddress shippingAddress, String emailAddress) {
     ArgCheck.nonNull(tokenMap);
 
     WritableMap extra = Arguments.createMap();
@@ -69,7 +74,6 @@ public class Converters {
 
     billingContactMap.putString("emailAddress", emailAddress);
     shippingContactMap.putString("emailAddress", emailAddress);
-
 
     extra.putMap("billingContact", billingContactMap);
     extra.putMap("shippingContact", shippingContactMap);
@@ -82,26 +86,28 @@ public class Converters {
   private static WritableMap convertCardToWritableMap(final Card card) {
     WritableMap result = Arguments.createMap();
 
-    if (card == null) return result;
+    if (card == null) {
+      return result;
+    }
 
     result.putString("cardId", card.getId());
     result.putString("number", card.getNumber());
-    result.putString("cvc", card.getCVC() );
-    result.putInt("expMonth", card.getExpMonth() );
-    result.putInt("expYear", card.getExpYear() );
-    result.putString("name", card.getName() );
-    result.putString("addressLine1", card.getAddressLine1() );
-    result.putString("addressLine2", card.getAddressLine2() );
-    result.putString("addressCity", card.getAddressCity() );
-    result.putString("addressState", card.getAddressState() );
-    result.putString("addressZip", card.getAddressZip() );
-    result.putString("addressCountry", card.getAddressCountry() );
-    result.putString("last4", card.getLast4() );
-    result.putString("brand", card.getBrand() );
-    result.putString("funding", card.getFunding() );
-    result.putString("fingerprint", card.getFingerprint() );
-    result.putString("country", card.getCountry() );
-    result.putString("currency", card.getCurrency() );
+    result.putString("cvc", card.getCvc());
+    result.putInt("expMonth", card.getExpMonth());
+    result.putInt("expYear", card.getExpYear());
+    result.putString("name", card.getName());
+    result.putString("addressLine1", card.getAddressLine1());
+    result.putString("addressLine2", card.getAddressLine2());
+    result.putString("addressCity", card.getAddressCity());
+    result.putString("addressState", card.getAddressState());
+    result.putString("addressZip", card.getAddressZip());
+    result.putString("addressCountry", card.getAddressCountry());
+    result.putString("last4", card.getLast4());
+    result.putString("brand", card.getBrand().name());
+    result.putString("funding", card.getFunding().name());
+    result.putString("fingerprint", card.getFingerprint());
+    result.putString("country", card.getCountry());
+    result.putString("currency", card.getCurrency());
 
     return result;
   }
@@ -109,7 +115,9 @@ public class Converters {
   public static WritableMap convertBankAccountToWritableMap(BankAccount account) {
     WritableMap result = Arguments.createMap();
 
-    if (account == null) return result;
+    if (account == null) {
+      return result;
+    }
 
     result.putString("routingNumber", account.getRoutingNumber());
     result.putString("accountNumber", account.getAccountNumber());
@@ -142,7 +150,8 @@ public class Converters {
     }
   }
 
-  public static ReadableArray getValue(final ReadableMap map, final String key, final ReadableArray def) {
+  public static ReadableArray getValue(final ReadableMap map, final String key,
+      final ReadableArray def) {
     if (map.hasKey(key)) {
       return map.getArray(key);
     } else {
@@ -159,7 +168,7 @@ public class Converters {
     ArrayList<String> allowedCountryCodesForShipping = new ArrayList<>();
     ReadableArray countries = getValue(map, "shipping_countries", (ReadableArray) null);
 
-    if (countries != null){
+    if (countries != null) {
       for (int i = 0; i < countries.size(); i++) {
         String code = countries.getString(i);
         allowedCountryCodesForShipping.add(code);
@@ -173,7 +182,7 @@ public class Converters {
     ArrayList<CountrySpecification> allowedCountriesForShipping = new ArrayList<>();
     ReadableArray countries = getValue(map, "shipping_countries", (ReadableArray) null);
 
-    if (countries != null){
+    if (countries != null) {
       for (int i = 0; i < countries.size(); i++) {
         String code = countries.getString(i);
         allowedCountriesForShipping.add(new CountrySpecification(code));
@@ -189,23 +198,22 @@ public class Converters {
         cardData.getInt("expMonth"),
         cardData.getInt("expYear"),
         getValue(cardData, "cvc"))
-      .name(getValue(cardData, "name"))
-      .addressLine1(getValue(cardData, "addressLine1"))
-      .addressLine2(getValue(cardData, "addressLine2"))
-      .addressCity(getValue(cardData, "addressCity"))
-      .addressState(getValue(cardData, "addressState"))
-      .addressZip(getValue(cardData, "addressZip"))
-      .addressCountry(getValue(cardData, "addressCountry"))
-      .brand(getValue(cardData, "brand"))
-      .last4(getValue(cardData, "last4"))
-      .fingerprint(getValue(cardData, "fingerprint"))
-      .funding(getValue(cardData, "funding"))
-      .country(getValue(cardData, "country"))
-      .currency(getValue(cardData, "currency"))
-      .id(getValue(cardData, "id"))
-      .build();
+        .name(getValue(cardData, "name"))
+        .addressLine1(getValue(cardData, "addressLine1"))
+        .addressLine2(getValue(cardData, "addressLine2"))
+        .addressCity(getValue(cardData, "addressCity"))
+        .addressState(getValue(cardData, "addressState"))
+        .addressZip(getValue(cardData, "addressZip"))
+        .addressCountry(getValue(cardData, "addressCountry"))
+        .brand(CardBrand.valueOf(getValue(cardData, "brand")))
+        .last4(getValue(cardData, "last4"))
+        .fingerprint(getValue(cardData, "fingerprint"))
+        .funding(CardFunding.valueOf(getValue(cardData, "funding")))
+        .country(getValue(cardData, "country"))
+        .currency(getValue(cardData, "currency"))
+        .id(getValue(cardData, "id"))
+        .build();
   }
-
 
 
   @NonNull
@@ -219,7 +227,8 @@ public class Converters {
     newSource.putString("sourceId", source.getId());
     newSource.putInt("amount", source.getAmount().intValue());
     newSource.putInt("created", source.getCreated().intValue());
-    newSource.putMap("codeVerification", convertCodeVerificationToWritableMap(source.getCodeVerification()));
+    newSource.putMap("codeVerification",
+        convertCodeVerificationToWritableMap(source.getCodeVerification()));
     newSource.putString("currency", source.getCurrency());
     newSource.putString("flow", source.getFlow());
     newSource.putBoolean("livemode", source.isLiveMode());
@@ -237,7 +246,8 @@ public class Converters {
   }
 
   @NonNull
-  public static WritableMap convertPaymentIntentResultToWritableMap(@Nullable PaymentIntentResult paymentIntentResult) {
+  public static WritableMap convertPaymentIntentResultToWritableMap(
+      @Nullable PaymentIntentResult paymentIntentResult) {
     WritableMap wm = Arguments.createMap();
 
     if (paymentIntentResult == null) {
@@ -258,7 +268,8 @@ public class Converters {
 
 
   @NonNull
-  public static WritableMap convertSetupIntentResultToWritableMap(@Nullable SetupIntentResult setupIntentResult) {
+  public static WritableMap convertSetupIntentResultToWritableMap(
+      @Nullable SetupIntentResult setupIntentResult) {
     WritableMap wm = Arguments.createMap();
 
     if (setupIntentResult == null) {
@@ -278,7 +289,8 @@ public class Converters {
   }
 
   @NonNull
-  public static WritableMap convertPaymentMethodToWritableMap(@Nullable PaymentMethod paymentMethod) {
+  public static WritableMap convertPaymentMethodToWritableMap(
+      @Nullable PaymentMethod paymentMethod) {
     WritableMap wm = Arguments.createMap();
 
     if (paymentMethod == null) {
@@ -288,7 +300,7 @@ public class Converters {
     wm.putString("id", paymentMethod.id);
     wm.putInt("created", paymentMethod.created.intValue());
     wm.putBoolean("livemode", paymentMethod.liveMode);
-    wm.putString("type", paymentMethod.type);
+    wm.putString("type", paymentMethod.type.name());
     wm.putMap("billingDetails", convertBillingDetailsToWritableMap(paymentMethod.billingDetails));
     wm.putMap("card", convertPaymentMethodCardToWritableMap(paymentMethod.card));
     wm.putString("customerId", paymentMethod.customerId);
@@ -298,7 +310,8 @@ public class Converters {
   }
 
   @NonNull
-  public static WritableMap convertPaymentMethodCardToWritableMap(@Nullable final PaymentMethod.Card card) {
+  public static WritableMap convertPaymentMethodCardToWritableMap(
+      @Nullable final PaymentMethod.Card card) {
     WritableMap wm = Arguments.createMap();
 
     if (card == null) {
@@ -317,7 +330,8 @@ public class Converters {
   }
 
   @NonNull
-  public static WritableMap convertBillingDetailsToWritableMap(@Nullable final PaymentMethod.BillingDetails billingDetails) {
+  public static WritableMap convertBillingDetailsToWritableMap(
+      @Nullable final PaymentMethod.BillingDetails billingDetails) {
     WritableMap wm = Arguments.createMap();
 
     if (billingDetails == null) {
@@ -417,7 +431,8 @@ public class Converters {
   }
 
   @NonNull
-  public static WritableMap convertCodeVerificationToWritableMap(@Nullable SourceCodeVerification codeVerification) {
+  public static WritableMap convertCodeVerificationToWritableMap(
+      @Nullable SourceCodeVerification codeVerification) {
     WritableMap map = Arguments.createMap();
 
     if (codeVerification == null) {
@@ -431,34 +446,35 @@ public class Converters {
   }
 
   @NonNull
-  public static WritableMap mapToWritableMap(@Nullable Map<String, Object> map){
+  public static WritableMap mapToWritableMap(@Nullable Map<String, Object> map) {
     WritableMap writableMap = Arguments.createMap();
 
     if (map == null) {
       return writableMap;
     }
 
-    for (String key: map.keySet()) {
+    for (String key : map.keySet()) {
       pushRightTypeToMap(writableMap, key, map.get(key));
     }
 
     return writableMap;
   }
 
-  public static void pushRightTypeToMap(@NonNull WritableMap map, @NonNull String key, @NonNull Object object) {
+  public static void pushRightTypeToMap(@NonNull WritableMap map, @NonNull String key,
+      @NonNull Object object) {
     Class argumentClass = object.getClass();
     if (argumentClass == Boolean.class) {
       map.putBoolean(key, (Boolean) object);
     } else if (argumentClass == Integer.class) {
-      map.putDouble(key, ((Integer)object).doubleValue());
+      map.putDouble(key, ((Integer) object).doubleValue());
     } else if (argumentClass == Double.class) {
       map.putDouble(key, (Double) object);
     } else if (argumentClass == Float.class) {
-      map.putDouble(key, ((Float)object).doubleValue());
+      map.putDouble(key, ((Float) object).doubleValue());
     } else if (argumentClass == String.class) {
       map.putString(key, object.toString());
     } else if (argumentClass == WritableNativeMap.class) {
-      map.putMap(key, (WritableNativeMap)object);
+      map.putMap(key, (WritableNativeMap) object);
     } else if (argumentClass == WritableNativeArray.class) {
       map.putArray(key, (WritableNativeArray) object);
     } else {
@@ -466,10 +482,12 @@ public class Converters {
     }
   }
 
-  public static WritableMap convertAddressToWritableMap(final UserAddress address){
+  public static WritableMap convertAddressToWritableMap(final UserAddress address) {
     WritableMap result = Arguments.createMap();
 
-    if (address == null) return result;
+    if (address == null) {
+      return result;
+    }
 
     putIfNotEmpty(result, "address1", address.getAddress1());
     putIfNotEmpty(result, "address2", address.getAddress2());
@@ -488,22 +506,33 @@ public class Converters {
     return result;
   }
 
-  public static BankAccount createBankAccount(ReadableMap accountData) {
-    BankAccount account = new BankAccount(
-      // required fields only
-      accountData.getString("accountNumber"),
-      getValue(accountData, "accountHolderName"),
-      getValue(accountData, "accountHolderType"),
-      null,
-      accountData.getString("countryCode"),
-      accountData.getString("currency"),
-      null,
-      null,
-      getValue(accountData, "routingNumber", "")
+  public static BankAccountTokenParams createBankAccountTokenParams(ReadableMap accountData) {
+    return new BankAccountTokenParams(
+        accountData.getString("countryCode"),
+        accountData.getString("currency"),
+        accountData.getString("accountNumber"),
+        Type.valueOf(getValue(accountData, "accountHolderType")),
+        getValue(accountData, "accountHolderName"),
+        getValue(accountData, "routingNumber", "")
     );
-
-    return account;
   }
+
+//  public static BankAccount createBankAccount(ReadableMap accountData) {
+//    BankAccount account = new BankAccount(
+//        // required fields only
+//        accountData.getString("accountNumber"),
+//        getValue(accountData, "accountHolderName"),
+//        getValue(accountData, "accountHolderType"),
+//        null,
+//        accountData.getString("countryCode"),
+//        accountData.getString("currency"),
+//        null,
+//        null,
+//        getValue(accountData, "routingNumber", "")
+//    );
+//
+//    return account;
+//  }
 
   public static String getStringOrNull(@NonNull ReadableMap map, @NonNull String key) {
     return map.hasKey(key) ? map.getString(key) : null;
@@ -513,7 +542,8 @@ public class Converters {
     return map.hasKey(key) ? map.getMap(key) : null;
   }
 
-  public static boolean getBooleanOrNull(@NonNull ReadableMap map, @NonNull String key, boolean defaultVal) {
+  public static boolean getBooleanOrNull(@NonNull ReadableMap map, @NonNull String key,
+      boolean defaultVal) {
     return map.hasKey(key) ? map.getBoolean(key) : defaultVal;
   }
 
