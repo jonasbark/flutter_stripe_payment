@@ -15,12 +15,13 @@ interface ActivityRegistry {
     fun removeListener(handler: ActivityResultListener)
 }
 
-class StripePaymentPlugin() : FlutterPlugin, ActivityAware {
+class StripePaymentPlugin : FlutterPlugin, ActivityAware {
     private var flutterPluginBinding: FlutterPluginBinding? = null
     private var methodCallHandler: MethodCallHandlerImpl? = null
 
     companion object {
         /** Plugin registration.  */
+        @JvmStatic
         fun registerWith(registrar: Registrar) {
             val instance = StripePaymentPlugin()
             instance.startListening(
