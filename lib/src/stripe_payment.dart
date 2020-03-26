@@ -42,7 +42,8 @@ class StripePayment {
     }
   }
 
-  /// https://tipsi.github.io/tipsi-stripe/docs/canMakeNativePayPayments.html
+  /// https://tipsi.github.io/tipsi-stripe/docs/canmakeapplepaypaymentsoptions.html
+  /// https://tipsi.github.io/tipsi-stripe/docs/canmakeandroidpaypayments.html
   static Future<bool> canMakeNativePayPayments(List<String> networks) async {
     if (kIsWeb) {
       throw UnimplementedError();
@@ -55,6 +56,10 @@ class StripePayment {
       } else
         throw UnimplementedError();
     }
+  }
+
+  static Future<List<String>> potentiallyAvailableNativePayNetworks() async {
+    return await _channel.invokeListMethod("potentiallyAvailableNativePayNetworks");
   }
 
   static Future<bool> _deviceSupportsAndroidPay() => _channel.invokeMethod("deviceSupportsAndroidPay");
