@@ -864,14 +864,14 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     [paymentRequest setShippingType:shippingType];
 
     PKPaymentAuthorizationViewController *paymentAuthorizationVC = [[PKPaymentAuthorizationViewController alloc] initWithPaymentRequest:paymentRequest];
-        paymentAuthorizationVC.delegate = self;
+    paymentAuthorizationVC.delegate = self;
 
-        // move to the end of main queue
-        // allow the execution of hiding modal
-        // to be finished first
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [RCTPresentedViewController() presentViewController:paymentAuthorizationVC animated:YES completion:nil];
-        });
+    // move to the end of main queue
+    // allow the execution of hiding modal
+    // to be finished first
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [RCTPresentedViewController() presentViewController:paymentAuthorizationVC animated:YES completion:nil];
+    });
 }
 
 -(void)openApplePaySetup {
