@@ -1,9 +1,6 @@
 package com.gettipsi.stripe.util;
 
-/**
- * Created by ngoriachev on 13/03/2018.
- */
-
+/** Created by ngoriachev on 13/03/2018. */
 public abstract class PayParams {
 
   public static final String CURRENCY_CODE = "currency_code";
@@ -16,5 +13,4 @@ public abstract class PayParams {
   public static final String LINE_ITEMS = "line_items";
   public static final String QUANTITY = "quantity";
   public static final String DESCRIPTION = "description";
-
 }

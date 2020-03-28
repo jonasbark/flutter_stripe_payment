@@ -2,9 +2,8 @@ package com.gettipsi.stripe;
 
 import android.app.Activity;
 import android.content.Intent;
-import androidx.annotation.NonNull;
 import android.util.Log;
-
+import androidx.annotation.NonNull;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
 import com.gettipsi.stripe.util.ArgCheck;
@@ -31,13 +30,14 @@ public abstract class PayFlow {
   }
 
   private static boolean isValidEnvironment(int environment) {
-    return environment == WalletConstants.ENVIRONMENT_TEST ||
-      environment == WalletConstants.ENVIRONMENT_PRODUCTION;
+    return environment == WalletConstants.ENVIRONMENT_TEST
+        || environment == WalletConstants.ENVIRONMENT_PRODUCTION;
   }
 
   private static boolean isEnvironmentChangeAttempt(int oldEnvironment, int newEnvironment) {
-    return oldEnvironment != newEnvironment && isValidEnvironment(oldEnvironment) &&
-      isValidEnvironment(newEnvironment);
+    return oldEnvironment != newEnvironment
+        && isValidEnvironment(oldEnvironment)
+        && isValidEnvironment(newEnvironment);
   }
 
   protected int getEnvironment() {
@@ -81,9 +81,13 @@ public abstract class PayFlow {
 
   abstract void paymentRequestWithAndroidPay(final ReadableMap payParams, final Promise promise);
 
-  abstract void deviceSupportsAndroidPay(boolean isExistingPaymentMethodRequired, final Promise promise);
+  abstract void deviceSupportsAndroidPay(
+      boolean isExistingPaymentMethodRequired, final Promise promise);
 
-  abstract boolean onActivityResult(Activity activity, int requestCode, int resultCode, Intent data);
+  abstract void potentiallyAvailableNativePayNetworks(final Promise promise);
+
+  abstract boolean onActivityResult(
+      Activity activity, int requestCode, int resultCode, Intent data);
 
   public static boolean isPlayServicesAvailable(@NonNull Activity activity) {
     ArgCheck.nonNull(activity);

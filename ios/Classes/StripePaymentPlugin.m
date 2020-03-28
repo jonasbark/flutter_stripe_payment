@@ -24,7 +24,7 @@
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-
+    
     id rejecter = ^(NSString *code, NSString *message, NSError *error) {
         result([FlutterError errorWithCode:code ?: @"-" message:message details:error.localizedDescription]);
     };
@@ -62,6 +62,8 @@
         [stripeModule paymentRequestWithCardForm:call.arguments resolver:result rejecter:rejecter];
     } else if ([@"paymentRequestWithApplePay" isEqualToString:call.method]) {
         [stripeModule paymentRequestWithApplePay:call.arguments[@"items"] withOptions:call.arguments[@"options"] resolver:result rejecter:rejecter];
+    } else if ([@"paymentMethodFromApplePay" isEqualToString:call.method]) {
+        [stripeModule paymentMethodFromApplePay:call.arguments[@"items"] withOptions:call.arguments[@"options"] resolver:result rejecter:rejecter];
     } else if ([@"openApplePaySetup" isEqualToString:call.method]) {
         [stripeModule openApplePaySetup];
     }

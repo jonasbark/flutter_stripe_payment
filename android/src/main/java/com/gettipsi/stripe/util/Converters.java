@@ -34,10 +34,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-/**
- * Created by ngoriachev on 13/03/2018.
- */
-
+/** Created by ngoriachev on 13/03/2018. */
 public class Converters {
 
   public static WritableMap convertTokenToWritableMap(Token token) {
@@ -62,13 +59,16 @@ public class Converters {
     return newToken;
   }
 
-  public static WritableMap putExtraToTokenMap(final WritableMap tokenMap,
-      UserAddress billingAddress, UserAddress shippingAddress, String emailAddress) {
+  public static WritableMap putExtraToTokenMap(
+      final WritableMap tokenMap,
+      UserAddress billingAddress,
+      UserAddress shippingAddress,
+      String emailAddress) {
     ArgCheck.nonNull(tokenMap);
 
     WritableMap extra = Arguments.createMap();
 
-    //add email address to billing and shipping contact as per apple
+    // add email address to billing and shipping contact as per apple
     WritableMap billingContactMap = convertAddressToWritableMap(billingAddress);
     WritableMap shippingContactMap = convertAddressToWritableMap(shippingAddress);
 
@@ -150,8 +150,8 @@ public class Converters {
     }
   }
 
-  public static ReadableArray getValue(final ReadableMap map, final String key,
-      final ReadableArray def) {
+  public static ReadableArray getValue(
+      final ReadableMap map, final String key, final ReadableArray def) {
     if (map.hasKey(key)) {
       return map.getArray(key);
     } else {
@@ -194,10 +194,10 @@ public class Converters {
 
   public static Card createCard(final ReadableMap cardData) {
     return new Card.Builder(
-        cardData.getString("number"),
-        cardData.getInt("expMonth"),
-        cardData.getInt("expYear"),
-        getValue(cardData, "cvc"))
+            cardData.getString("number"),
+            cardData.getInt("expMonth"),
+            cardData.getInt("expYear"),
+            getValue(cardData, "cvc"))
         .name(getValue(cardData, "name"))
         .addressLine1(getValue(cardData, "addressLine1"))
         .addressLine2(getValue(cardData, "addressLine2"))
@@ -215,7 +215,6 @@ public class Converters {
         .build();
   }
 
-
   @NonNull
   public static WritableMap convertSourceToWritableMap(@Nullable Source source) {
     WritableMap newSource = Arguments.createMap();
@@ -227,8 +226,8 @@ public class Converters {
     newSource.putString("sourceId", source.getId());
     newSource.putInt("amount", source.getAmount().intValue());
     newSource.putInt("created", source.getCreated().intValue());
-    newSource.putMap("codeVerification",
-        convertCodeVerificationToWritableMap(source.getCodeVerification()));
+    newSource.putMap(
+        "codeVerification", convertCodeVerificationToWritableMap(source.getCodeVerification()));
     newSource.putString("currency", source.getCurrency());
     newSource.putString("flow", source.getFlow());
     newSource.putBoolean("livemode", source.isLiveMode());
@@ -259,13 +258,12 @@ public class Converters {
     wm.putString("status", intent.getStatus().toString());
     wm.putString("paymentIntentId", intent.getId());
 
-//    String paymentMethodId = intent.getPaymentMethodId();
-//    if (paymentMethodId != null) {
-//      wm.putString("paymentMethodId", paymentMethodId);
-//    }
+    //    String paymentMethodId = intent.getPaymentMethodId();
+    //    if (paymentMethodId != null) {
+    //      wm.putString("paymentMethodId", paymentMethodId);
+    //    }
     return wm;
   }
-
 
   @NonNull
   public static WritableMap convertSetupIntentResultToWritableMap(
@@ -344,7 +342,6 @@ public class Converters {
     wm.putString("phone", billingDetails.phone);
     return wm;
   }
-
 
   @NonNull
   public static WritableMap stringMapToWritableMap(@Nullable Map<String, String> map) {
@@ -460,8 +457,8 @@ public class Converters {
     return writableMap;
   }
 
-  public static void pushRightTypeToMap(@NonNull WritableMap map, @NonNull String key,
-      @NonNull Object object) {
+  public static void pushRightTypeToMap(
+      @NonNull WritableMap map, @NonNull String key, @NonNull Object object) {
     Class argumentClass = object.getClass();
     if (argumentClass == Boolean.class) {
       map.putBoolean(key, (Boolean) object);
@@ -513,26 +510,25 @@ public class Converters {
         accountData.getString("accountNumber"),
         Type.valueOf(getValue(accountData, "accountHolderType")),
         getValue(accountData, "accountHolderName"),
-        getValue(accountData, "routingNumber", "")
-    );
+        getValue(accountData, "routingNumber", ""));
   }
 
-//  public static BankAccount createBankAccount(ReadableMap accountData) {
-//    BankAccount account = new BankAccount(
-//        // required fields only
-//        accountData.getString("accountNumber"),
-//        getValue(accountData, "accountHolderName"),
-//        getValue(accountData, "accountHolderType"),
-//        null,
-//        accountData.getString("countryCode"),
-//        accountData.getString("currency"),
-//        null,
-//        null,
-//        getValue(accountData, "routingNumber", "")
-//    );
-//
-//    return account;
-//  }
+  //  public static BankAccount createBankAccount(ReadableMap accountData) {
+  //    BankAccount account = new BankAccount(
+  //        // required fields only
+  //        accountData.getString("accountNumber"),
+  //        getValue(accountData, "accountHolderName"),
+  //        getValue(accountData, "accountHolderType"),
+  //        null,
+  //        accountData.getString("countryCode"),
+  //        accountData.getString("currency"),
+  //        null,
+  //        null,
+  //        getValue(accountData, "routingNumber", "")
+  //    );
+  //
+  //    return account;
+  //  }
 
   public static String getStringOrNull(@NonNull ReadableMap map, @NonNull String key) {
     return map.hasKey(key) ? map.getString(key) : null;
@@ -542,8 +538,8 @@ public class Converters {
     return map.hasKey(key) ? map.getMap(key) : null;
   }
 
-  public static boolean getBooleanOrNull(@NonNull ReadableMap map, @NonNull String key,
-      boolean defaultVal) {
+  public static boolean getBooleanOrNull(
+      @NonNull ReadableMap map, @NonNull String key, boolean defaultVal) {
     return map.hasKey(key) ? map.getBoolean(key) : defaultVal;
   }
 
@@ -560,5 +556,4 @@ public class Converters {
 
     return null;
   }
-
 }

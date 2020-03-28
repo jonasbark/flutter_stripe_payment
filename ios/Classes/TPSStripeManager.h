@@ -91,6 +91,11 @@ typedef void (^RCTPromiseRejectBlock)(NSString *code, NSString *message, NSError
                          resolver:(RCTPromiseResolveBlock)resolve
                          rejecter:(RCTPromiseRejectBlock)reject;
 
+-(void)paymentMethodFromApplePay:(NSArray *)items
+                     withOptions:(NSDictionary *)options
+                        resolver:(RCTPromiseResolveBlock)resolve
+                        rejecter:(RCTPromiseRejectBlock)reject;
+
 -(void)openApplePaySetup;
 
 @end

@@ -1,7 +1,8 @@
-package de.jonasbark.stripepayment
+package de.jonasbark.stripe_payment
 
 import android.app.Activity
 import android.content.Context
+import androidx.annotation.CheckResult
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -11,14 +12,17 @@ import io.flutter.plugin.common.PluginRegistry.ActivityResultListener
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
 interface ActivityRegistry {
-    fun addListener(handler: ActivityResultListener)
-    fun removeListener(handler: ActivityResultListener)
+    fun addListener(handler: ActivityResultListener): Boolean
+
+    @CheckResult
+    fun removeListener(handler: ActivityResultListener): Boolean
 }
 
 class StripePaymentPlugin : FlutterPlugin, ActivityAware {
     private var flutterPluginBinding: FlutterPluginBinding? = null
     private var methodCallHandler: MethodCallHandlerImpl? = null
 
+    @Suppress("unused")
     companion object {
         /** Plugin registration.  */
         @JvmStatic
@@ -29,12 +33,14 @@ class StripePaymentPlugin : FlutterPlugin, ActivityAware {
                     registrar.activity(),
                     registrar.messenger(),
                     object : ActivityRegistry {
-                        override fun addListener(handler: ActivityResultListener) {
+                        override fun addListener(handler: ActivityResultListener): Boolean {
                             registrar.addActivityResultListener(handler)
+                            return true
                         }
 
-                        override fun removeListener(handler: ActivityResultListener) {
+                        override fun removeListener(handler: ActivityResultListener): Boolean {
                             // Not supported in V1 embedding.
+                            return false
                         }
                     }
             )
@@ -59,12 +65,15 @@ class StripePaymentPlugin : FlutterPlugin, ActivityAware {
                 binding.activity,
                 flutterPluginBinding!!.binaryMessenger,
                 object : ActivityRegistry {
-                    override fun addListener(handler: ActivityResultListener) {
+                    override fun addListener(handler: ActivityResultListener): Boolean {
                         binding.addActivityResultListener(handler)
+                        return true
                     }
 
-                    override fun removeListener(handler: ActivityResultListener) {
+
+                    override fun removeListener(handler: ActivityResultListener): Boolean {
                         binding.removeActivityResultListener(handler)
+                        return true
                     }
                 }
         )
@@ -83,12 +92,12 @@ class StripePaymentPlugin : FlutterPlugin, ActivityAware {
         methodCallHandler = null
     }
 
-    private fun startListening(applicationContext: Context, activity: Activity?, messenger: BinaryMessenger?, kFunction1: ActivityRegistry) {
+    private fun startListening(applicationContext: Context, activity: Activity?, messenger: BinaryMessenger?, activityRegistry: ActivityRegistry) {
         methodCallHandler = MethodCallHandlerImpl(
                 applicationContext,
                 activity,
                 messenger,
-                kFunction1
+                activityRegistry
         )
     }
 }

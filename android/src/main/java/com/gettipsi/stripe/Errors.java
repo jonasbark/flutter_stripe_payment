@@ -1,17 +1,12 @@
 package com.gettipsi.stripe;
 
 import androidx.annotation.NonNull;
-
 import com.facebook.react.bridge.ReadableMap;
 import com.gettipsi.stripe.util.ArgCheck;
-
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by ngoriachev on 30/07/2018.
- */
-
+/** Created by ngoriachev on 30/07/2018. */
 public final class Errors {
 
   private static final Map<String, String> exceptionNameToErrorCode = new HashMap<>();
@@ -40,7 +35,7 @@ public final class Errors {
     if (errorCode == null) {
       errorCode = simpleName;
     }
-//    ArgCheck.nonNull(errorCode, simpleName);
+    //    ArgCheck.nonNull(errorCode, simpleName);
 
     return errorCode;
   }
@@ -52,5 +47,4 @@ public final class Errors {
   static String getDescription(@NonNull ReadableMap errorCodes, @NonNull String errorKey) {
     return errorCodes.getMap(errorKey).getString("description");
   }
-
 }

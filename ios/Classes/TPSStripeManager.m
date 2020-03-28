@@ -263,6 +263,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     RCTPromiseRejectBlock promiseRejector;
 
     BOOL requestIsCompleted;
+    BOOL applePayShouldCreatePaymentMethod;
 
     void (^applePayCompletion)(PKPaymentAuthorizationStatus);
     NSError *applePayStripeError;
@@ -813,9 +814,28 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
 }
 
 -(void)paymentRequestWithApplePay:(NSArray *)items
-                  withOptions:(NSDictionary *)options
-                  resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject {
+                      withOptions:(NSDictionary *)options
+                         resolver:(RCTPromiseResolveBlock)resolve
+                         rejecter:(RCTPromiseRejectBlock)reject {
+    applePayShouldCreatePaymentMethod = NO;
+    
+    [self startApplePay:items withOptions:options resolver:resolve rejecter:reject];
+}
+
+-(void)paymentMethodFromApplePay:(NSArray *)items
+                     withOptions:(NSDictionary *)options
+                        resolver:(RCTPromiseResolveBlock)resolve
+                        rejecter:(RCTPromiseRejectBlock)reject {
+    applePayShouldCreatePaymentMethod = YES;
+    
+    [self startApplePay:items withOptions:options resolver:resolve rejecter:reject];
+}
+
+-(void)startApplePay:(NSArray *)items
+    withOptions:(NSDictionary *)options
+    resolver:(RCTPromiseResolveBlock)resolve
+    rejecter:(RCTPromiseRejectBlock)reject {
+
     if(!requestIsCompleted) {
         NSDictionary *error = [errorCodes valueForKey:kErrorKeyBusy];
         reject(error[kErrorKeyCode], error[kErrorKeyDescription], nil);
@@ -1240,27 +1260,52 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     applePayCompletion = completion;
 
     STPAPIClient *stripeAPIClient = [self newAPIClient];
+    
+    if (applePayShouldCreatePaymentMethod) {
+        [stripeAPIClient createPaymentMethodWithPayment:payment completion:^(STPPaymentMethod * _Nullable paymentMethod, NSError * _Nullable error) {
+            self->requestIsCompleted = YES;
 
-    [stripeAPIClient createTokenWithPayment:payment completion:^(STPToken * _Nullable token, NSError * _Nullable error) {
-        self->requestIsCompleted = YES;
+            if (error) {
+                // Save for deffered use
+                self->applePayStripeError = error;
+                [self resolveApplePayCompletion:PKPaymentAuthorizationStatusFailure];
+            } else {
+                NSDictionary *result = [self convertPaymentMethod:paymentMethod];
+//                NSDictionary *extra = @{
+//                                        @"billingContact": [self contactDetails:payment.billingContact] ?: [NSNull null],
+//                                        @"shippingContact": [self contactDetails:payment.shippingContact] ?: [NSNull null],
+//                                        @"shippingMethod": [self shippingDetails:payment.shippingMethod] ?: [NSNull null]
+//                                        };
+//
+//                [result setValue:extra forKey:@"extra"];
 
-        if (error) {
-            // Save for deffered use
-            self->applePayStripeError = error;
-            [self resolveApplePayCompletion:PKPaymentAuthorizationStatusFailure];
-        } else {
-            NSDictionary *result = [self convertTokenObject:token];
-            NSDictionary *extra = @{
-                                    @"billingContact": [self contactDetails:payment.billingContact] ?: [NSNull null],
-                                    @"shippingContact": [self contactDetails:payment.shippingContact] ?: [NSNull null],
-                                    @"shippingMethod": [self shippingDetails:payment.shippingMethod] ?: [NSNull null]
-                                    };
+                [self resolvePromise:result];
+            }
 
-            [result setValue:extra forKey:@"extra"];
+        }];
 
-            [self resolvePromise:result];
-        }
-    }];
+    } else {
+        [stripeAPIClient createTokenWithPayment:payment completion:^(STPToken * _Nullable token, NSError * _Nullable error) {
+            self->requestIsCompleted = YES;
+
+            if (error) {
+                // Save for deffered use
+                self->applePayStripeError = error;
+                [self resolveApplePayCompletion:PKPaymentAuthorizationStatusFailure];
+            } else {
+                NSDictionary *result = [self convertTokenObject:token];
+                NSDictionary *extra = @{
+                                        @"billingContact": [self contactDetails:payment.billingContact] ?: [NSNull null],
+                                        @"shippingContact": [self contactDetails:payment.shippingContact] ?: [NSNull null],
+                                        @"shippingMethod": [self shippingDetails:payment.shippingMethod] ?: [NSNull null]
+                                        };
+
+                [result setValue:extra forKey:@"extra"];
+
+                [self resolvePromise:result];
+            }
+        }];
+    }
 }
 
 

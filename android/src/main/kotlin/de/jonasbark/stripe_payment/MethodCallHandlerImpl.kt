@@ -1,4 +1,4 @@
-package de.jonasbark.stripepayment
+package de.jonasbark.stripe_payment
 
 import android.app.Activity
 import android.content.Context
@@ -13,7 +13,7 @@ class MethodCallHandlerImpl(
         applicationContext: Context,
         activity: Activity?,
         messenger: BinaryMessenger?,
-        activityRegistry: ActivityRegistry?
+        activityRegistry: ActivityRegistry
 ) : MethodChannel.MethodCallHandler {
     private var methodChannel: MethodChannel = MethodChannel(messenger, "stripe_payment")
 
@@ -34,6 +34,8 @@ class MethodCallHandlerImpl(
             )
             "deviceSupportsAndroidPay" -> stripeModule.deviceSupportsAndroidPay(Promise(result));
             "canMakeAndroidPayPayments" -> stripeModule.canMakeAndroidPayPayments(Promise(result));
+            "canMakeApplePayPayments" -> result.success(false)
+            "potentiallyAvailableNativePayNetworks" -> stripeModule.potentiallyAvailableNativePayNetworks(Promise(result))
             "paymentRequestWithAndroidPay" -> stripeModule.paymentRequestWithAndroidPay(
                     ReadableMap(call.arguments as Map<String, Any>),
                     Promise(result)
