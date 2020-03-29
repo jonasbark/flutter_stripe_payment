@@ -51,6 +51,7 @@ import com.stripe.android.model.ConfirmPaymentIntentParams;
 import com.stripe.android.model.ConfirmSetupIntentParams;
 import com.stripe.android.model.PaymentMethod;
 import com.stripe.android.model.PaymentMethodCreateParams;
+import com.stripe.android.model.PaymentMethodCreateParams.Card;
 import com.stripe.android.model.Source;
 import com.stripe.android.model.SourceParams;
 import com.stripe.android.model.StripeIntent;
@@ -132,6 +133,7 @@ public class StripeModule {
       mPublicKey = newPubKey;
       Stripe.setAppInfo(AppInfo.create(APP_INFO_NAME, APP_INFO_VERSION, APP_INFO_URL));
       mStripe = new Stripe(applicationContext, mPublicKey);
+
       getPayFlow().setPublishableKey(mPublicKey);
     }
 
@@ -151,7 +153,7 @@ public class StripeModule {
 
   private PayFlow getPayFlow() {
     if (mPayFlow == null) {
-      mPayFlow = PayFlow.create(() -> activity);
+      mPayFlow = PayFlow.create(() -> activity, mStripe);
     }
 
     return mPayFlow;
@@ -257,6 +259,11 @@ public class StripeModule {
     } catch (Exception e) {
       promise.reject(toErrorCode(e), e.getMessage());
     }
+  }
+
+  @ReactMethod
+  public void paymentMethodFromAndroidPay(final ReadableMap payParams, final Promise promise) {
+    getPayFlow().paymentMethodFromAndroidPay(payParams, promise);
   }
 
   @ReactMethod

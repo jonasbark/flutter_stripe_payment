@@ -36,6 +36,10 @@ class MethodCallHandlerImpl(
             "canMakeAndroidPayPayments" -> stripeModule.canMakeAndroidPayPayments(Promise(result));
             "canMakeApplePayPayments" -> result.success(false)
             "potentiallyAvailableNativePayNetworks" -> stripeModule.potentiallyAvailableNativePayNetworks(Promise(result))
+            "paymentMethodFromAndroidPay" -> stripeModule.paymentMethodFromAndroidPay(
+                    ReadableMap(call.arguments as Map<String, Any>),
+                    Promise(result)
+            )
             "paymentRequestWithAndroidPay" -> stripeModule.paymentRequestWithAndroidPay(
                     ReadableMap(call.arguments as Map<String, Any>),
                     Promise(result)

@@ -1,6 +1,7 @@
 package com.gettipsi.stripe;
 
 import static com.gettipsi.stripe.Errors.toErrorCode;
+import static com.gettipsi.stripe.util.Converters.convertPaymentMethodToWritableMap;
 import static com.gettipsi.stripe.util.Converters.convertTokenToWritableMap;
 import static com.gettipsi.stripe.util.Converters.getAllowedShippingCountryCodes;
 import static com.gettipsi.stripe.util.Converters.getBillingAddress;
@@ -34,24 +35,36 @@ import com.google.android.gms.wallet.ShippingAddressRequirements;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.Wallet;
 import com.google.android.gms.wallet.WalletConstants;
+import com.stripe.android.ApiResultCallback;
 import com.stripe.android.BuildConfig;
+import com.stripe.android.Stripe;
+import com.stripe.android.model.PaymentMethod;
+import com.stripe.android.model.PaymentMethodCreateParams;
 import com.stripe.android.model.Token;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 
-/** Created by ngoriachev on 13/03/2018. see https://developers.google.com/pay/api/tutorial */
+/**
+ * Created by ngoriachev on 13/03/2018. see https://developers.google.com/pay/api/tutorial
+ */
 public final class GoogleApiPayFlowImpl extends PayFlow {
 
   private static final String TAG = GoogleApiPayFlowImpl.class.getSimpleName();
   private static final int LOAD_PAYMENT_DATA_REQUEST_CODE = 65534;
 
   private PaymentsClient mPaymentsClient;
+  private final Stripe mStripe;
   private Promise payPromise;
+  private boolean paymentRequestCreatesPaymentMethod = false;
 
-  public GoogleApiPayFlowImpl(@NonNull Fun0<Activity> activityProvider) {
+  public GoogleApiPayFlowImpl(@NonNull Fun0<Activity> activityProvider, Stripe stripe) {
     super(activityProvider);
+
+    this.mStripe = stripe;
   }
 
   private PaymentsClient createPaymentsClient(@NonNull Activity activity) {
@@ -178,6 +191,25 @@ public final class GoogleApiPayFlowImpl extends PayFlow {
   }
 
   @Override
+  public void paymentMethodFromAndroidPay(
+      @NonNull ReadableMap payParams, @NonNull Promise promise) {
+    ArgCheck.nonNull(payParams);
+    ArgCheck.nonNull(promise);
+
+    Activity activity = activityProvider.call();
+    if (activity == null) {
+      promise.reject(
+          getErrorCode("activityUnavailable"), getErrorDescription("activityUnavailable"));
+      return;
+    }
+
+    paymentRequestCreatesPaymentMethod = true;
+
+    this.payPromise = promise;
+    startPaymentRequest(activity, createPaymentDataRequest(payParams));
+  }
+
+  @Override
   public void paymentRequestWithAndroidPay(
       @NonNull ReadableMap payParams, @NonNull Promise promise) {
     ArgCheck.nonNull(payParams);
@@ -189,6 +221,8 @@ public final class GoogleApiPayFlowImpl extends PayFlow {
           getErrorCode("activityUnavailable"), getErrorDescription("activityUnavailable"));
       return;
     }
+
+    paymentRequestCreatesPaymentMethod = false;
 
     this.payPromise = promise;
     startPaymentRequest(activity, createPaymentDataRequest(payParams));
@@ -232,18 +266,43 @@ public final class GoogleApiPayFlowImpl extends PayFlow {
           case Activity.RESULT_OK:
             PaymentData paymentData = PaymentData.getFromIntent(data);
             ArgCheck.nonNull(paymentData);
-            String tokenJson = paymentData.getPaymentMethodToken().getToken();
-            Token token = Token.fromString(tokenJson);
-            if (token == null) {
-              payPromise.reject(
-                  getErrorCode("parseResponse"), getErrorDescription("parseResponse"));
+
+            if (paymentRequestCreatesPaymentMethod) {
+              try {
+                final JSONObject jsonObject = new JSONObject(paymentData.toJson());
+                final PaymentMethodCreateParams params = PaymentMethodCreateParams
+                    .createFromGooglePay(jsonObject);
+
+                mStripe.createPaymentMethod(params, new ApiResultCallback<PaymentMethod>() {
+                  @Override
+                  public void onSuccess(PaymentMethod paymentMethod) {
+                    payPromise.resolve(convertPaymentMethodToWritableMap(paymentMethod));
+                  }
+
+                  @Override
+                  public void onError(@NotNull Exception e) {
+                    payPromise.reject(
+                        getErrorCode("parseResponse"), getErrorDescription("parseResponse"));
+                  }
+                });
+              } catch (Exception e) {
+                payPromise.reject(
+                    getErrorCode("parseResponse"), getErrorDescription("parseResponse"));
+              }
             } else {
-              payPromise.resolve(
-                  putExtraToTokenMap(
-                      convertTokenToWritableMap(token),
-                      getBillingAddress(paymentData),
-                      paymentData.getShippingAddress(),
-                      paymentData.getEmail()));
+              String tokenJson = paymentData.getPaymentMethodToken().getToken();
+              Token token = Token.fromString(tokenJson);
+              if (token == null) {
+                payPromise.reject(
+                    getErrorCode("parseResponse"), getErrorDescription("parseResponse"));
+              } else {
+                payPromise.resolve(
+                    putExtraToTokenMap(
+                        convertTokenToWritableMap(token),
+                        getBillingAddress(paymentData),
+                        paymentData.getShippingAddress(),
+                        paymentData.getEmail()));
+              }
             }
             break;
           case Activity.RESULT_CANCELED:
