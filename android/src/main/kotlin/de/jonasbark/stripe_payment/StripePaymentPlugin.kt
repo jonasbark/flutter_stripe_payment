@@ -8,6 +8,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.BinaryMessenger
+import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry.ActivityResultListener
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
@@ -20,7 +21,8 @@ interface ActivityRegistry {
 
 class StripePaymentPlugin : FlutterPlugin, ActivityAware {
     private var flutterPluginBinding: FlutterPluginBinding? = null
-    private var methodCallHandler: MethodCallHandlerImpl? = null
+
+    private var methodChannel: MethodChannel? = null
 
     @Suppress("unused")
     companion object {
@@ -88,16 +90,20 @@ class StripePaymentPlugin : FlutterPlugin, ActivityAware {
     }
 
     override fun onDetachedFromActivity() {
-        methodCallHandler?.stopListening()
-        methodCallHandler = null
+        stopListening()
     }
 
     private fun startListening(applicationContext: Context, activity: Activity?, messenger: BinaryMessenger?, activityRegistry: ActivityRegistry) {
-        methodCallHandler = MethodCallHandlerImpl(
+        methodChannel = MethodChannel(messenger, "stripe_payment")
+        methodChannel?.setMethodCallHandler(MethodCallHandlerImpl(
                 applicationContext,
                 activity,
-                messenger,
                 activityRegistry
-        )
+        ))
+    }
+
+    private fun stopListening() {
+        methodChannel?.setMethodCallHandler(null)
+        methodChannel = null
     }
 }

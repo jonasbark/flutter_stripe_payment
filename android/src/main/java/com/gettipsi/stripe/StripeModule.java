@@ -313,7 +313,7 @@ public class StripeModule {
   }
 
   private AtomicBoolean hasSetupResultListener = new AtomicBoolean(false);
-  private AtomicReference<Promise> setupResultPromise = new AtomicReference();
+  private AtomicReference<Promise> setupResultPromise = new AtomicReference<>();
 
   private void attachSetupResultActivityListener(Promise promise) {
     final AtomicReference<ActivityResultListener> ael = new AtomicReference<>();
