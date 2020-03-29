@@ -25,8 +25,8 @@ class StripePayment {
   static const MethodChannel _channel = const MethodChannel('stripe_payment');
 
   /// https://tipsi.github.io/tipsi-stripe/docs/usage.html
-  static void setOptions(StripeOptions settings) async {
-    await _channel.invokeMethod('setOptions', {
+  static Future<void> setOptions(StripeOptions settings) async {
+    await _channel.invokeMethod<void>('setOptions', {
       "options": settings.toJson(),
       "errorCodes": Errors.mapping,
     });
