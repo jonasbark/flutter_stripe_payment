@@ -15,6 +15,7 @@ import static com.gettipsi.stripe.util.PayParams.TOTAL_PRICE;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import androidx.annotation.NonNull;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
@@ -23,12 +24,15 @@ import com.gettipsi.stripe.util.Converters;
 import com.gettipsi.stripe.util.Fun0;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.identity.intents.model.UserAddress;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.wallet.AutoResolveHelper;
+import com.google.android.gms.wallet.CardInfo;
 import com.google.android.gms.wallet.CardRequirements;
 import com.google.android.gms.wallet.IsReadyToPayRequest;
 import com.google.android.gms.wallet.PaymentData;
 import com.google.android.gms.wallet.PaymentDataRequest;
+import com.google.android.gms.wallet.PaymentMethodToken;
 import com.google.android.gms.wallet.PaymentMethodTokenizationParameters;
 import com.google.android.gms.wallet.PaymentsClient;
 import com.google.android.gms.wallet.ShippingAddressRequirements;
@@ -38,6 +42,7 @@ import com.google.android.gms.wallet.WalletConstants;
 import com.stripe.android.ApiResultCallback;
 import com.stripe.android.BuildConfig;
 import com.stripe.android.Stripe;
+import com.stripe.android.model.Address;
 import com.stripe.android.model.PaymentMethod;
 import com.stripe.android.model.PaymentMethodCreateParams;
 import com.stripe.android.model.Token;
@@ -46,11 +51,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 
-/**
- * Created by ngoriachev on 13/03/2018. see https://developers.google.com/pay/api/tutorial
- */
+/** Created by ngoriachev on 13/03/2018. see https://developers.google.com/pay/api/tutorial */
 public final class GoogleApiPayFlowImpl extends PayFlow {
 
   private static final String TAG = GoogleApiPayFlowImpl.class.getSimpleName();
@@ -141,6 +143,8 @@ public final class GoogleApiPayFlowImpl extends PayFlow {
 
     ArgCheck.isDouble(totalPrice);
     ArgCheck.notEmptyString(currencyCode);
+
+    Log.d(TAG, "email required: " + emailRequired);
 
     PaymentDataRequest.Builder builder = PaymentDataRequest.newBuilder();
     builder.setTransactionInfo(
@@ -269,29 +273,79 @@ public final class GoogleApiPayFlowImpl extends PayFlow {
 
             if (paymentRequestCreatesPaymentMethod) {
               try {
-                final JSONObject jsonObject = new JSONObject(paymentData.toJson());
-                final PaymentMethodCreateParams params = PaymentMethodCreateParams
-                    .createFromGooglePay(jsonObject);
+                final CardInfo info = paymentData.getCardInfo();
+                // You can also pull the user address from the PaymentData object.
+                final UserAddress address = paymentData.getShippingAddress();
+                final PaymentMethodToken paymentMethodToken = paymentData.getPaymentMethodToken();
+                // This is the raw string version of your Stripe token.
+                final String rawToken =
+                    paymentMethodToken != null ? paymentMethodToken.getToken() : null;
 
-                mStripe.createPaymentMethod(params, new ApiResultCallback<PaymentMethod>() {
-                  @Override
-                  public void onSuccess(PaymentMethod paymentMethod) {
-                    payPromise.resolve(convertPaymentMethodToWritableMap(paymentMethod));
+                final Token stripeToken = Token.fromString(rawToken);
+                if (stripeToken != null) {
+                  // Create a PaymentMethod object using the token id
+                  final PaymentMethod.BillingDetails billingDetails;
+                  if (address != null) {
+                    billingDetails =
+                        new PaymentMethod.BillingDetails.Builder()
+                            .setAddress(
+                                new Address.Builder()
+                                    .setLine1(address.getAddress1())
+                                    .setLine2(address.getAddress2())
+                                    .setCity(address.getLocality())
+                                    .setState(address.getAdministrativeArea())
+                                    .setPostalCode(address.getPostalCode())
+                                    .setCountry(address.getCountryCode())
+                                    .build())
+                            // TODO: Should fix this. And revert to the below implementation.
+                            // .setEmail(address.getEmailAddress())
+                            .setEmail(paymentData.getEmail())
+                            .setName(address.getName())
+                            .setPhone(address.getPhoneNumber())
+                            .build();
+                  } else {
+                    billingDetails =
+                        new PaymentMethod.BillingDetails.Builder()
+                            .setEmail(paymentData.getEmail())
+                            .build();
                   }
+                  final PaymentMethodCreateParams params =
+                      PaymentMethodCreateParams.create(
+                          PaymentMethodCreateParams.Card.create(stripeToken.getId()),
+                          billingDetails);
 
-                  @Override
-                  public void onError(@NotNull Exception e) {
-                    payPromise.reject(
-                        getErrorCode("parseResponse"), getErrorDescription("parseResponse"));
-                  }
-                });
+                  mStripe.createPaymentMethod(
+                      params,
+                      new ApiResultCallback<PaymentMethod>() {
+                        @Override
+                        public void onSuccess(PaymentMethod paymentMethod) {
+                          Log.d(TAG, "paymentMethod: " + paymentMethod.toString());
+                          payPromise.resolve(convertPaymentMethodToWritableMap(paymentMethod));
+                          payPromise = null;
+                        }
+
+                        @Override
+                        public void onError(@NotNull Exception e) {
+                          payPromise.reject(
+                              getErrorCode("parseResponse"), getErrorDescription("parseResponse"));
+                          payPromise = null;
+                        }
+                      });
+                  return true;
+                } else {
+                  payPromise.reject(
+                      getErrorCode("parseResponse"), getErrorDescription("parseResponse"));
+                }
+
               } catch (Exception e) {
+                Log.e(TAG, "Error creating payment method", e);
                 payPromise.reject(
                     getErrorCode("parseResponse"), getErrorDescription("parseResponse"));
               }
             } else {
               String tokenJson = paymentData.getPaymentMethodToken().getToken();
               Token token = Token.fromString(tokenJson);
+              Log.d(TAG, "token: " + tokenJson);
               if (token == null) {
                 payPromise.reject(
                     getErrorCode("parseResponse"), getErrorDescription("parseResponse"));

@@ -116,6 +116,7 @@ class StripePayment {
       "options": options.json,
       "items": options.items.map((item) => item.json).toList()
     });
+    print('received: $pm');
     return PaymentMethod.fromJson(pm);
   }
 
