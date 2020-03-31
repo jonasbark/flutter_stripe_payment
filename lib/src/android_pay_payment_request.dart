@@ -1,75 +1,75 @@
 import 'package:flutter/material.dart';
 
 class AndroidPayPaymentRequest {
-  bool billing_address_required;
-  String currency_code;
-  List<LineItem> line_items;
-  bool shipping_address_required;
-  List<String> shipping_countries;
-  String total_price;
+  bool billingAddressRequired;
+  String currencyCode;
+  List<LineItem> lineItems;
+  bool shippingAddressRequired;
+  List<String> shippingCountries;
+  String totalPrice;
 
   AndroidPayPaymentRequest(
-      {this.billing_address_required,
-      @required this.currency_code,
-      this.line_items,
-      this.shipping_address_required,
-      this.shipping_countries,
-      @required this.total_price});
+      {this.billingAddressRequired,
+      @required this.currencyCode,
+      this.lineItems,
+      this.shippingAddressRequired,
+      this.shippingCountries,
+      @required this.totalPrice});
 
   factory AndroidPayPaymentRequest.fromJson(Map<dynamic, dynamic> json) {
     return AndroidPayPaymentRequest(
-      billing_address_required: json['billing_address_required'],
-      currency_code: json['currency_code'],
-      line_items:
+      billingAddressRequired: json['billing_address_required'],
+      currencyCode: json['currency_code'],
+      lineItems:
           json['line_items'] != null ? (json['line_items'] as List).map((i) => LineItem.fromJson(i)).toList() : null,
-      shipping_address_required: json['shipping_address_required'],
-      shipping_countries: json['shipping_countries'] != null ? new List<String>.from(json['shipping_countries']) : null,
-      total_price: json['total_price'],
+      shippingAddressRequired: json['shipping_address_required'],
+      shippingCountries: json['shipping_countries'] != null ? new List<String>.from(json['shipping_countries']) : null,
+      totalPrice: json['total_price'],
     );
   }
 
   Map<dynamic, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.billing_address_required != null) data['billing_address_required'] = this.billing_address_required;
-    if (this.currency_code != null) data['currency_code'] = this.currency_code;
-    if (this.shipping_address_required != null) data['shipping_address_required'] = this.shipping_address_required;
-    if (this.total_price != null) data['total_price'] = this.total_price;
-    if (this.line_items != null) {
-      data['line_items'] = this.line_items.map((v) => v.toJson()).toList();
+    if (this.billingAddressRequired != null) data['billing_address_required'] = this.billingAddressRequired;
+    if (this.currencyCode != null) data['currency_code'] = this.currencyCode;
+    if (this.shippingAddressRequired != null) data['shipping_address_required'] = this.shippingAddressRequired;
+    if (this.totalPrice != null) data['total_price'] = this.totalPrice;
+    if (this.lineItems != null) {
+      data['line_items'] = this.lineItems.map((v) => v.toJson()).toList();
     }
-    if (this.shipping_countries != null) {
-      if (this.shipping_countries != null) data['shipping_countries'] = this.shipping_countries;
+    if (this.shippingCountries != null) {
+      if (this.shippingCountries != null) data['shipping_countries'] = this.shippingCountries;
     }
     return data;
   }
 }
 
 class LineItem {
-  String currency_code;
+  String currencyCode;
   String description;
   String quantity;
-  String total_price;
-  String unit_price;
+  String totalPrice;
+  String unitPrice;
 
-  LineItem({this.currency_code, this.description, this.quantity, this.total_price, this.unit_price});
+  LineItem({this.currencyCode, this.description, this.quantity, this.totalPrice, this.unitPrice});
 
   factory LineItem.fromJson(Map<dynamic, dynamic> json) {
     return LineItem(
-      currency_code: json['currency_code'],
+      currencyCode: json['currency_code'],
       description: json['description'],
       quantity: json['quantity'],
-      total_price: json['total_price'],
-      unit_price: json['unit_price'],
+      totalPrice: json['total_price'],
+      unitPrice: json['unit_price'],
     );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.currency_code != null) data['currency_code'] = this.currency_code;
+    if (this.currencyCode != null) data['currency_code'] = this.currencyCode;
     if (this.description != null) data['description'] = this.description;
     if (this.quantity != null) data['quantity'] = this.quantity;
-    if (this.total_price != null) data['total_price'] = this.total_price;
-    if (this.unit_price != null) data['unit_price'] = this.unit_price;
+    if (this.totalPrice != null) data['total_price'] = this.totalPrice;
+    if (this.unitPrice != null) data['unit_price'] = this.unitPrice;
     return data;
   }
 }

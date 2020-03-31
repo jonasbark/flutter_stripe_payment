@@ -7,7 +7,7 @@ class SourceParams {
   String returnURL;
   String type;
   String name;
-  String statement_descriptor;
+  String statementDescriptor;
   String country;
   String email;
   CreditCard card;
@@ -18,7 +18,7 @@ class SourceParams {
       @required this.returnURL,
       @required this.type,
       this.name,
-      this.statement_descriptor,
+      this.statementDescriptor,
       this.country,
       this.email,
       this.card});
@@ -30,7 +30,7 @@ class SourceParams {
         returnURL: json['returnURL'],
         type: json['type'],
         name: json['name'],
-        statement_descriptor: json['statement_descriptor'],
+        statementDescriptor: json['statement_descriptor'],
         country: json['country'],
         email: json['email'],
         card: json['card']);
@@ -43,7 +43,7 @@ class SourceParams {
     if (this.returnURL != null) data['returnURL'] = this.returnURL;
     if (this.type != null) data['type'] = this.type;
     if (this.name != null) data['name'] = this.name;
-    if (this.statement_descriptor != null) data['statement_descriptor'] = this.statement_descriptor;
+    if (this.statementDescriptor != null) data['statement_descriptor'] = this.statementDescriptor;
     if (this.country != null) data['country'] = this.country;
     if (this.email != null) data['email'] = this.email;
     if (this.card != null) data['card'] = this.card.toJson();
