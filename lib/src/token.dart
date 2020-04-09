@@ -9,7 +9,6 @@ class Token {
   Token({this.bankAccount, this.card, this.created, this.livemode, this.tokenId, this.extra});
 
   factory Token.fromJson(Map<dynamic, dynamic> json) {
-    print(json);
     return Token(
       bankAccount: json['bankAccount'] != null ? BankAccount.fromJson(json['bankAccount']) : null,
       card: json['card'] != null ? CreditCard.fromJson(json['card']) : null,
