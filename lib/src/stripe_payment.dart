@@ -174,6 +174,10 @@ class StripePayment {
     final result = await _channel.invokeMethod('confirmSetupIntent', intent.toJson());
     return SetupIntentResult.fromJson(result);
   }
+
+  static openApplePaySetup() async {
+    _channel.invokeMapMethod('openApplePaySetup');
+  }
 }
 
 class StripeOptions {
