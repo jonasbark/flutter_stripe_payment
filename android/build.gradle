@@ -75,6 +75,6 @@ android {
 dependencies {
     api 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.71'
     implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'com.stripe:stripe-android:14.2.1'
+    implementation 'com.stripe:stripe-android:14.3.0'
     implementation 'com.google.android.gms:play-services-wallet:18.0.0'
 }
