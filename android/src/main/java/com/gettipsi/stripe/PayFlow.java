@@ -26,8 +26,8 @@ public abstract class PayFlow {
     this.activityProvider = activityProvider;
   }
 
-  public static PayFlow create(Fun0<Activity> activityProvider, Stripe stripe) {
-    return new GoogleApiPayFlowImpl(activityProvider, stripe);
+  public static PayFlow create(Fun0<Activity> activityProvider, Fun0<Stripe> stripeProvider) {
+    return new GoogleApiPayFlowImpl(activityProvider, stripeProvider);
   }
 
   private static boolean isValidEnvironment(int environment) {
