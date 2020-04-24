@@ -59,14 +59,14 @@ public final class GoogleApiPayFlowImpl extends PayFlow {
   private static final int LOAD_PAYMENT_DATA_REQUEST_CODE = 65534;
 
   private PaymentsClient mPaymentsClient;
-  private final Stripe mStripe;
+  private final Fun0<Stripe> mStripe;
   private Promise payPromise;
   private boolean paymentRequestCreatesPaymentMethod = false;
 
-  public GoogleApiPayFlowImpl(@NonNull Fun0<Activity> activityProvider, Stripe stripe) {
+  public GoogleApiPayFlowImpl(@NonNull Fun0<Activity> activityProvider, Fun0<Stripe> stripeProvider) {
     super(activityProvider);
 
-    this.mStripe = stripe;
+    this.mStripe = stripeProvider;
   }
 
   private PaymentsClient createPaymentsClient(@NonNull Activity activity) {
@@ -314,7 +314,7 @@ public final class GoogleApiPayFlowImpl extends PayFlow {
                           PaymentMethodCreateParams.Card.create(stripeToken.getId()),
                           billingDetails);
 
-                  mStripe.createPaymentMethod(
+                  mStripe.call() .createPaymentMethod(
                       params,
                       new ApiResultCallback<PaymentMethod>() {
                         @Override

@@ -153,7 +153,7 @@ public class StripeModule {
 
   private PayFlow getPayFlow() {
     if (mPayFlow == null) {
-      mPayFlow = PayFlow.create(() -> activity, mStripe);
+      mPayFlow = PayFlow.create(() -> activity, () -> mStripe);
     }
 
     return mPayFlow;
