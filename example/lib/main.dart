@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 import 'dart:io';
@@ -185,7 +186,7 @@ class _MyAppState extends State<MyApp> {
             RaisedButton(
               child: Text("Native payment"),
               onPressed: () {
-                if (Platform.isIOS) {
+                if (!kIsWeb && Platform.isIOS) {
                   _controller.jumpTo(450);
                 }
                 StripePayment.paymentRequestWithNativePay(

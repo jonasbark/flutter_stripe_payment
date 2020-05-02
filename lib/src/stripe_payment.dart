@@ -13,6 +13,7 @@ import 'payment_method.dart';
 import 'source.dart';
 import 'source_params.dart';
 import 'token.dart';
+import 'responses.dart';
 
 class StripePayment {
   static const MethodChannel _channel = const MethodChannel('stripe_payment');
@@ -43,15 +44,19 @@ class StripePayment {
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/canMakeNativePayPayments.html
-  static Future<bool> canMakeNativePayPayments(List<String> networks) async {
+  static Future<CanMakePaymentResponse> canMakeNativePayPayments(List<String> networks, {String currencyCode, String countryCode}) async {
     if (kIsWeb) {
-      throw UnimplementedError();
+      if(currencyCode == null || countryCode == null) return null;
+      return _channel.invokeMethod('canMakeNativePayPayments', {
+        'currency_code': currencyCode,
+        'country_code:': countryCode
+      });
     } else {
       if (Platform.isAndroid) {
-        return _channel.invokeMethod('canMakeAndroidPayPayments');
+        return (await _channel.invokeMethod('canMakeAndroidPayPayments')) ? CanMakePaymentResponse(applePay: false) : null;
       } else if (Platform.isIOS) {
         Map<String, dynamic> options = {"networks": networks};
-        return _channel.invokeMethod('canMakeApplePayPayments', options);
+        return (await _channel.invokeMethod('canMakeApplePayPayments', options)) ? CanMakePaymentResponse(applePay: true) : null;
       } else
         throw UnimplementedError();
     }
@@ -63,9 +68,13 @@ class StripePayment {
 
   /// https://tipsi.github.io/tipsi-stripe/docs/paymentRequestWithNativePay.html
   static Future<Token> paymentRequestWithNativePay(
-      {@required AndroidPayPaymentRequest androidPayOptions, @required ApplePayPaymentOptions applePayOptions}) {
+      {@required AndroidPayPaymentRequest androidPayOptions, @required ApplePayPaymentOptions applePayOptions}) async {
     if (kIsWeb) {
-      throw UnimplementedError();
+      // this requires country_code
+      final options = androidPayOptions.toJson();
+      options['country_code'] = applePayOptions.countryCode;
+      // TODO Is it ok not to jsonify back and forth as this is dart code?
+      return await _channel.invokeMethod("paymentRequestWithNativePay", options);
     } else {
       if (Platform.isAndroid) {
         return _paymentRequestWithAndroidPay(androidPayOptions);

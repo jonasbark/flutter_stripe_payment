@@ -1,5 +1,30 @@
 [![pub package](https://img.shields.io/pub/v/stripe_payment.svg)](https://pub.dev/packages/stripe_payment)
 
+# WEB - Work In Progress
+
+This is the complimentary Flutter Web implementation for [stripe_payment](https://pub.dev/packages/stripe_payment)
+
+* First stage of implementation:
+    * StripePayment.setOptions
+    * StripePayment.paymentRequestWithNativePay
+    * StripePayment.completeNativePayRequest
+    * StripePayment.deviceSupportsNativePay => always true
+    * ~~StripePayment.paymentRequestWithCardForm~~
+    * ~~StripePayment.confirmPaymentIntent~~
+    
+## Notes
+
+- stripe_sdk expects the total as int in the smallest currency units, this plugin expects double. How to convert? For now hacked * 100
+
+## Breaking changes
+ - canMakeNativePayPayments is no longer bool but returns null if native pay is not available or `CanMakePaymentResponse` 
+ containing `bool isApplePay`
+  
+## Setup
+Include `<script src="https://js.stripe.com/v3/"></script>` in your `web/idex.html`
+
+
+
 # stripe_payment
 
 #### Conveniently secure payments methods using Stripe.
