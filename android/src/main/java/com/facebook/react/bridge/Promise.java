@@ -1,27 +1,42 @@
 package com.facebook.react.bridge;
 
+import android.os.Handler;
 import io.flutter.plugin.common.MethodChannel;
 
-/**
- * Created by FFuF, Jonas Bark on 2019-10-02.
- */
+/** Created by FFuF, Jonas Bark on 2019-10-02. */
 public class Promise {
 
-    final MethodChannel.Result result;
+  private final MethodChannel.Result result;
 
-    public Promise(MethodChannel.Result result) {
-        this.result = result;
-    }
+  private final Handler handler = new Handler();
 
-    public void resolve(Object result) {
-        this.result.success(result);
-    }
+  private Runnable whenComplete;
 
-    public void reject(String errorCode, String message) {
-        this.result.error(errorCode, message, null);
-    }
+  public Promise(MethodChannel.Result result) {
+    this.result = result;
+  }
 
-    public void reject(String errorCode) {
-        this.reject(errorCode, null);
+  public void setWhenComplete(Runnable whenComplete) {
+    this.whenComplete = whenComplete;
+  }
+
+  public void resolve(Object result) {
+    this.result.success(result);
+
+    if (whenComplete != null) {
+      handler.post(whenComplete);
     }
+  }
+
+  public void reject(String errorCode, String message) {
+    this.result.error(errorCode, message, null);
+
+    if (whenComplete != null) {
+      handler.post(whenComplete);
+    }
+  }
+
+  public void reject(String errorCode) {
+    this.reject(errorCode, null);
+  }
 }

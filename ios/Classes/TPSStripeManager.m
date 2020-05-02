@@ -333,7 +333,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     NSArray <NSString *> *paymentNetworksStrings = [StripeModule applePaySupportedPaymentNetworksStrings];
 
     NSArray <PKPaymentNetwork> *networks = [self paymentNetworks:paymentNetworksStrings];
-    resolve([PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:networks] ? paymentNetworksStrings : nil);
+    resolve([PKPaymentAuthorizationViewController canMakePaymentsUsingNetworks:networks] ? paymentNetworksStrings : @[]);
 }
 
 
@@ -1864,12 +1864,73 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     dispatch_once(&onceToken, ^{
         NSMutableDictionary *mutableMap = [@{} mutableCopy];
 
+        
         if ((&PKPaymentNetworkAmex) != NULL) {
             mutableMap[TPSPaymentNetworkAmex] = PKPaymentNetworkAmex;
+        }
+        
+        if ((&PKPaymentNetworkChinaUnionPay) != NULL) {
+            mutableMap[TPSPaymentNetworkChinaUnionPay] = PKPaymentNetworkChinaUnionPay;
         }
 
         if ((&PKPaymentNetworkDiscover) != NULL) {
             mutableMap[TPSPaymentNetworkDiscover] = PKPaymentNetworkDiscover;
+        }
+
+        if (@available(iOS 12.0, *)) {
+            if ((&PKPaymentNetworkEftpos) != NULL) {
+                mutableMap[TPSPaymentNetworkEftpos] = PKPaymentNetworkEftpos;
+            }
+
+            if ((&PKPaymentNetworkElectron) != NULL) {
+                mutableMap[TPSPaymentNetworkElectron] = PKPaymentNetworkElectron;
+            }
+
+        }
+
+        if (@available(iOS 12.1.1, *)) {
+            if ((&PKPaymentNetworkElo) != NULL) {
+                mutableMap[TPSPaymentNetworkElo] = PKPaymentNetworkElo;
+            }
+            if ((&PKPaymentNetworkMada) != NULL) {
+                mutableMap[TPSPaymentNetworkIDCredit] = PKPaymentNetworkMada;
+            }
+        }
+
+        if ((&PKPaymentNetworkInterac) != NULL) {
+            mutableMap[TPSPaymentNetworkIDCredit] = PKPaymentNetworkInterac;
+        }
+        if (@available(iOS 10.1, *)) {
+            if ((&PKPaymentNetworkJCB) != NULL) {
+                mutableMap[TPSPaymentNetworkIDCredit] = PKPaymentNetworkJCB;
+            }
+        } else {
+            // Fallback on earlier versions
+        }
+        
+        if (@available(iOS 12.0, *)) {
+            if ((&PKPaymentNetworkMaestro) != NULL) {
+                mutableMap[TPSPaymentNetworkIDCredit] = PKPaymentNetworkMaestro;
+            }
+        } else {
+            // Fallback on earlier versions
+        }
+        if ((&PKPaymentNetworkPrivateLabel) != NULL) {
+            mutableMap[TPSPaymentNetworkPrivateLabel] = PKPaymentNetworkPrivateLabel;
+        }
+        if (@available(iOS 10.3, *)) {
+            if ((&PKPaymentNetworkQuicPay) != NULL) {
+                mutableMap[TPSPaymentNetworkQuicPay] = PKPaymentNetworkQuicPay;
+            }
+        } else {
+            // Fallback on earlier versions
+        }
+        if (@available(iOS 10.1, *)) {
+            if ((&PKPaymentNetworkSuica) != NULL) {
+                mutableMap[TPSPaymentNetworkQuicPay] = PKPaymentNetworkSuica;
+            }
+        } else {
+            // Fallback on earlier versions
         }
 
         if ((&PKPaymentNetworkMasterCard) != NULL) {
