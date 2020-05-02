@@ -350,7 +350,7 @@ public class StripeModule {
 
                   @Override
                   public void onError(@NonNull Exception e) {
-                    promise.reject(toErrorCode(e), e.getMessage());
+                    Errors.raiseFlutterError(e, promise);
                   }
                 });
 

@@ -28,15 +28,19 @@ public class Promise {
     }
   }
 
+  public void reject(String errorCode) {
+    reject(errorCode, null, null);
+  }
+
   public void reject(String errorCode, String message) {
-    this.result.error(errorCode, message, null);
+    reject(errorCode, message, null);
+  }
+
+  public void reject(String errorCode, String message, Object details) {
+    result.error(errorCode, message, details);
 
     if (whenComplete != null) {
       handler.post(whenComplete);
     }
-  }
-
-  public void reject(String errorCode) {
-    this.reject(errorCode, null);
   }
 }
