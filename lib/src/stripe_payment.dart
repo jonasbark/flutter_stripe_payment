@@ -74,8 +74,7 @@ class StripePayment {
       // this requires country_code
       final options = androidPayOptions.toJson();
       options['country_code'] = applePayOptions.countryCode;
-      // TODO Is it ok not to jsonify back and forth as this is dart code?
-      return await _channel.invokeMethod("paymentRequestWithNativePay", options);
+      return Token.fromJson(await _channel.invokeMethod("paymentRequestWithNativePay", options));
     } else {
       if (Platform.isAndroid) {
         return _paymentRequestWithAndroidPay(androidPayOptions);

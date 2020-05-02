@@ -3,6 +3,8 @@ import 'dart:js';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:stripe_payment/src/payment_intent.dart';
+import 'package:stripe_payment/src/web/js/stripe-js/payment-intents.dart';
 
 import '../token.dart' as plugin_token;
 import 'js/stripe-js.dart';
@@ -12,6 +14,7 @@ import 'js/stripe-js/payment-request.dart';
 class StripePaymentPlugin {
   Stripe _stripe;
   PaymentRequestTokenEvent _tokenEvent;
+  String _publishableKey;
   static get platformVersion => "0.1.1";
 
   static void registerWith(Registrar registrar) {
@@ -25,6 +28,7 @@ class StripePaymentPlugin {
 
   Future<dynamic> handleMethodCall(StripePaymentPlugin instance, MethodCall call) async {
     if(call.method == "setOptions") {
+      instance._publishableKey = call.arguments['options']['publishableKey'];
       instance._stripe = initializeStripe(call.arguments['options']['publishableKey']);
       return;
     } else if(instance._stripe == null) {
@@ -84,7 +88,7 @@ class StripePaymentPlugin {
 
           instance._tokenEvent = event;
 
-          return _tokenFromEvent(event);
+          return _tokenFromEvent(event).toJson();
         }
         throw PlatformException(code: 'unavailable', message: 'Native pay is not configured or available');
       case "cancelNativePayRequest":
@@ -99,49 +103,11 @@ class StripePaymentPlugin {
           instance._tokenEvent = null;
         }
         return;
-//      case "confirmPaymentIntent":
-//      case "paymentRequestWithCardForm"://
-//        // -> stripeModule.paymentRequestWithCardForm(
-//        //ReadableMap(call.arguments as Map<String, Any>),
-//        //Promise(result)
-//        //)
-//      case "createStringWithCard":// -> stripeModule.createStringWithCard(
-//        //ReadableMap(call.arguments as Map<String, Any>),
-//        // Promise(result)
-//        //)
-//      case "createStringWithBankAccount": //-> stripeModule.createStringWithBankAccount(
-//        //ReadableMap(call.arguments as Map<String, Any>),
-//        //Promise(result)
-//        //)
-//      case "createStringWithParams": //-> stripeModule.createStringWithParams(
-//        //ReadableMap(call.arguments as Map<String, Any>),
-//        //Promise(result)
-//        //)
-//      case "createString":
-//        // -> stripeModule.createString(
-//        //ReadableMap(call.arguments as Map<String, Any>),
-//        //Promise(result)
-//        //)
-//      case "authenticatePaymentIntent":
-//        //-> stripeModule.authenticatePaymentIntent(
-//        //ReadableMap(call.arguments as Map<String, Any>),
-//        //Promise(result)
-//        //)
-//      case "confirmPaymentIntent":
-//        //-> stripeModule.confirmPaymentIntent(
-//        //ReadableMap(call.arguments as Map<String, Any>),
-//        //Promise(result)
-//        //)
-//      case "authenticateSetupIntent":
-//        //-> stripeModule.authenticateSetupIntent(
-//        //ReadableMap(call.arguments as Map<String, Any>),
-//        //Promise(result)
-//       // )
-//      case "confirmSetupIntent":
-//        //-> stripeModule.confirmSetupIntent(
-//        //ReadableMap(call.arguments as Map<String, Any>),
-//        //Promise(result)
-//        //)
+      case "confirmPaymentIntent":
+        final result = await instance._stripe.confirmCardPayment(call.arguments['clientSecret'], ConfirmCardPaymentData(
+          payment_method: call.arguments['paymentMethodId'] ?? call.arguments['paymentMethod']
+        ));
+        return PaymentIntentResult(paymentIntentId: result.paymentIntent?.id).toJson();
       default:
         throw PlatformException(
             code: 'Unimplemented',
