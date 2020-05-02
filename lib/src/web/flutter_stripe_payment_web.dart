@@ -4,10 +4,9 @@ import 'dart:js';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
+import '../token.dart' as plugin_token;
 import 'js/stripe-js.dart';
 import 'js/stripe-js/payment-request.dart';
-import '../responses.dart';
-import '../token.dart' as plugin_token;
 
 
 class StripePaymentPlugin {
@@ -51,7 +50,8 @@ class StripePaymentPlugin {
           requestPayerPhone: true
         ));
         final canMakePayment = await pr.canMakePayment();
-        if(canMakePayment != null) return CanMakePaymentResponse(applePay: canMakePayment.applePay);
+        final Map <String,bool> r = {'applePay': canMakePayment.applePay};
+        if(canMakePayment != null) return r;
         return null;
         
       case "paymentRequestWithNativePay":
@@ -87,6 +87,11 @@ class StripePaymentPlugin {
         }
         throw PlatformException(code: 'unavailable', message: 'Native pay is not configured or available');
       case "cancelNativePayRequest":
+        if(instance._tokenEvent != null) {
+          instance._tokenEvent.complete('fail');
+          instance._tokenEvent = null;
+        }
+        return;
       case "completeNativePayRequest":
         if(instance._tokenEvent != null) {
           instance._tokenEvent.complete('success');

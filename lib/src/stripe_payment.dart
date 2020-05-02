@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart';
 
 import 'android_pay_payment_request.dart';
 import 'apple_pay_payment_request.dart';
@@ -13,7 +13,6 @@ import 'payment_method.dart';
 import 'source.dart';
 import 'source_params.dart';
 import 'token.dart';
-import 'responses.dart';
 
 class StripePayment {
   static const MethodChannel _channel = const MethodChannel('stripe_payment');
@@ -44,19 +43,21 @@ class StripePayment {
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/canMakeNativePayPayments.html
-  static Future<CanMakePaymentResponse> canMakeNativePayPayments(List<String> networks, {String currencyCode, String countryCode}) async {
+  static Future<Map<String, bool>> canMakeNativePayPayments(List<String> networks, {String currencyCode, String countryCode}) async {
     if (kIsWeb) {
       if(currencyCode == null || countryCode == null) return null;
-      return _channel.invokeMethod('canMakeNativePayPayments', {
+      final canMakePayments = await _channel.invokeMethod('canMakeNativePayPayments', {
         'currency_code': currencyCode.toLowerCase(),
         'country_code': countryCode.toUpperCase()
       });
+      if(canMakePayments == null) return null;
+      return {'applePay': canMakePayments['applePay']};
     } else {
       if (Platform.isAndroid) {
-        return (await _channel.invokeMethod('canMakeAndroidPayPayments')) ? CanMakePaymentResponse(applePay: false) : null;
+        return (await _channel.invokeMethod('canMakeAndroidPayPayments')) ? {'applePay': false} : null;
       } else if (Platform.isIOS) {
         Map<String, dynamic> options = {"networks": networks};
-        return (await _channel.invokeMethod('canMakeApplePayPayments', options)) ? CanMakePaymentResponse(applePay: true) : null;
+        return (await _channel.invokeMethod('canMakeApplePayPayments', options)) ? {'applePay': true} : null;
       } else
         throw UnimplementedError();
     }
@@ -99,7 +100,7 @@ class StripePayment {
   /// https://tipsi.github.io/tipsi-stripe/docs/completeNativePayRequest.html
   static Future<void> completeNativePayRequest() async {
     if (kIsWeb) {
-      throw UnimplementedError();
+      return _channel.invokeMethod("completeNativePayRequest");
     } else {
       if (Platform.isIOS) {
         return _channel.invokeMethod("completeApplePayRequest");
@@ -113,7 +114,7 @@ class StripePayment {
   /// https://tipsi.github.io/tipsi-stripe/docs/cancelNativePayRequest.html
   static Future<void> cancelNativePayRequest() async {
     if (kIsWeb) {
-      throw UnimplementedError();
+      return _channel.invokeMethod("cancelNativePayRequest");
     } else {
       if (Platform.isIOS) {
         return _channel.invokeMethod("cancelApplePayRequest");
