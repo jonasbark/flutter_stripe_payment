@@ -12,6 +12,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  js: ">=0.6.0 <0.7.0"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
@@ -19,5 +22,13 @@ dependencies:
 # The following section is specific to Flutter.
 flutter:
   plugin:
-    androidPackage: de.jonasbark.stripepayment
-    pluginClass: StripePaymentPlugin
+    platforms:
+      web:
+        pluginClass: StripePaymentPlugin
+        fileName: src/web/flutter_stripe_payment_web.dart
+      android:
+        pluginClass: StripePaymentPlugin
+        package: de.jonasbark.stripepayment
+      ios:
+        pluginClass: StripePaymentPlugin
+
