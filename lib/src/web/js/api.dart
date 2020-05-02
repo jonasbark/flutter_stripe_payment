@@ -1,0 +1,13 @@
+@JS()
+library api;
+
+import "package:js/js.dart";
+
+/// <reference path='./shared.d.ts' />
+/// <reference path='./PaymentMethods.d.ts' />
+/// <reference path='./PaymentIntents.d.ts' />
+/// <reference path='./SetupIntents.d.ts' />
+/// <reference path='./Sources.d.ts' />
+/// <reference path='./Tokens.d.ts' />
+/// <reference path='./BankAccounts.d.ts' />
+/// <reference path='./Cards.d.ts' />
