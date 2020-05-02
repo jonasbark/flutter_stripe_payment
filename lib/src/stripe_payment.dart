@@ -47,8 +47,8 @@ class StripePayment {
     if (kIsWeb) {
       if(currencyCode == null || countryCode == null) return null;
       final canMakePayments = await _channel.invokeMethod('canMakeNativePayPayments', {
-        'currency_code': currencyCode.toLowerCase(),
-        'country_code': countryCode.toUpperCase()
+        'currency_code': currencyCode,
+        'country_code': countryCode
       });
       if(canMakePayments == null) return null;
       return {'applePay': canMakePayments['applePay']};

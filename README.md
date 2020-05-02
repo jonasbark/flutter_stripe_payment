@@ -16,6 +16,8 @@ This is the complimentary Flutter Web implementation for [stripe_payment](https:
 
 - stripe_sdk expects the total as int in the smallest currency units, this plugin expects double. How to convert? For now hacked * 100
 
+- you must call paymentRequestWithNativePay directly from the button method, any async or bloc will be blocked by safari
+
 ## Breaking changes
  - canMakeNativePayPayments is no longer bool but returns null if native pay is not available or `CanMakePaymentResponse` 
  containing `bool isApplePay`

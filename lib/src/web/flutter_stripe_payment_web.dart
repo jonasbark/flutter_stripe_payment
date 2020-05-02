@@ -39,8 +39,8 @@ class StripePaymentPlugin {
         
       case "canMakeNativePayPayments":
         final pr = instance._stripe.paymentRequest(PaymentRequestOptions(
-          country: call.arguments['country_code'],
-          currency: call.arguments['currency_code'],
+          country: (call.arguments['country_code'] as String).toUpperCase(),
+          currency: (call.arguments['currency_code'] as String).toLowerCase(),
           total: PaymentRequestItem(
             label: 'Total',
             amount: 1
@@ -55,13 +55,14 @@ class StripePaymentPlugin {
         return null;
         
       case "paymentRequestWithNativePay":
+        print('native pay request: ${call.arguments}');
         // TODO: This won't work on a currency with smallest units anything else but cents
         num total = num.tryParse(call.arguments['total_price']) * 100;
 
         final pr = instance._stripe.paymentRequest(
           PaymentRequestOptions(
-            country: call.arguments['country_code'],
-            currency: call.arguments['currency_code'],
+            country: (call.arguments['country_code'] as String).toUpperCase(),
+            currency: (call.arguments['currency_code'] as String).toLowerCase(),
             total: PaymentRequestItem(
                 label: 'Total',
                 amount: total
