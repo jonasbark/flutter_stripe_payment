@@ -48,8 +48,8 @@ class StripePayment {
     if (kIsWeb) {
       if(currencyCode == null || countryCode == null) return null;
       return _channel.invokeMethod('canMakeNativePayPayments', {
-        'currency_code': currencyCode,
-        'country_code:': countryCode
+        'currency_code': currencyCode.toLowerCase(),
+        'country_code': countryCode.toUpperCase()
       });
     } else {
       if (Platform.isAndroid) {

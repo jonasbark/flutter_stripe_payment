@@ -60,8 +60,8 @@ class StripePaymentPlugin {
 
         final pr = instance._stripe.paymentRequest(
           PaymentRequestOptions(
-            country: call.arguments['country_code'].toString().toUpperCase(),
-            currency: call.arguments['currency_code'].toString().toLowerCase(),
+            country: call.arguments['country_code'],
+            currency: call.arguments['currency_code'],
             total: PaymentRequestItem(
                 label: 'Total',
                 amount: total
