@@ -67,9 +67,10 @@ class StripePaymentPlugin {
                 label: 'Total',
                 amount: total
             ),
+            // TODO create interface to request only that what is necessary
             requestPayerEmail: true,
-            requestPayerName: true,
-            requestPayerPhone: true
+//            requestPayerName: true,
+//            requestPayerPhone: true
         ));
         if((await pr.canMakePayment()) != null) {
 
