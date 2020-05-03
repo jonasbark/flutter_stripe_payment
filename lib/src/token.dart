@@ -33,10 +33,10 @@ class Token {
       data['card'] = this.card.toJson();
     }
     if (this.payerEmail != null && this.payerEmail.isNotEmpty) {
-      data['payerEmail'] = this.payerEmail.;
+      data['payerEmail'] = this.payerEmail;
     }
     if (this.payerPhone != null && this.payerPhone.isNotEmpty) {
-      data['payerPhone'] = this.payerPhone.;
+      data['payerPhone'] = this.payerPhone;
     }
     return data;
   }
