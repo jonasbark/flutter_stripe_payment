@@ -14,7 +14,6 @@ import 'js/stripe-js/payment-request.dart';
 class StripePaymentPlugin {
   Stripe _stripe;
   PaymentRequestTokenEvent _tokenEvent;
-  String _publishableKey;
   static get platformVersion => "0.1.1";
 
   static void registerWith(Registrar registrar) {
@@ -23,15 +22,14 @@ class StripePaymentPlugin {
         const StandardMethodCodec(),
         registrar.messenger);
     final StripePaymentPlugin instance = StripePaymentPlugin();
-    channel.setMethodCallHandler((call) => instance.handleMethodCall(instance, call));
+    channel.setMethodCallHandler((call) => instance.handleMethodCall(call));
   }
 
-  Future<dynamic> handleMethodCall(StripePaymentPlugin instance, MethodCall call) async {
+  Future<dynamic> handleMethodCall(MethodCall call) async {
     if(call.method == "setOptions") {
-      instance._publishableKey = call.arguments['options']['publishableKey'];
-      instance._stripe = initializeStripe(call.arguments['options']['publishableKey']);
+      _stripe = initializeStripe(call.arguments['options']['publishableKey']);
       return;
-    } else if(instance._stripe == null) {
+    } else if(_stripe == null) {
       throw PlatformException(
           code: 'Uninitialized',
           details: "You must call StripePayment.setOptions first");
@@ -42,7 +40,7 @@ class StripePaymentPlugin {
         return true;
         
       case "canMakeNativePayPayments":
-        final pr = instance._stripe.paymentRequest(PaymentRequestOptions(
+        final pr = _stripe.paymentRequest(PaymentRequestOptions(
           country: (call.arguments['country_code'] as String).toUpperCase(),
           currency: (call.arguments['currency_code'] as String).toLowerCase(),
           total: PaymentRequestItem(
@@ -59,11 +57,10 @@ class StripePaymentPlugin {
         return null;
         
       case "paymentRequestWithNativePay":
-        print('native pay request: ${call.arguments}');
         // TODO: This won't work on a currency with smallest units anything else but cents
         num total = num.tryParse(call.arguments['total_price']) * 100;
 
-        final pr = instance._stripe.paymentRequest(
+        final pr = _stripe.paymentRequest(
           PaymentRequestOptions(
             country: (call.arguments['country_code'] as String).toUpperCase(),
             currency: (call.arguments['currency_code'] as String).toLowerCase(),
@@ -86,28 +83,32 @@ class StripePaymentPlugin {
 
           PaymentRequestTokenEvent event = await completer.future;
 
-          instance._tokenEvent = event;
+          _tokenEvent = event;
 
           return _tokenFromEvent(event).toJson();
         }
         throw PlatformException(code: 'unavailable', message: 'Native pay is not configured or available');
+
       case "cancelNativePayRequest":
-        if(instance._tokenEvent != null) {
-          instance._tokenEvent.complete('fail');
-          instance._tokenEvent = null;
+        if(_tokenEvent != null) {
+          _tokenEvent.complete('fail');
+          _tokenEvent = null;
         }
         return;
+
       case "completeNativePayRequest":
-        if(instance._tokenEvent != null) {
-          instance._tokenEvent.complete('success');
-          instance._tokenEvent = null;
+        if(_tokenEvent != null) {
+          _tokenEvent.complete('success');
+          _tokenEvent = null;
         }
         return;
+
       case "confirmPaymentIntent":
-        final result = await instance._stripe.confirmCardPayment(call.arguments['clientSecret'], ConfirmCardPaymentData(
+        final result = await _stripe.confirmCardPayment(call.arguments['clientSecret'], ConfirmCardPaymentData(
           payment_method: call.arguments['paymentMethodId'] ?? call.arguments['paymentMethod']
         ));
         return PaymentIntentResult(paymentIntentId: result.paymentIntent?.id).toJson();
+
       default:
         throw PlatformException(
             code: 'Unimplemented',
