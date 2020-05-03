@@ -14,7 +14,7 @@ import 'js/stripe-js/payment-request.dart';
 class StripePaymentPlugin {
   Stripe _stripe;
   PaymentRequestTokenEvent _tokenEvent;
-  static get platformVersion => "0.1.1";
+  static get platformVersion => "0.1.2";
 
   static void registerWith(Registrar registrar) {
     final MethodChannel channel = MethodChannel(
@@ -52,10 +52,9 @@ class StripePaymentPlugin {
           requestPayerPhone: true
         ));
         final canMakePayment = await pr.canMakePayment();
-        final Map <String,bool> r = {'applePay': canMakePayment.applePay};
-        if(canMakePayment != null) return r;
-        return null;
-        
+        if(canMakePayment == null) return null;
+        return {'applePay': canMakePayment.applePay};
+
       case "paymentRequestWithNativePay":
         // TODO: This won't work on a currency with smallest units anything else but cents
         num total = num.tryParse(call.arguments['total_price']) * 100;
@@ -119,7 +118,7 @@ class StripePaymentPlugin {
 
   plugin_token.Token _tokenFromEvent(PaymentRequestTokenEvent event) => plugin_token.Token(
       tokenId: event.token.id,
-      bankAccount: plugin_token.BankAccount(
+      bankAccount: event.token.bank_account == null ? null : plugin_token.BankAccount(
           accountHolderName: event.token.bank_account.account_holder_name,
           accountHolderType: event.token.bank_account.account_holder_type,
           bankName: event.token.bank_account.bank_name,
@@ -129,7 +128,7 @@ class StripePaymentPlugin {
           last4: event.token.bank_account.last4,
           routingNumber: event.token.bank_account.routing_number
       ),
-      card: plugin_token.CreditCard(
+      card: event.token.card == null ? null : plugin_token.CreditCard(
           addressCity: event.token.card.address_city,
           addressCountry: event.token.card.address_country,
           addressLine1: event.token.card.address_line1,

@@ -4,8 +4,10 @@ class Token {
   double created;
   bool livemode;
   String tokenId;
+  String payerEmail;
+  String payerPhone;
 
-  Token({this.bankAccount, this.card, this.created, this.livemode, this.tokenId});
+  Token({this.bankAccount, this.card, this.created, this.livemode, this.tokenId, this.payerPhone, this.payerEmail});
 
   factory Token.fromJson(Map<dynamic, dynamic> json) {
     return Token(
@@ -14,6 +16,8 @@ class Token {
       created: json['created'] is int ? (json['created'] as int).toDouble() : json['created'],
       livemode: json['livemode'],
       tokenId: json['tokenId'],
+      payerEmail: json['payerEmail'],
+      payerPhone: json['payerPhone']
     );
   }
 
@@ -27,6 +31,12 @@ class Token {
     }
     if (this.card != null) {
       data['card'] = this.card.toJson();
+    }
+    if (this.payerEmail != null && this.payerEmail.isNotEmpty) {
+      data['payerEmail'] = this.payerEmail.;
+    }
+    if (this.payerPhone != null && this.payerPhone.isNotEmpty) {
+      data['payerPhone'] = this.payerPhone.;
     }
     return data;
   }

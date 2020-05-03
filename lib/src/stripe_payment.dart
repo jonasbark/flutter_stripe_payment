@@ -74,7 +74,8 @@ class StripePayment {
       // this requires country_code
       final options = androidPayOptions.toJson();
       options['country_code'] = applePayOptions.countryCode;
-      return Token.fromJson(await _channel.invokeMethod("paymentRequestWithNativePay", options));
+      final token = await _channel.invokeMethod("paymentRequestWithNativePay", options);
+      return Token.fromJson(token);
     } else {
       if (Platform.isAndroid) {
         return _paymentRequestWithAndroidPay(androidPayOptions);
