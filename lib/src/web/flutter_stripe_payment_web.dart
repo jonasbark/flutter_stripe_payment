@@ -146,6 +146,8 @@ class StripePaymentPlugin {
           name: event.token.card.name
       ),
       created: event.token.created,
-      livemode: event.token.livemode
+      livemode: event.token.livemode,
+      payerPhone: event.payerPhone,
+      payerEmail: event.payerEmail
   );
 }
