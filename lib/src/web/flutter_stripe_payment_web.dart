@@ -14,7 +14,7 @@ import 'js/stripe-js/payment-request.dart';
 class StripePaymentPlugin {
   Stripe _stripe;
   PaymentRequestTokenEvent _tokenEvent;
-  static get platformVersion => "0.1.2";
+  static get platformVersion => "0.1.3";
 
   static void registerWith(Registrar registrar) {
     final MethodChannel channel = MethodChannel(
@@ -104,9 +104,11 @@ class StripePaymentPlugin {
         return;
 
       case "confirmPaymentIntent":
-        final result = await _stripe.confirmCardPayment(call.arguments['clientSecret'], ConfirmCardPaymentData(
-          payment_method: call.arguments['paymentMethodId'] ?? call.arguments['paymentMethod']
-        ));
+        final result = await _stripe.confirmCardPayment(
+            call.arguments['clientSecret'],
+            ConfirmCardPaymentData(payment_method: call.arguments['paymentMethodId'] ?? call.arguments['paymentMethod']),
+            ConfirmCardPaymentOptions(handleActions: true)
+        );
         return PaymentIntentResult(paymentIntentId: result.paymentIntent?.id).toJson();
 
       default:
