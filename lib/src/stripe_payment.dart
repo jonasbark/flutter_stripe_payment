@@ -247,7 +247,7 @@ class StripePayment {
   static Future<PaymentIntentResult> confirmPaymentIntent(
       PaymentIntent intent) async {
     assert(intent.clientSecret != null);
-    assert(intent.paymentMethodId != null);
+    // assert(intent.paymentMethodId != null);
     final result = await _channel.invokeMapMethod<dynamic, dynamic>(
       'confirmPaymentIntent',
       intent.toJson(),
