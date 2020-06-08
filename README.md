@@ -58,3 +58,6 @@ https://github.com/tipsi/tipsi-stripe/tree/experimental-connect/website/docs-md
 It includes:
 - how to setup Google / Apple Pay
 - method documentations
+
+## Blog Posts
+- ![Build a marketplace in your Flutter app and accept payments using Stripe and Firebase](https://medium.com/flutter-community/build-a-marketplace-in-your-flutter-app-and-accept-payments-using-stripe-and-firebase-72f3f7228625)

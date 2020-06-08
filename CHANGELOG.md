@@ -1,3 +1,7 @@
+## [1.0.7]
+- update Stripe iOS dependency to support Xcode 11.4 (#131)
+- bump Android gradle for latest Flutter support (thanks @ened)
+
 ## [1.0.6]
 - fix #97 (thanks @sandeep-at-airlift)
 - support Stripe Connected accounts (thanks @nicowernli)
