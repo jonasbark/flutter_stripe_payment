@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <!-- <color name="dialogBackground">#3A3A3A</color>
+  <color name="dialogBackground">#3A3A3A</color>
    <color name="colorPrimary">#8A3029</color>
    <color name="colorPrimaryDark">#61140E</color>
    <color name="colorAccent">#F44336</color>
    <color name="inputColor">#ffffff</color>
    <color name="white">#ffffff</color>
    <color name="hintText">#8E8E8E</color>
-   <color name="buttonText">#ffffff</color>-->
+   <color name="buttonText">#ffffff</color>
 </resources>
