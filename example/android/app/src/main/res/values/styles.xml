@@ -4,5 +4,23 @@
         <!-- Show a splash screen on the activity. Automatically removed when
              Flutter draws its first frame -->
         <item name="android:windowBackground">@drawable/launch_background</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    <style name="ContentLoadingProgress">
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="CardMultilineWidget">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="editTextColor">@color/inputColor</item>
+        <item name="android:editTextColor">@color/inputColor</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="android:textColorHint">@color/hintText</item>
+        <item name="android:textCursorDrawable">@color/colorAccent</item>
+    </style>
+
+
 </resources>

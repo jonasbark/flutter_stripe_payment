@@ -2,13 +2,14 @@ package de.jonasbark.stripepayment
 
 import android.app.DialogFragment
 import android.content.DialogInterface
+import android.graphics.Color.TRANSPARENT
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.stripe.android.ApiResultCallback
-import com.stripe.android.PaymentConfiguration
 import com.stripe.android.Stripe
 import com.stripe.android.model.*
 import com.stripe.android.view.CardMultilineWidget
@@ -42,6 +43,7 @@ class StripeDialog : DialogFragment() {
         // Fetch arguments from bundle and set title
         val title = arguments?.getString("title", "Add Source")
         dialog?.setTitle(title)
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(TRANSPARENT))
         view.findViewById<View>(R.id.buttonSave)?.setOnClickListener {
             getToken()
         }
@@ -105,7 +107,7 @@ class StripeDialog : DialogFragment() {
             }
         } else {
             view?.let {
-                Snackbar.make(it, "The card info you entered is not correct", Snackbar.LENGTH_LONG)
+                Snackbar.make(it, getString(R.string.cardNotCorrect), Snackbar.LENGTH_LONG)
                     .show()
             }
         }
