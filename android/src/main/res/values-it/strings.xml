@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="save">Salva</string>
-    <string name="cardNotCorrect">The card info you entered is not correct</string>
+    <string name="cardNotCorrect">Le informazioni della carta inserite non sono corrette</string>
 </resources>
