@@ -17,13 +17,17 @@ class MethodCallHandlerImpl(
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "setOptions" -> stripeModule.init(
-                    ReadableMap(call.argument("options")),
-                    ReadableMap(call.argument("errorCodes"))
-            )
-            "setStripeAccount" -> stripeModule.setStripeAccount(
-                    call.argument("stripeAccount")
-            )
+            "setOptions" -> {
+                stripeModule.init(
+                        ReadableMap(call.argument("options")),
+                        ReadableMap(call.argument("errorCodes"))
+                )
+                result.success(null)
+            }
+            "setStripeAccount" -> {
+                stripeModule.setStripeAccount(call.argument("stripeAccount"))
+                result.success(null)
+            }
             "deviceSupportsAndroidPay" -> stripeModule.deviceSupportsAndroidPay(Promise(result))
             "canMakeAndroidPayPayments" -> stripeModule.canMakeAndroidPayPayments(Promise(result))
             "canMakeApplePayPayments" -> result.success(false)
