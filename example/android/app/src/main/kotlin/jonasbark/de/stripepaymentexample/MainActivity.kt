@@ -1,4 +1,4 @@
-package jonasbark.de.stripepaymentexample
+package de.jonasbark.stripepaymentexample
 
 import android.os.Bundle
 import io.flutter.app.FlutterActivity
