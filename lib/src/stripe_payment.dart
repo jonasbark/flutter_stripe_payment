@@ -19,7 +19,12 @@ class StripePayment {
 
   /// https://tipsi.github.io/tipsi-stripe/docs/usage.html
   static void setOptions(StripeOptions settings) {
-    _channel.invokeMethod('setOptions', {"options": settings.toJson(), "errorCodes": Errors.mapping});
+    try {
+      _channel.invokeMethod('setOptions',
+          {"options": settings.toJson(), "errorCodes": Errors.mapping});
+    } catch(e) {
+      print(e);
+    }
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/usage.html

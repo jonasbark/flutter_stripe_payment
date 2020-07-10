@@ -223,18 +223,19 @@ class Contact {
       });
 
   factory Contact.fromJson(Map<dynamic, dynamic> json) {
+    print(json);
     return Contact(
       name: json['name'] ?? "",
       emailAddress: json['emailAddress'] ?? "",
       phoneNumber: json['phoneNumber'] ?? "",
       country: json['country'] ?? "",
       postalCode: json['postalCode'] ?? "",
-      state: json['state'] ?? "",
-      city: json['city'] ?? "",
-      street: json['street'] ?? "",
-      isoCountryCode: json['ISOCountryCode'] ?? "",
+      state: json['state'] ?? json['administrativeArea'] ?? "",
+      city: json['city'] ?? json['locality'] ?? "",
+      street: json['street'] ?? json['address1'] != null ? json['address1'] + json['address2'] : "",
+      isoCountryCode: json['ISOCountryCode'] ?? json['countryCode'] ?? "",
       subAdministrativeArea: json['subAdministrativeArea'] ?? "",
-      subLocality: json['subLocality'] ?? "",
+      subLocality: json['subLocality'] ?? json['locality'] ?? "",
       supplementarySubLocality: json['supplementarySubLocality'] ?? "",
     );
   }

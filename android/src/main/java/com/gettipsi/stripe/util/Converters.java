@@ -67,8 +67,10 @@ public class Converters {
     WritableMap billingContactMap = convertAddressToWritableMap(billingAddress);
     WritableMap shippingContactMap = convertAddressToWritableMap(shippingAddress);
 
-    billingContactMap.putString("emailAddress", emailAddress);
-    shippingContactMap.putString("emailAddress", emailAddress);
+    if (emailAddress != null && emailAddress.length() > 0) {
+      billingContactMap.putString("emailAddress", emailAddress);
+      shippingContactMap.putString("emailAddress", emailAddress);
+    }
 
 
     extra.putMap("billingContact", billingContactMap);
