@@ -7,5 +7,6 @@
    <color name="inputColor">#ffffff</color>
    <color name="white">#ffffff</color>
    <color name="hintText">#8E8E8E</color>
-   <color name="buttonText">#ffffff</color>
+   <color name="saveButtonText">#ffffff</color>
+   <color name="cancelButtonText">#ffffff</color>
 </resources>

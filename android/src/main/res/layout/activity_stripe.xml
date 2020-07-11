@@ -16,23 +16,47 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <Button
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="@string/save"
-        android:textColor="@color/buttonText"
-        android:background="@drawable/button_shape"
+        android:orientation="horizontal"
         android:layout_marginTop="@dimen/margin"
-        android:id="@+id/buttonSave"/>
+        android:layout_gravity="end">
 
-    <androidx.core.widget.ContentLoadingProgressBar
-        android:theme="@style/ContentLoadingProgress"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="30dp"
-        android:layout_height="@dimen/progressSpinnerSize"
-        android:id="@+id/progress"
-        android:layout_gravity="end"
-        android:layout_marginTop="@dimen/margin"
-        android:visibility="gone"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="@string/cancel"
+            android:textColor="@color/cancelButtonText"
+            android:layout_marginEnd="@dimen/margin"
+            android:layout_marginRight="@dimen/margin"
+            android:background="@drawable/button_shape"
+            android:backgroundTint="@color/dialogBackground"
+            android:id="@+id/buttonCancel"
+            tools:ignore="UnusedAttribute" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="@string/save"
+            android:textColor="@color/saveButtonText"
+            android:background="@drawable/button_shape"
+            android:id="@+id/buttonSave"/>
+
+
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:theme="@style/ContentLoadingProgress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="30dp"
+            android:layout_height="@dimen/progressSpinnerSize"
+            android:id="@+id/progress"
+            android:layout_gravity="end"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+
 </LinearLayout>

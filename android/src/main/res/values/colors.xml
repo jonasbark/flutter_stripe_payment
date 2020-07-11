@@ -6,5 +6,7 @@
     <color name="colorAccent">#288DDC</color>
     <color name="inputText">#000000</color>
     <color name="hintText">#616161</color>
-    <color name="buttonText">#ffffff</color>
+    <color name="saveButtonText">#ffffff</color>
+    <color name="cancelButtonText">#000</color>
+    <color name="cancelButton">#ffffff</color>
 </resources>

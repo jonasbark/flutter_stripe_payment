@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="save">Speichern</string>
+    <string name="cancel">Abbrechen</string>
     <string name="cardNotCorrect">Die eingegebenen Daten sind falsch.</string>
 </resources>

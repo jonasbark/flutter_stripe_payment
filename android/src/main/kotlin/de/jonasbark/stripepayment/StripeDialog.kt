@@ -47,6 +47,10 @@ class StripeDialog : DialogFragment() {
         view.findViewById<View>(R.id.buttonSave)?.setOnClickListener {
             getToken()
         }
+        view.findViewById<View>(R.id.buttonCancel)?.setOnClickListener {
+            onCancelListener.onCancel(dialog)
+            dismiss()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +79,7 @@ class StripeDialog : DialogFragment() {
 
                 view?.findViewById<View>(R.id.progress)?.visibility = View.VISIBLE
                 view?.findViewById<View>(R.id.buttonSave)?.visibility = View.GONE
+                view?.findViewById<View>(R.id.buttonCancel)?.visibility = View.GONE
 
                 val paymentMethodParamsCard = card.toPaymentMethodParamsCard()
                 val paymentMethodCreateParams = PaymentMethodCreateParams.create(
@@ -88,6 +93,7 @@ class StripeDialog : DialogFragment() {
                         override fun onSuccess(result: PaymentMethod) {
                             view?.findViewById<View>(R.id.progress)?.visibility = View.GONE
                             view?.findViewById<View>(R.id.buttonSave)?.visibility = View.GONE
+                            view?.findViewById<View>(R.id.buttonCancel)?.visibility = View.GONE
 
                             tokenListener?.invoke(result)
                             dismiss()
@@ -96,6 +102,7 @@ class StripeDialog : DialogFragment() {
                         override fun onError(error: Exception) {
                             view?.findViewById<View>(R.id.progress)?.visibility = View.GONE
                             view?.findViewById<View>(R.id.buttonSave)?.visibility = View.VISIBLE
+                            view?.findViewById<View>(R.id.buttonCancel)?.visibility = View.VISIBLE
                             view?.let {
                                 Snackbar.make(it, error.localizedMessage, Snackbar.LENGTH_LONG)
                                     .show()
