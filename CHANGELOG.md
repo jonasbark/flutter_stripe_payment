@@ -1,3 +1,8 @@
+## [1.0.8]
+- fix errors with shippingMethod for Apple Play (thanks @andhieka)
+- preserve card name on iOS (thanks @brauliolomeli)
+- currency support for CreditCard model (thanks @cis-emp1822)
+
 ## [1.0.7]
 - update Stripe iOS dependency to support Xcode 11.4 (#131)
 - bump Android gradle for latest Flutter support (thanks @ened)
