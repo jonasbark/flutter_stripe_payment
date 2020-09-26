@@ -33,7 +33,7 @@ class ApplePayPaymentOptions {
       data['requiredShippingAddressFields'] = this.requiredShippingAddressFields.map((s) => describeEnum(s)).toList();
     }
     if (this.shippingMethod != null) {
-      data['shippingMethod'] = this.shippingMethod.map((s) => s.toJson());
+      data['shippingMethod'] = this.shippingMethod.map((s) => s.toJson()).toList();
     }
     data['currencyCode'] = currencyCode;
     if (this.shippingType != null) {
