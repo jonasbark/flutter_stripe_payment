@@ -93,6 +93,7 @@ class CreditCard {
   String brand;
   String cardId;
   String country;
+  String currency;
   int expMonth;
   int expYear;
   String funding;
@@ -111,6 +112,7 @@ class CreditCard {
       this.addressZip,
       this.brand,
       this.cardId,
+      this.currency,
       this.country,
       this.expMonth,
       this.expYear,
@@ -131,6 +133,7 @@ class CreditCard {
         addressZip: json['addressZip'],
         brand: json['brand'],
         cardId: json['cardId'],
+        currency: json['currency'],
         country: json['country'],
         expMonth: json['expMonth'],
         expYear: json['expYear'],
@@ -156,6 +159,7 @@ class CreditCard {
     if (this.expMonth != null) data['expMonth'] = this.expMonth;
     if (this.expYear != null) data['expYear'] = this.expYear;
     if (this.funding != null) data['funding'] = this.funding;
+    if (this.currency != null) data['currency'] = this.currency;
     data['last4'] = this.last4;
     if (this.name != null) data['name'] = this.name;
     if (this.number != null) data['number'] = this.number;
