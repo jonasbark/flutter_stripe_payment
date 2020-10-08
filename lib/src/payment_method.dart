@@ -7,15 +7,19 @@ class PaymentMethodRequest {
   final CreditCard card;
   final Token token;
   final Map<String, String> metadata;
+  final SepaDebit sepaDebit;
 
-  PaymentMethodRequest({this.billingAddress, this.card, this.token, this.metadata}) {
-    assert(card != null || token != null);
+  PaymentMethodRequest({this.billingAddress, this.card,this.sepaDebit, this.token, this.metadata}) {
+    assert(card != null || token != null || sepaDebit!=null);
   }
 
   Map<String, Object> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.card != null) {
       data['card'] = card.toJson();
+    }
+    if (this.sepaDebit != null) {
+      data['sepa_debit'] = sepaDebit.toJson();
     }
     if (this.token != null) {
       data['token'] = token.toJson();
@@ -38,8 +42,8 @@ class PaymentMethod {
   String id;
   bool livemode;
   String type;
-
-  PaymentMethod({this.billingDetails, this.card, this.created, this.customerId, this.id, this.livemode, this.type});
+  SepaDebit sepaDebit;
+  PaymentMethod({this.billingDetails, this.card, this.created, this.customerId, this.id, this.livemode, this.type,this.sepaDebit});
 
   factory PaymentMethod.fromJson(Map<dynamic, dynamic> json) {
     return PaymentMethod(
@@ -47,6 +51,7 @@ class PaymentMethod {
       card: json['card'] != null ? CreditCard.fromJson(json['card']) : null,
       created: json['created'],
       customerId: json['customerId'],
+      sepaDebit: json['sepa_debit'] != null ? SepaDebit.fromJson(json['card']) : null,
       id: json['id'],
       livemode: json['livemode'],
       type: json['type'],
@@ -65,6 +70,9 @@ class PaymentMethod {
     }
     if (this.card != null) {
       data['card'] = this.card.toJson();
+    }
+    if (this.sepaDebit != null) {
+      data['sepa_debit'] = this.sepaDebit.toJson();
     }
     return data;
   }
