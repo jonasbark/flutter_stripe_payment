@@ -57,7 +57,7 @@ class StripePaymentPlugin {
 
       case "paymentRequestWithNativePay":
         // TODO: This won't work on a currency with smallest units anything else but cents
-        num total = num.tryParse(call.arguments['total_price']) * 100;
+        int total = (num.tryParse(call.arguments['total_price']) * 100).toInt();
 
         final pr = _stripe.paymentRequest(
           PaymentRequestOptions(
