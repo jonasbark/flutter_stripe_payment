@@ -51,7 +51,6 @@ import com.stripe.android.model.ConfirmPaymentIntentParams;
 import com.stripe.android.model.ConfirmSetupIntentParams;
 import com.stripe.android.model.PaymentMethod;
 import com.stripe.android.model.PaymentMethodCreateParams;
-import com.stripe.android.model.PaymentMethodCreateParams.Card;
 import com.stripe.android.model.Source;
 import com.stripe.android.model.SourceParams;
 import com.stripe.android.model.StripeIntent;
@@ -153,7 +152,7 @@ public class StripeModule {
 
   private PayFlow getPayFlow() {
     if (mPayFlow == null) {
-      mPayFlow = PayFlow.create(() -> activity, mStripe);
+      mPayFlow = PayFlow.create(() -> activity, () -> mStripe);
     }
 
     return mPayFlow;
@@ -272,9 +271,7 @@ public class StripeModule {
   }
 
   private void attachPaymentResultActivityListener(final Promise promise) {
-    final AtomicReference<ActivityResultListener> ael = new AtomicReference<>();
-
-    ael.set(
+    final ActivityResultListener ael =
         (requestCode, resultCode, data) ->
             mStripe.onPaymentResult(
                 requestCode,
@@ -282,8 +279,6 @@ public class StripeModule {
                 new ApiResultCallback<PaymentIntentResult>() {
                   @Override
                   public void onSuccess(@NonNull PaymentIntentResult result) {
-                    activityRegistry.removeListener(ael.get());
-
                     StripeIntent.Status resultingStatus = result.getIntent().getStatus();
 
                     if (Succeeded.equals(resultingStatus)
@@ -302,24 +297,25 @@ public class StripeModule {
 
                   @Override
                   public void onError(@NonNull Exception e) {
-                    activityRegistry.removeListener(ael.get());
-
                     e.printStackTrace();
                     promise.reject(toErrorCode(e), e.getMessage());
                   }
-                }));
+                });
 
-    activityRegistry.addListener(ael.get());
+    activityRegistry.addListener(ael);
+
+    promise.setWhenComplete(
+        () -> {
+          if (activityRegistry.removeListener(ael)) {
+            hasSetupResultListener.set(false);
+          }
+        });
   }
 
   private AtomicBoolean hasSetupResultListener = new AtomicBoolean(false);
-  private AtomicReference<Promise> setupResultPromise = new AtomicReference<>();
 
-  private void attachSetupResultActivityListener(Promise promise) {
-    final AtomicReference<ActivityResultListener> ael = new AtomicReference<>();
-    setupResultPromise.set(promise);
-
-    ael.set(
+  private void attachSetupResultActivityListener(final Promise promise) {
+    ActivityResultListener ael =
         (requestCode, resultCode, data) ->
             mStripe.onSetupResult(
                 requestCode,
@@ -327,12 +323,6 @@ public class StripeModule {
                 new ApiResultCallback<SetupIntentResult>() {
                   @Override
                   public void onSuccess(@NonNull SetupIntentResult result) {
-                    if (activityRegistry.removeListener(ael.get())) {
-                      hasSetupResultListener.set(false);
-                    }
-
-                    final Promise promise = setupResultPromise.get();
-
                     try {
                       switch (result.getIntent().getStatus()) {
                         case Canceled:
@@ -360,20 +350,20 @@ public class StripeModule {
 
                   @Override
                   public void onError(@NonNull Exception e) {
-                    final Promise promise = setupResultPromise.get();
-
-                    if (activityRegistry.removeListener(ael.get())) {
-                      hasSetupResultListener.set(false);
-                    }
-
-                    e.printStackTrace();
-                    promise.reject(toErrorCode(e), e.getMessage());
+                    Errors.raiseFlutterError(e, promise);
                   }
-                }));
+                });
 
     if (!hasSetupResultListener.getAndSet(true)) {
-      activityRegistry.addListener(ael.get());
+      activityRegistry.addListener(ael);
     }
+
+    promise.setWhenComplete(
+        () -> {
+          if (activityRegistry.removeListener(ael)) {
+            hasSetupResultListener.set(false);
+          }
+        });
   }
 
   @ReactMethod

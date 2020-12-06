@@ -2,6 +2,7 @@ package de.jonasbark.stripe_payment
 
 import android.app.Activity
 import android.content.Context
+import android.os.Handler
 import androidx.annotation.CheckResult
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
@@ -23,6 +24,9 @@ class StripePaymentPlugin : FlutterPlugin, ActivityAware {
     private var flutterPluginBinding: FlutterPluginBinding? = null
 
     private var methodChannel: MethodChannel? = null
+
+
+    private val mainHandler = Handler()
 
     @Suppress("unused")
     companion object {
@@ -68,13 +72,17 @@ class StripePaymentPlugin : FlutterPlugin, ActivityAware {
                 flutterPluginBinding!!.binaryMessenger,
                 object : ActivityRegistry {
                     override fun addListener(handler: ActivityResultListener): Boolean {
-                        binding.addActivityResultListener(handler)
+                        mainHandler.post {
+                            binding.addActivityResultListener(handler)
+                        }
                         return true
                     }
 
 
                     override fun removeListener(handler: ActivityResultListener): Boolean {
-                        binding.removeActivityResultListener(handler)
+                        mainHandler.post {
+                            binding.removeActivityResultListener(handler)
+                        }
                         return true
                     }
                 }

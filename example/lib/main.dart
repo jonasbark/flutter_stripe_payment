@@ -200,6 +200,21 @@ class _MyAppState extends State<MyApp> {
             ),
             Divider(),
             RaisedButton(
+              child: Text("Potentially Available Networks"),
+              onPressed: () async {
+                final networks =
+                    await StripePayment.potentiallyAvailableNativePayNetworks();
+                print('networks: $networks');
+              },
+            ),
+            RaisedButton(
+              child: Text("Can Make Native Payment"),
+              onPressed: () async {
+                final res = await StripePayment.canMakeNativePayPayments([]);
+                print('canMakeNativePayPayments: $res');
+              },
+            ),
+            RaisedButton(
               child: Text("Native payment"),
               onPressed: () {
                 if (Platform.isIOS) {
