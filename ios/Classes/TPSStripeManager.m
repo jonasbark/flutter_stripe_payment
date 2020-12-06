@@ -883,21 +883,15 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     [paymentRequest setShippingMethods:shippingMethods];
     [paymentRequest setShippingType:shippingType];
 
-    if ([self canSubmitPaymentRequest:paymentRequest rejecter:reject]) {
-        PKPaymentAuthorizationViewController *paymentAuthorizationVC = [[PKPaymentAuthorizationViewController alloc] initWithPaymentRequest:paymentRequest];
-        paymentAuthorizationVC.delegate = self;
+    PKPaymentAuthorizationViewController *paymentAuthorizationVC = [[PKPaymentAuthorizationViewController alloc] initWithPaymentRequest:paymentRequest];
+    paymentAuthorizationVC.delegate = self;
 
-        // move to the end of main queue
-        // allow the execution of hiding modal
-        // to be finished first
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [RCTPresentedViewController() presentViewController:paymentAuthorizationVC animated:YES completion:nil];
-        });
-    } else {
-        // There is a problem with your Apple Pay configuration.
-        [self resetPromiseCallbacks];
-        requestIsCompleted = YES;
-    }
+    // move to the end of main queue
+    // allow the execution of hiding modal
+    // to be finished first
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [RCTPresentedViewController() presentViewController:paymentAuthorizationVC animated:YES completion:nil];
+    });
 }
 
 -(void)openApplePaySetup {
@@ -913,6 +907,20 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
 
 - (STPCardParams *)extractCardParamsFromDictionary:(NSDictionary<TPSStripeType(CardParams), id> *)params {
     STPCardParams *result = [[STPCardParams alloc] init];
+
+    // Make a new address object, and fill it in with data before assigning it
+    // Editing the fields on the assigned address won't do anything according to Stripe's docs
+    // Setting the address before the rest of the fields so result.name is not cleared.
+    // https://stripe.dev/stripe-ios/docs/Classes/STPCardParams.html#/c:objc(cs)STPCardParams(py)address
+    STPAddress * address = [[STPAddress alloc] init];
+    address.line1 = params[TPSStripeParam(CardParams, addressLine1)];
+    address.line2 = params[TPSStripeParam(CardParams, addressLine2)];
+    address.city = params[TPSStripeParam(CardParams, addressCity)];
+    address.state = params[TPSStripeParam(CardParams, addressState)];
+    address.country = params[TPSStripeParam(CardParams, addressCountry)];
+    address.postalCode = params[TPSStripeParam(CardParams, addressZip)];
+    result.address = address; // Commit all the changes as a batch
+
 #define simpleUnpack(key) result.key = [RCTConvert NSString:params[TPSStripeParam(CardParams, key)]]
 
     simpleUnpack(number);
@@ -924,17 +932,6 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     simpleUnpack(name);
 
 #undef simpleUnpack
-
-    // Make a new address object, and fill it in with data before assigning it
-    // Editing the fields on the assigned address won't do anything according to Stripe's docs
-    STPAddress * address = [[STPAddress alloc] init];
-    address.line1 = params[TPSStripeParam(CardParams, addressLine1)];
-    address.line2 = params[TPSStripeParam(CardParams, addressLine2)];
-    address.city = params[TPSStripeParam(CardParams, addressCity)];
-    address.state = params[TPSStripeParam(CardParams, addressState)];
-    address.country = params[TPSStripeParam(CardParams, addressCountry)];
-    address.postalCode = params[TPSStripeParam(CardParams, addressZip)];
-    result.address = address; // Commit all the changes as a batch
 
     return result;
 }
