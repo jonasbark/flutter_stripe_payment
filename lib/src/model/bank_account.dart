@@ -3,10 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'bank_account.g.dart';
 
 enum BankAccountAccountHolderType {
-  @JsonValue(0)
   company,
-
-  @JsonValue(1)
   individual,
 }
 

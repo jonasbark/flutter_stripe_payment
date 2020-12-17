@@ -61,7 +61,7 @@ T _$enumDecodeNullable<T>(
 }
 
 const _$CodeVerificationStatusEnumMap = {
-  CodeVerificationStatus.pending: 0,
-  CodeVerificationStatus.succeeded: 1,
-  CodeVerificationStatus.failed: 2,
+  CodeVerificationStatus.pending: 'pending',
+  CodeVerificationStatus.succeeded: 'succeeded',
+  CodeVerificationStatus.failed: 'failed',
 };

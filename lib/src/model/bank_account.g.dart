@@ -76,6 +76,6 @@ T _$enumDecodeNullable<T>(
 }
 
 const _$BankAccountAccountHolderTypeEnumMap = {
-  BankAccountAccountHolderType.company: 0,
-  BankAccountAccountHolderType.individual: 1,
+  BankAccountAccountHolderType.company: 'company',
+  BankAccountAccountHolderType.individual: 'individual',
 };

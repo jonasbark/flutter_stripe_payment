@@ -32,6 +32,7 @@ import com.stripe.android.model.Source.Redirect;
 import com.stripe.android.model.Token;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 
 /** Created by ngoriachev on 13/03/2018. */
@@ -123,7 +124,7 @@ public class Converters {
     result.putString("countryCode", account.getCountryCode());
     result.putString("currency", account.getCurrency());
     result.putString("accountHolderName", account.getAccountHolderName());
-    result.putInt("accountHolderType", account.getAccountHolderType().ordinal());
+    result.putString("accountHolderType", enumName(account.getAccountHolderType()));
     result.putString("fingerprint", account.getFingerprint());
     result.putString("bankName", account.getBankName());
     result.putString("last4", account.getLast4());
@@ -214,6 +215,15 @@ public class Converters {
         .build();
   }
 
+  private static String enumName(Enum object) {
+    if (object != null) {
+      return object.name();
+//      return object.name().toLowerCase(Locale.US);
+    }
+
+    return null;
+  }
+
   @NonNull
   public static WritableMap convertSourceToWritableMap(@Nullable Source source) {
     WritableMap newSource = Arguments.createMap();
@@ -229,17 +239,17 @@ public class Converters {
     newSource.putMap(
         "codeVerification", convertCodeVerificationToWritableMap(source.getCodeVerification()));
     newSource.putString("currency", source.getCurrency());
-    newSource.putInt("flow", source.getFlow().ordinal());
+    newSource.putString("flow", enumName(source.getFlow()));
     newSource.putBoolean("livemode", source.isLiveMode());
     newSource.putMap("metadata", stringMapToWritableMap(source.getMetaData()));
     newSource.putMap("owner", convertOwnerToWritableMap(source.getOwner()));
     newSource.putMap("receiver", convertReceiverToWritableMap(source.getReceiver()));
     newSource.putMap("redirect", convertRedirectToWritableMap(source.getRedirect()));
     newSource.putMap("sourceTypeData", mapToWritableMap(source.getSourceTypeData()));
-    newSource.putInt("status", source.getStatus().ordinal());
+    newSource.putString("status", enumName(source.getStatus()));
     newSource.putString("type", source.getType());
     newSource.putString("typeRaw", source.getTypeRaw());
-    newSource.putInt("usage", source.getUsage().ordinal());
+    newSource.putString("usage", enumName(source.getUsage()));
 
     return newSource;
   }
@@ -441,7 +451,7 @@ public class Converters {
     }
 
     map.putString("returnUrl", redirect.getReturnUrl());
-    map.putInt("status", redirect.getStatus().ordinal());
+    map.putString("status", enumName(redirect.getStatus()));
     map.putString("url", redirect.getUrl());
 
     return map;
@@ -457,7 +467,7 @@ public class Converters {
     }
 
     map.putInt("attemptsRemaining", codeVerification.getAttemptsRemaining());
-    map.putInt("status", codeVerification.getStatus().ordinal());
+    map.putString("status", enumName(codeVerification.getStatus()));
 
     return map;
   }

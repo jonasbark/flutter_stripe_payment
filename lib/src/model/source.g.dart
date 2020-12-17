@@ -96,21 +96,24 @@ T _$enumDecodeNullable<T>(
 }
 
 const _$SourceFlowEnumMap = {
-  SourceFlow.redirect: 0,
-  SourceFlow.receiver: 1,
-  SourceFlow.codeVerification: 2,
-  SourceFlow.none: 3,
+  SourceFlow.redirect: 'redirect',
+  SourceFlow.receiver: 'receiver',
+  SourceFlow.codeVerification: 'codeVerification',
+  SourceFlow.none: 'none',
+  SourceFlow.unknown: 'unknown',
 };
 
 const _$SourceStatusEnumMap = {
-  SourceStatus.canceled: 0,
-  SourceStatus.chargeable: 1,
-  SourceStatus.consumed: 2,
-  SourceStatus.failed: 3,
-  SourceStatus.pending: 4,
+  SourceStatus.canceled: 'canceled',
+  SourceStatus.chargeable: 'chargeable',
+  SourceStatus.consumed: 'consumed',
+  SourceStatus.failed: 'failed',
+  SourceStatus.pending: 'pending',
+  SourceStatus.unknown: 'unknown',
 };
 
 const _$SourceUsageEnumMap = {
-  SourceUsage.reusable: 0,
-  SourceUsage.singleUse: 1,
+  SourceUsage.reusable: 'reusable',
+  SourceUsage.singleUse: 'singleUse',
+  SourceUsage.unknown: 'unknown',
 };

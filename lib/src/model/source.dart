@@ -8,42 +8,26 @@ import 'receiver.dart';
 part 'source.g.dart';
 
 enum SourceFlow {
-  @JsonValue(0)
   redirect,
-
-  @JsonValue(1)
   receiver,
-
-  @JsonValue(2)
   codeVerification,
-
-  @JsonValue(3)
   none,
+  unknown,
 }
 
 enum SourceStatus {
-  @JsonValue(0)
   canceled,
-
-  @JsonValue(1)
   chargeable,
-
-  @JsonValue(2)
   consumed,
-
-  @JsonValue(3)
   failed,
-
-  @JsonValue(4)
   pending,
+  unknown,
 }
 
 enum SourceUsage {
-  @JsonValue(0)
   reusable,
-
-  @JsonValue(1)
   singleUse,
+  unknown,
 }
 
 @JsonSerializable()

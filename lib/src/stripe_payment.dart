@@ -114,8 +114,8 @@ class StripePayment {
       ApplePayPaymentOptions options) async {
     final pm = await _channel
         .invokeMapMethod<dynamic, dynamic>("paymentMethodFromApplePay", {
-      "options": options.json,
-      "items": options.items.map((item) => item.json).toList()
+      "options": options.toJson(),
+      "items": options.items.map((item) => item.toJson()).toList()
     });
     print('received: $pm');
     return PaymentMethod.fromJson(pm);
@@ -151,8 +151,8 @@ class StripePayment {
       ApplePayPaymentOptions options) async {
     final token = await _channel
         .invokeMapMethod<dynamic, dynamic>("paymentRequestWithApplePay", {
-      "options": options.json,
-      "items": options.items.map((item) => item.json).toList()
+      "options": options.toJson(),
+      "items": options.items.map((item) => item.toJson()).toList()
     });
     return Token.fromJson(token);
   }

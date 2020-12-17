@@ -3,13 +3,8 @@ import 'package:json_annotation/json_annotation.dart';
 part 'code_verification.g.dart';
 
 enum CodeVerificationStatus {
-  @JsonValue(0)
   pending,
-
-  @JsonValue(1)
   succeeded,
-
-  @JsonValue(2)
   failed,
 }
 
