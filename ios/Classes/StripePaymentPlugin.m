@@ -1,5 +1,5 @@
 #import "StripePaymentPlugin.h"
-#import <Stripe/Stripe.h>
+#import <Stripe/Stripe-Swift.h>
 #import "TPSStripeManager.h"
 
 @implementation StripePaymentPlugin {
@@ -24,14 +24,16 @@
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-
+    
     id rejecter = ^(NSString *code, NSString *message, NSError *error) {
         result([FlutterError errorWithCode:code ?: @"-" message:message details:error.localizedDescription]);
     };
     if ([@"setOptions" isEqualToString: call.method]) {
         [stripeModule init:call.arguments[@"options"] errorCodes:call.arguments[@"errorCodes"]];
+        result(nil);
     } else if ([@"setStripeAccount" isEqualToString:call.method]) {
         [stripeModule setStripeAccount:call.arguments[@"stripeAccount"]];
+        result(nil);
     } else if ([@"deviceSupportsApplePay" isEqualToString:call.method]) {
         [stripeModule deviceSupportsApplePay:result rejecter:rejecter];
     } else if ([@"canMakeApplePayPayments" isEqualToString:call.method]) {
@@ -62,6 +64,8 @@
         [stripeModule paymentRequestWithCardForm:call.arguments resolver:result rejecter:rejecter];
     } else if ([@"paymentRequestWithApplePay" isEqualToString:call.method]) {
         [stripeModule paymentRequestWithApplePay:call.arguments[@"items"] withOptions:call.arguments[@"options"] resolver:result rejecter:rejecter];
+    } else if ([@"paymentMethodFromApplePay" isEqualToString:call.method]) {
+        [stripeModule paymentMethodFromApplePay:call.arguments[@"items"] withOptions:call.arguments[@"options"] resolver:result rejecter:rejecter];
     } else if ([@"openApplePaySetup" isEqualToString:call.method]) {
         [stripeModule openApplePaySetup];
     }

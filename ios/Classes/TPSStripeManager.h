@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <PassKit/PassKit.h>
-#import <Stripe/Stripe.h>
+#import <Stripe/Stripe-Swift.h>
 #import "RCTConvert.h"
 
 /**
@@ -90,6 +90,11 @@ typedef void (^RCTPromiseRejectBlock)(NSString *code, NSString *message, NSError
                       withOptions:(NSDictionary *)options
                          resolver:(RCTPromiseResolveBlock)resolve
                          rejecter:(RCTPromiseRejectBlock)reject;
+
+-(void)paymentMethodFromApplePay:(NSArray *)items
+                     withOptions:(NSDictionary *)options
+                        resolver:(RCTPromiseResolveBlock)resolve
+                        rejecter:(RCTPromiseRejectBlock)reject;
 
 -(void)openApplePaySetup;
 

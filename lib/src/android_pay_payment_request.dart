@@ -1,75 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+import 'android/line_item.dart';
+
+part 'android_pay_payment_request.g.dart';
+
+@JsonSerializable()
 class AndroidPayPaymentRequest {
-  bool billingAddressRequired;
-  String currencyCode;
-  List<LineItem> lineItems;
-  bool shippingAddressRequired;
-  List<String> shippingCountries;
-  String totalPrice;
+  @JsonKey(name: 'billing_address_required')
+  final bool billingAddressRequired;
 
-  AndroidPayPaymentRequest(
-      {this.billingAddressRequired,
-      @required this.currencyCode,
-      this.lineItems,
-      this.shippingAddressRequired,
-      this.shippingCountries,
-      @required this.totalPrice});
+  @JsonKey(name: 'currency_code')
+  final String currencyCode;
 
-  factory AndroidPayPaymentRequest.fromJson(Map<dynamic, dynamic> json) {
-    return AndroidPayPaymentRequest(
-      billingAddressRequired: json['billing_address_required'],
-      currencyCode: json['currency_code'],
-      lineItems:
-          json['line_items'] != null ? (json['line_items'] as List).map((i) => LineItem.fromJson(i)).toList() : null,
-      shippingAddressRequired: json['shipping_address_required'],
-      shippingCountries: json['shipping_countries'] != null ? new List<String>.from(json['shipping_countries']) : null,
-      totalPrice: json['total_price'],
-    );
-  }
+  @JsonKey(name: 'line_items')
+  final List<LineItem> lineItems;
 
-  Map<dynamic, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.billingAddressRequired != null) data['billing_address_required'] = this.billingAddressRequired;
-    if (this.currencyCode != null) data['currency_code'] = this.currencyCode;
-    if (this.shippingAddressRequired != null) data['shipping_address_required'] = this.shippingAddressRequired;
-    if (this.totalPrice != null) data['total_price'] = this.totalPrice;
-    if (this.lineItems != null) {
-      data['line_items'] = this.lineItems.map((v) => v.toJson()).toList();
-    }
-    if (this.shippingCountries != null) {
-      if (this.shippingCountries != null) data['shipping_countries'] = this.shippingCountries;
-    }
-    return data;
-  }
-}
+  @JsonKey(name: 'shipping_address_required')
+  final bool shippingAddressRequired;
 
-class LineItem {
-  String currencyCode;
-  String description;
-  String quantity;
-  String totalPrice;
-  String unitPrice;
+  @JsonKey(name: 'shipping_countries')
+  final List<String> shippingCountries;
 
-  LineItem({this.currencyCode, this.description, this.quantity, this.totalPrice, this.unitPrice});
+  @JsonKey(name: 'phone_number_required')
+  final bool phoneNumberRequired;
 
-  factory LineItem.fromJson(Map<dynamic, dynamic> json) {
-    return LineItem(
-      currencyCode: json['currency_code'],
-      description: json['description'],
-      quantity: json['quantity'],
-      totalPrice: json['total_price'],
-      unitPrice: json['unit_price'],
-    );
-  }
+  @JsonKey(name: 'email_required')
+  final bool emailRequired;
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.currencyCode != null) data['currency_code'] = this.currencyCode;
-    if (this.description != null) data['description'] = this.description;
-    if (this.quantity != null) data['quantity'] = this.quantity;
-    if (this.totalPrice != null) data['total_price'] = this.totalPrice;
-    if (this.unitPrice != null) data['unit_price'] = this.unitPrice;
-    return data;
-  }
+  @JsonKey(name: 'total_price')
+  final String totalPrice;
+
+  const AndroidPayPaymentRequest({
+    this.billingAddressRequired,
+    this.currencyCode,
+    this.lineItems,
+    this.shippingAddressRequired,
+    this.shippingCountries,
+    this.phoneNumberRequired,
+    this.emailRequired,
+    this.totalPrice,
+  });
+
+  factory AndroidPayPaymentRequest.fromJson(Map json) =>
+      _$AndroidPayPaymentRequestFromJson(json);
+  Map toJson() => _$AndroidPayPaymentRequestToJson(this);
 }

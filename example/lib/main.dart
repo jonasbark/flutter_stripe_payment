@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(new MyApp());
@@ -17,7 +18,7 @@ class _MyAppState extends State<MyApp> {
   Token _paymentToken;
   PaymentMethod _paymentMethod;
   String _error;
-  final String _currentSecret = null; //set this yourself, e.g using curl
+  String _currentSecret; //set this yourself, e.g using curl
   PaymentIntentResult _paymentIntent;
   Source _source;
 
@@ -35,12 +36,16 @@ class _MyAppState extends State<MyApp> {
   initState() {
     super.initState();
 
-    StripePayment.setOptions(
-        StripeOptions(publishableKey: "pk_test_aSaULNS8cJU6Tvo20VAXy6rp", merchantId: "Test", androidPayMode: 'test'));
+    StripePayment.setOptions(StripeOptions(
+      publishableKey: "pk_test_Td50zsO17OMeDeHFw7VWoUZO00Ky35bmfY",
+      merchantId: "Test",
+      androidPayMode: 'test',
+    ));
   }
 
   void setError(dynamic error) {
-    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(error.toString())));
+    _scaffoldKey.currentState
+        .showSnackBar(SnackBar(content: Text(error.toString())));
     setState(() {
       _error = error.toString();
     });
@@ -80,7 +85,8 @@ class _MyAppState extends State<MyApp> {
                   currency: 'eur',
                   returnURL: 'example://stripe-redirect',
                 )).then((source) {
-                  _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Received ${source.sourceId}')));
+                  _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(content: Text('Received ${source.sourceId}')));
                   setState(() {
                     _source = source;
                   });
@@ -91,8 +97,11 @@ class _MyAppState extends State<MyApp> {
             RaisedButton(
               child: Text("Create Token with Card Form"),
               onPressed: () {
-                StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest()).then((paymentMethod) {
-                  _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Received ${paymentMethod.id}')));
+                StripePayment.paymentRequestWithCardForm(
+                        CardFormPaymentRequest())
+                    .then((paymentMethod) {
+                  _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(content: Text('Received ${paymentMethod.id}')));
                   setState(() {
                     _paymentMethod = paymentMethod;
                   });
@@ -105,7 +114,8 @@ class _MyAppState extends State<MyApp> {
                 StripePayment.createTokenWithCard(
                   testCard,
                 ).then((token) {
-                  _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Received ${token.tokenId}')));
+                  _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(content: Text('Received ${token.tokenId}')));
                   setState(() {
                     _paymentToken = token;
                   });
@@ -121,10 +131,12 @@ class _MyAppState extends State<MyApp> {
                     card: testCard,
                   ),
                 ).then((paymentMethod) {
-                  _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Received ${paymentMethod.id}')));
+                  _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(content: Text('Received ${paymentMethod.id}')));
                   setState(() {
                     _paymentMethod = paymentMethod;
                   });
+                  _buildSecret(_paymentMethod.id);
                 }).catchError(setError);
               },
             ),
@@ -140,7 +152,8 @@ class _MyAppState extends State<MyApp> {
                           ),
                         ),
                       ).then((paymentMethod) {
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Received ${paymentMethod.id}')));
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: Text('Received ${paymentMethod.id}')));
                         setState(() {
                           _paymentMethod = paymentMethod;
                         });
@@ -159,8 +172,9 @@ class _MyAppState extends State<MyApp> {
                           paymentMethodId: _paymentMethod.id,
                         ),
                       ).then((paymentIntent) {
-                        _scaffoldKey.currentState
-                            .showSnackBar(SnackBar(content: Text('Received ${paymentIntent.paymentIntentId}')));
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: Text(
+                                'Received ${paymentIntent.paymentIntentId}')));
                         setState(() {
                           _paymentIntent = paymentIntent;
                         });
@@ -172,9 +186,12 @@ class _MyAppState extends State<MyApp> {
               onPressed: _currentSecret == null
                   ? null
                   : () {
-                      StripePayment.authenticatePaymentIntent(clientSecret: _currentSecret).then((paymentIntent) {
-                        _scaffoldKey.currentState
-                            .showSnackBar(SnackBar(content: Text('Received ${paymentIntent.paymentIntentId}')));
+                      StripePayment.authenticatePaymentIntent(
+                              clientSecret: _currentSecret)
+                          .then((paymentIntent) {
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: Text(
+                                'Received ${paymentIntent.paymentIntentId}')));
                         setState(() {
                           _paymentIntent = paymentIntent;
                         });
@@ -182,6 +199,21 @@ class _MyAppState extends State<MyApp> {
                     },
             ),
             Divider(),
+            RaisedButton(
+              child: Text("Potentially Available Networks"),
+              onPressed: () async {
+                final networks =
+                    await StripePayment.potentiallyAvailableNativePayNetworks();
+                print('networks: $networks');
+              },
+            ),
+            RaisedButton(
+              child: Text("Can Make Native Payment"),
+              onPressed: () async {
+                final res = await StripePayment.canMakeNativePayPayments([]);
+                print('canMakeNativePayPayments: $res');
+              },
+            ),
             RaisedButton(
               child: Text("Native payment"),
               onPressed: () {
@@ -205,7 +237,8 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ).then((token) {
                   setState(() {
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Received ${token.tokenId}')));
+                    _scaffoldKey.currentState.showSnackBar(
+                        SnackBar(content: Text('Received ${token.tokenId}')));
                     _paymentToken = token;
                   });
                 }).catchError(setError);
@@ -215,7 +248,8 @@ class _MyAppState extends State<MyApp> {
               child: Text("Complete Native Payment"),
               onPressed: () {
                 StripePayment.completeNativePayRequest().then((_) {
-                  _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Completed successfully')));
+                  _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(content: Text('Completed successfully')));
                 }).catchError(setError);
               },
             ),
@@ -228,19 +262,22 @@ class _MyAppState extends State<MyApp> {
             Divider(),
             Text('Current token:'),
             Text(
-              JsonEncoder.withIndent('  ').convert(_paymentToken?.toJson() ?? {}),
+              JsonEncoder.withIndent('  ')
+                  .convert(_paymentToken?.toJson() ?? {}),
               style: TextStyle(fontFamily: "Monospace"),
             ),
             Divider(),
             Text('Current payment method:'),
             Text(
-              JsonEncoder.withIndent('  ').convert(_paymentMethod?.toJson() ?? {}),
+              JsonEncoder.withIndent('  ')
+                  .convert(_paymentMethod?.toJson() ?? {}),
               style: TextStyle(fontFamily: "Monospace"),
             ),
             Divider(),
             Text('Current payment intent:'),
             Text(
-              JsonEncoder.withIndent('  ').convert(_paymentIntent?.toJson() ?? {}),
+              JsonEncoder.withIndent('  ')
+                  .convert(_paymentIntent?.toJson() ?? {}),
               style: TextStyle(fontFamily: "Monospace"),
             ),
             Divider(),
@@ -249,5 +286,35 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  _buildSecret(String paymentMethodId) async {
+    String json = '''
+                {
+                    "useStripeSdk":true,
+                    "paymentMethodId":"$paymentMethodId",
+                    "currency":"usd",
+                    "items": [
+                        {"id":"photo_subscription"}
+                    ]
+                }
+                ''';
+
+    final url = Uri.http('192.168.1.189:4242', '/create-payment-intent');
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': "application/json; charset=utf-8"},
+      body: json,
+    );
+    print(response.body);
+    final jsonResponse = jsonDecode(response.body);
+    final String payError = jsonResponse['error'];
+    final String clientSecret = jsonResponse['clientSecret'];
+    final String requiresAction = jsonResponse['requiresAction'];
+
+    setState(() {
+      _currentSecret = clientSecret;
+    });
   }
 }
