@@ -1,5 +1,5 @@
 #import "StripePaymentPlugin.h"
-#import <Stripe/Stripe.h>
+#import <Stripe/Stripe-Swift.h>
 #import "TPSStripeManager.h"
 
 @implementation StripePaymentPlugin {

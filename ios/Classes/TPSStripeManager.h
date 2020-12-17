@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <PassKit/PassKit.h>
-#import <Stripe/Stripe.h>
+#import <Stripe/Stripe-Swift.h>
 #import "RCTConvert.h"
 
 /**
