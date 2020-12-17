@@ -22,7 +22,7 @@ dev_dependencies:
   json_serializable: ^3.3.0
   flutter_test:
     sdk: flutter
-  e2e: ^0.4.2
+  integration_test: ^1.0.1
   flutter_driver:
     sdk: flutter
                 
