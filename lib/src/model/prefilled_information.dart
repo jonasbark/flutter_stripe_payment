@@ -1,23 +1,18 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import 'address.dart';
 
+part 'prefilled_information.g.dart';
+
+@JsonSerializable()
 class PrefilledInformation {
-  Address billingAddress;
+  final Address billingAddress;
 
-  PrefilledInformation({this.billingAddress});
+  const PrefilledInformation({
+    this.billingAddress,
+  });
 
-  factory PrefilledInformation.fromJson(Map<dynamic, dynamic> json) {
-    return PrefilledInformation(
-      billingAddress: json['billingAddress'] != null
-          ? Address.fromJson(json['billingAddress'])
-          : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.billingAddress != null) {
-      data['billingAddress'] = this.billingAddress.toJson();
-    }
-    return data;
-  }
+  factory PrefilledInformation.fromJson(Map json) =>
+      _$PrefilledInformationFromJson(json);
+  Map toJson() => _$PrefilledInformationToJson(this);
 }

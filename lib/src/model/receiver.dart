@@ -1,42 +1,25 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'receiver.g.dart';
+
+@JsonSerializable()
 class Receiver {
-  String address;
-  int amountCharged;
-  int amountReceived;
-  int amountReturned;
-  String refundAttributesMethod;
-  String refundAttributesStatus;
+  final String address;
+  final int amountCharged;
+  final int amountReceived;
+  final int amountReturned;
+  final String refundAttributesMethod;
+  final String refundAttributesStatus;
 
-  Receiver(
-      {this.address,
-      this.amountCharged,
-      this.amountReceived,
-      this.amountReturned,
-      this.refundAttributesMethod,
-      this.refundAttributesStatus});
+  const Receiver({
+    this.address,
+    this.amountCharged,
+    this.amountReceived,
+    this.amountReturned,
+    this.refundAttributesMethod,
+    this.refundAttributesStatus,
+  });
 
-  factory Receiver.fromJson(Map<dynamic, dynamic> json) {
-    return Receiver(
-      address: json['address'],
-      amountCharged: json['amount_charged'],
-      amountReceived: json['amount_received'],
-      amountReturned: json['amount_returned'],
-      refundAttributesMethod: json['refund_attributes_method'],
-      refundAttributesStatus: json['refund_attributes_status'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.address != null) data['address'] = this.address;
-    if (this.amountCharged != null) data['amount_charged'] = this.amountCharged;
-    if (this.amountReceived != null)
-      data['amount_received'] = this.amountReceived;
-    if (this.amountReturned != null)
-      data['amount_returned'] = this.amountReturned;
-    if (this.refundAttributesMethod != null)
-      data['refund_attributes_method'] = this.refundAttributesMethod;
-    if (this.refundAttributesStatus != null)
-      data['refund_attributes_status'] = this.refundAttributesStatus;
-    return data;
-  }
+  factory Receiver.fromJson(Map json) => _$ReceiverFromJson(json);
+  Map toJson() => _$ReceiverToJson(this);
 }

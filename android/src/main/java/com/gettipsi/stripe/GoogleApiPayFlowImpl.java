@@ -40,7 +40,6 @@ import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.Wallet;
 import com.google.android.gms.wallet.WalletConstants;
 import com.stripe.android.ApiResultCallback;
-import com.stripe.android.BuildConfig;
 import com.stripe.android.Stripe;
 import com.stripe.android.model.Address;
 import com.stripe.android.model.PaymentMethod;
@@ -51,6 +50,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /** Created by ngoriachev on 13/03/2018. see https://developers.google.com/pay/api/tutorial */
 public final class GoogleApiPayFlowImpl extends PayFlow {
@@ -106,7 +107,7 @@ public final class GoogleApiPayFlowImpl extends PayFlow {
             WalletConstants.PAYMENT_METHOD_TOKENIZATION_TYPE_PAYMENT_GATEWAY)
         .addParameter("gateway", "stripe")
         .addParameter("stripe:publishableKey", getPublishableKey())
-        .addParameter("stripe:version", BuildConfig.VERSION_NAME)
+        .addParameter("stripe:version", Stripe.VERSION_NAME)
         .build();
   }
 
@@ -281,7 +282,7 @@ public final class GoogleApiPayFlowImpl extends PayFlow {
                 final String rawToken =
                     paymentMethodToken != null ? paymentMethodToken.getToken() : null;
 
-                final Token stripeToken = Token.fromString(rawToken);
+                final Token stripeToken = Token.fromJson(new JSONObject(rawToken));
                 if (stripeToken != null) {
                   // Create a PaymentMethod object using the token id
                   final PaymentMethod.BillingDetails billingDetails;
@@ -314,7 +315,7 @@ public final class GoogleApiPayFlowImpl extends PayFlow {
                           PaymentMethodCreateParams.Card.create(stripeToken.getId()),
                           billingDetails);
 
-                  mStripe.call() .createPaymentMethod(
+                  mStripe.call().createPaymentMethod(
                       params,
                       new ApiResultCallback<PaymentMethod>() {
                         @Override
@@ -344,7 +345,18 @@ public final class GoogleApiPayFlowImpl extends PayFlow {
               }
             } else {
               String tokenJson = paymentData.getPaymentMethodToken().getToken();
-              Token token = Token.fromString(tokenJson);
+              Token token = null;
+              try {
+                token = Token.fromJson(new JSONObject(tokenJson));
+              } catch (JSONException e) {
+                payPromise.resolve(
+                    putExtraToTokenMap(
+                        convertTokenToWritableMap(token),
+                        getBillingAddress(paymentData),
+                        paymentData.getShippingAddress(),
+                        paymentData.getEmail()));
+                break;
+              }
               Log.d(TAG, "token: " + tokenJson);
               if (token == null) {
                 payPromise.reject(

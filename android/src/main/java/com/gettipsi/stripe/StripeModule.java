@@ -52,6 +52,7 @@ import com.stripe.android.model.ConfirmSetupIntentParams;
 import com.stripe.android.model.PaymentMethod;
 import com.stripe.android.model.PaymentMethodCreateParams;
 import com.stripe.android.model.Source;
+import com.stripe.android.model.Source.Redirect;
 import com.stripe.android.model.SourceParams;
 import com.stripe.android.model.StripeIntent;
 import com.stripe.android.model.Token;
@@ -441,7 +442,7 @@ public class StripeModule {
 
           @Override
           public void onSuccess(Source source) {
-            if (Source.SourceFlow.REDIRECT.equals(source.getFlow())) {
+            if (source.getRedirect() != null) {
               if (activity == null) {
                 promise.reject(
                     getErrorCode(mErrorCodes, "activityUnavailable"),
@@ -745,21 +746,21 @@ public class StripeModule {
       protected void onPostExecute(Source source) {
         if (source != null) {
           switch (source.getStatus()) {
-            case Source.SourceStatus.CHARGEABLE:
-            case Source.SourceStatus.CONSUMED:
+            case Chargeable:
+            case Consumed:
               promise.resolve(convertSourceToWritableMap(source));
               break;
-            case Source.SourceStatus.CANCELED:
+            case Canceled:
               promise.reject(
-                  getErrorCode(mErrorCodes, "redirectCancelled"),
-                  getDescription(mErrorCodes, "redirectCancelled"));
+                getErrorCode(mErrorCodes, "redirectCancelled"),
+                getDescription(mErrorCodes, "redirectCancelled"));
               break;
-            case Source.SourceStatus.PENDING:
-            case Source.SourceStatus.FAILED:
-            default:
+            case Failed:
+            case Pending:
               promise.reject(
                   getErrorCode(mErrorCodes, "redirectFailed"),
                   getDescription(mErrorCodes, "redirectFailed"));
+              break;
           }
         }
       }

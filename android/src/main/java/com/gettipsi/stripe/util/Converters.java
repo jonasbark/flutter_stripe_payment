@@ -25,10 +25,10 @@ import com.stripe.android.model.PaymentIntent;
 import com.stripe.android.model.PaymentMethod;
 import com.stripe.android.model.SetupIntent;
 import com.stripe.android.model.Source;
-import com.stripe.android.model.SourceCodeVerification;
-import com.stripe.android.model.SourceOwner;
-import com.stripe.android.model.SourceReceiver;
-import com.stripe.android.model.SourceRedirect;
+import com.stripe.android.model.Source.CodeVerification;
+import com.stripe.android.model.Source.Owner;
+import com.stripe.android.model.Source.Receiver;
+import com.stripe.android.model.Source.Redirect;
 import com.stripe.android.model.Token;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -120,11 +120,10 @@ public class Converters {
     }
 
     result.putString("routingNumber", account.getRoutingNumber());
-    result.putString("accountNumber", account.getAccountNumber());
     result.putString("countryCode", account.getCountryCode());
     result.putString("currency", account.getCurrency());
     result.putString("accountHolderName", account.getAccountHolderName());
-    result.putString("accountHolderType", account.getAccountHolderType());
+    result.putInt("accountHolderType", account.getAccountHolderType().ordinal());
     result.putString("fingerprint", account.getFingerprint());
     result.putString("bankName", account.getBankName());
     result.putString("last4", account.getLast4());
@@ -223,23 +222,24 @@ public class Converters {
       return newSource;
     }
 
+
     newSource.putString("sourceId", source.getId());
     newSource.putInt("amount", source.getAmount().intValue());
     newSource.putInt("created", source.getCreated().intValue());
     newSource.putMap(
         "codeVerification", convertCodeVerificationToWritableMap(source.getCodeVerification()));
     newSource.putString("currency", source.getCurrency());
-    newSource.putString("flow", source.getFlow());
+    newSource.putInt("flow", source.getFlow().ordinal());
     newSource.putBoolean("livemode", source.isLiveMode());
     newSource.putMap("metadata", stringMapToWritableMap(source.getMetaData()));
     newSource.putMap("owner", convertOwnerToWritableMap(source.getOwner()));
     newSource.putMap("receiver", convertReceiverToWritableMap(source.getReceiver()));
     newSource.putMap("redirect", convertRedirectToWritableMap(source.getRedirect()));
     newSource.putMap("sourceTypeData", mapToWritableMap(source.getSourceTypeData()));
-    newSource.putString("status", source.getStatus());
+    newSource.putInt("status", source.getStatus().ordinal());
     newSource.putString("type", source.getType());
     newSource.putString("typeRaw", source.getTypeRaw());
-    newSource.putString("usage", source.getUsage());
+    newSource.putInt("usage", source.getUsage().ordinal());
 
     return newSource;
   }
@@ -318,7 +318,7 @@ public class Converters {
 
     // Omitted (can be introduced later): card.checks, card.threeDSecureUsage, card.wallet
 
-    wm.putString("brand", card.brand);
+    wm.putMap("brand", convertCardBrandToWritableMap(card.brand));
     wm.putString("country", card.country);
     wm.putInt("expMonth", card.expiryMonth);
     wm.putInt("expYear", card.expiryYear);
@@ -326,6 +326,26 @@ public class Converters {
     wm.putString("last4", card.last4);
     return wm;
   }
+
+  @NonNull
+  public static WritableMap convertCardBrandToWritableMap(
+      @Nullable final CardBrand brand) {
+    WritableMap wm = Arguments.createMap();
+
+    if (brand == null) {
+      return wm;
+    }
+
+    final WritableNativeArray wna = new WritableNativeArray();
+    wna.addAll(brand.getCvcLength());
+
+    wm.putString("code", brand.getCode());
+    wm.putString("displayName", brand.getDisplayName());
+    wm.putArray("cvcLength", wna);
+    wm.putInt("maxCvcLength", brand.getMaxCvcLength());
+    return wm;
+  }
+
 
   @NonNull
   public static WritableMap convertBillingDetailsToWritableMap(
@@ -359,7 +379,7 @@ public class Converters {
   }
 
   @NonNull
-  public static WritableMap convertOwnerToWritableMap(@Nullable final SourceOwner owner) {
+  public static WritableMap convertOwnerToWritableMap(@Nullable final Owner owner) {
     WritableMap map = Arguments.createMap();
 
     if (owner == null) {
@@ -397,7 +417,7 @@ public class Converters {
   }
 
   @NonNull
-  public static WritableMap convertReceiverToWritableMap(@Nullable final SourceReceiver receiver) {
+  public static WritableMap convertReceiverToWritableMap(@Nullable final Receiver receiver) {
     WritableMap map = Arguments.createMap();
 
     if (receiver == null) {
@@ -413,7 +433,7 @@ public class Converters {
   }
 
   @NonNull
-  public static WritableMap convertRedirectToWritableMap(@Nullable SourceRedirect redirect) {
+  public static WritableMap convertRedirectToWritableMap(@Nullable Redirect redirect) {
     WritableMap map = Arguments.createMap();
 
     if (redirect == null) {
@@ -421,7 +441,7 @@ public class Converters {
     }
 
     map.putString("returnUrl", redirect.getReturnUrl());
-    map.putString("status", redirect.getStatus());
+    map.putInt("status", redirect.getStatus().ordinal());
     map.putString("url", redirect.getUrl());
 
     return map;
@@ -429,7 +449,7 @@ public class Converters {
 
   @NonNull
   public static WritableMap convertCodeVerificationToWritableMap(
-      @Nullable SourceCodeVerification codeVerification) {
+      @Nullable CodeVerification codeVerification) {
     WritableMap map = Arguments.createMap();
 
     if (codeVerification == null) {
@@ -437,7 +457,7 @@ public class Converters {
     }
 
     map.putInt("attemptsRemaining", codeVerification.getAttemptsRemaining());
-    map.putString("status", codeVerification.getStatus());
+    map.putInt("status", codeVerification.getStatus().ordinal());
 
     return map;
   }
@@ -508,7 +528,7 @@ public class Converters {
         accountData.getString("countryCode"),
         accountData.getString("currency"),
         accountData.getString("accountNumber"),
-        Type.valueOf(getValue(accountData, "accountHolderType")),
+        Type.values()[accountData.getInt( "accountHolderType")],
         getValue(accountData, "accountHolderName"),
         getValue(accountData, "routingNumber", ""));
   }
