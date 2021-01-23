@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:stripe_payment/src/model/credit_card_brand.dart';
 
 part 'credit_card.g.dart';
 
@@ -10,7 +11,7 @@ class CreditCard {
   String addressLine2;
   String addressState;
   String addressZip;
-  String brand;
+  CreditCardBrand brand;
   String cardId;
   String country;
   int expMonth;

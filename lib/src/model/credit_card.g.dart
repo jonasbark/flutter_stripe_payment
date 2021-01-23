@@ -14,7 +14,9 @@ CreditCard _$CreditCardFromJson(Map json) {
     addressLine2: json['addressLine2'] as String,
     addressState: json['addressState'] as String,
     addressZip: json['addressZip'] as String,
-    brand: json['brand'] as String,
+    brand: json['brand'] == null
+        ? null
+        : CreditCardBrand.fromJson(json['brand'] as Map),
     cardId: json['cardId'] as String,
     country: json['country'] as String,
     expMonth: json['expMonth'] as int,
@@ -43,7 +45,7 @@ Map<String, dynamic> _$CreditCardToJson(CreditCard instance) {
   writeNotNull('addressLine2', instance.addressLine2);
   writeNotNull('addressState', instance.addressState);
   writeNotNull('addressZip', instance.addressZip);
-  writeNotNull('brand', instance.brand);
+  writeNotNull('brand', instance.brand?.toJson());
   writeNotNull('cardId', instance.cardId);
   writeNotNull('country', instance.country);
   writeNotNull('expMonth', instance.expMonth);
