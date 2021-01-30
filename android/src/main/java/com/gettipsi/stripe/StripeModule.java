@@ -40,9 +40,9 @@ public class StripeModule extends ReactContextBaseJavaModule {
   // Relevant Docs:
   // - https://stripe.dev/stripe-ios/docs/Classes/STPAppInfo.html https://stripe.dev/stripe-android/com/stripe/android/AppInfo.html
   // - https://stripe.com/docs/building-plugins#setappinfo
-  private static final String APP_INFO_NAME    = "tipsi-stripe";
-  private static final String APP_INFO_URL     = "https://github.com/tipsi/tipsi-stripe";
-  private static final String APP_INFO_VERSION = "8.x";
+  private static final String APP_INFO_NAME    = "flutter_stripe_payment";
+  private static final String APP_INFO_URL     = "https://github.com/jonasbark/flutter_stripe_payment";
+  private static final String APP_INFO_VERSION = "1.x";
   public static final String CLIENT_SECRET = "clientSecret";
 
   private static StripeModule sInstance = null;
