@@ -1,20 +1,18 @@
-import 'package:flutter/material.dart';
-
 class AndroidPayPaymentRequest {
-  bool billingAddressRequired;
-  String currencyCode;
-  List<LineItem> lineItems;
-  bool shippingAddressRequired;
-  List<String> shippingCountries;
-  String totalPrice;
+  bool? billingAddressRequired;
+  String? currencyCode;
+  List<LineItem>? lineItems;
+  bool? shippingAddressRequired;
+  List<String>? shippingCountries;
+  String? totalPrice;
 
   AndroidPayPaymentRequest(
       {this.billingAddressRequired,
-      @required this.currencyCode,
+      this.currencyCode,
       this.lineItems,
       this.shippingAddressRequired,
       this.shippingCountries,
-      @required this.totalPrice});
+      this.totalPrice});
 
   factory AndroidPayPaymentRequest.fromJson(Map<dynamic, dynamic> json) {
     return AndroidPayPaymentRequest(
@@ -35,7 +33,7 @@ class AndroidPayPaymentRequest {
     if (this.shippingAddressRequired != null) data['shipping_address_required'] = this.shippingAddressRequired;
     if (this.totalPrice != null) data['total_price'] = this.totalPrice;
     if (this.lineItems != null) {
-      data['line_items'] = this.lineItems.map((v) => v.toJson()).toList();
+      data['line_items'] = this.lineItems!.map((v) => v.toJson()).toList();
     }
     if (this.shippingCountries != null) {
       if (this.shippingCountries != null) data['shipping_countries'] = this.shippingCountries;
@@ -45,11 +43,11 @@ class AndroidPayPaymentRequest {
 }
 
 class LineItem {
-  String currencyCode;
-  String description;
-  String quantity;
-  String totalPrice;
-  String unitPrice;
+  String? currencyCode;
+  String? description;
+  String? quantity;
+  String? totalPrice;
+  String? unitPrice;
 
   LineItem({this.currencyCode, this.description, this.quantity, this.totalPrice, this.unitPrice});
 

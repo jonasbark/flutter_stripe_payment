@@ -3,25 +3,25 @@ import 'package:stripe_payment/src/token.dart';
 import 'card_form_payment_request.dart';
 
 class PaymentMethodRequest {
-  final BillingAddress billingAddress;
-  final CreditCard card;
-  final Token token;
-  final Map<String, String> metadata;
+  final BillingAddress? billingAddress;
+  final CreditCard? card;
+  final Token? token;
+  final Map<String, String>? metadata;
 
   PaymentMethodRequest({this.billingAddress, this.card, this.token, this.metadata}) {
     assert(card != null || token != null);
   }
 
-  Map<String, Object> toJson() {
+  Map<String, Object?> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.card != null) {
-      data['card'] = card.toJson();
+      data['card'] = card!.toJson();
     }
     if (this.token != null) {
-      data['token'] = token.toJson();
+      data['token'] = token!.toJson();
     }
     if (this.billingAddress != null) {
-      data['billingAddress'] = this.billingAddress.toJson();
+      data['billingAddress'] = this.billingAddress!.toJson();
     }
     if (this.metadata != null) {
       if (this.metadata != null) data['metadata'] = this.metadata;
@@ -31,13 +31,13 @@ class PaymentMethodRequest {
 }
 
 class PaymentMethod {
-  BillingDetails billingDetails;
-  CreditCard card;
-  num created;
-  String customerId;
-  String id;
-  bool livemode;
-  String type;
+  BillingDetails? billingDetails;
+  CreditCard? card;
+  num? created;
+  String? customerId;
+  String? id;
+  bool? livemode;
+  String? type;
 
   PaymentMethod({this.billingDetails, this.card, this.created, this.customerId, this.id, this.livemode, this.type});
 
@@ -61,20 +61,20 @@ class PaymentMethod {
     if (this.livemode != null) data['livemode'] = this.livemode;
     if (this.type != null) data['type'] = this.type;
     if (this.billingDetails != null) {
-      data['billingDetails'] = this.billingDetails.toJson();
+      data['billingDetails'] = this.billingDetails!.toJson();
     }
     if (this.card != null) {
-      data['card'] = this.card.toJson();
+      data['card'] = this.card!.toJson();
     }
     return data;
   }
 }
 
 class BillingDetails {
-  BillingAddress address;
-  String email;
-  String name;
-  String phone;
+  BillingAddress? address;
+  String? email;
+  String? name;
+  String? phone;
 
   BillingDetails({this.address, this.email, this.name, this.phone});
 
@@ -93,7 +93,7 @@ class BillingDetails {
     if (this.name != null) data['name'] = this.name;
     if (this.phone != null) data['phone'] = this.phone;
     if (this.address != null) {
-      data['address'] = this.address.toJson();
+      data['address'] = this.address!.toJson();
     }
     return data;
   }

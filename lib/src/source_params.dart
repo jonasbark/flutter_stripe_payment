@@ -1,22 +1,21 @@
-import 'package:flutter/material.dart';
 import 'package:stripe_payment/src/token.dart';
 
 class SourceParams {
-  int amount;
-  String currency;
-  String returnURL;
-  String type;
-  String name;
-  String statementDescriptor;
-  String country;
-  String email;
-  CreditCard card;
+  int? amount;
+  String? currency;
+  String? returnURL;
+  String? type;
+  String? name;
+  String? statementDescriptor;
+  String? country;
+  String? email;
+  CreditCard? card;
 
   SourceParams(
       {this.amount,
       this.currency,
-      @required this.returnURL,
-      @required this.type,
+      this.returnURL,
+      this.type,
       this.name,
       this.statementDescriptor,
       this.country,
@@ -46,7 +45,7 @@ class SourceParams {
     if (this.statementDescriptor != null) data['statement_descriptor'] = this.statementDescriptor;
     if (this.country != null) data['country'] = this.country;
     if (this.email != null) data['email'] = this.email;
-    if (this.card != null) data['card'] = this.card.toJson();
+    if (this.card != null) data['card'] = this.card!.toJson();
     return data;
   }
 }
