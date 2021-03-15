@@ -1,3 +1,6 @@
+## [1.0.11]
+- fix #258 (by @Trede98)
+
 ## [1.0.10]
 - update sdk signature information (by @davidme-stripe)
 
