@@ -454,6 +454,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     promiseResolver = resolve;
     promiseRejector = reject;
 
+    STPAPIClient *api = self.newAPIClient;
     // From example in step 3 of https://stripe.com/docs/payments/payment-intents/ios#manual-confirmation-ios
     [[STPPaymentHandler sharedHandler] handleNextActionForPayment:clientSecret
                                         withAuthenticationContext:self
