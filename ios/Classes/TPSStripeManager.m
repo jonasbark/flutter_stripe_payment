@@ -1646,7 +1646,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
         [contactDetails setValue:inputContact.supplementarySubLocality forKey:@"supplementarySubLocality"];
     }
 
-    for (NSString *elem in @[@"street", @"city", @"state", @"country", @"ISOCountryCode", @"postalCode"]) {
+    for (NSString *elem in @[@"street", @"city", @"state", @"country", @"ISOCountryCode", @"postalCode", @"subAdministrativeArea", @"subLocality", @"formattedAddress"]) {
         if ([inputContact.postalAddress respondsToSelector:NSSelectorFromString(elem)]) {
             [contactDetails setValue:[inputContact.postalAddress valueForKey:elem] forKey:elem];
         }

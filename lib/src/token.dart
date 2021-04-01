@@ -4,8 +4,9 @@ class Token {
   double created;
   bool livemode;
   String tokenId;
+  Extra extra;
 
-  Token({this.bankAccount, this.card, this.created, this.livemode, this.tokenId});
+  Token({this.bankAccount, this.card, this.created, this.livemode, this.tokenId, this.extra});
 
   factory Token.fromJson(Map<dynamic, dynamic> json) {
     return Token(
@@ -14,6 +15,7 @@ class Token {
       created: json['created'] is int ? (json['created'] as int).toDouble() : json['created'],
       livemode: json['livemode'],
       tokenId: json['tokenId'],
+      extra: json['extra'] != null ? Extra.fromJson(json['extra']) : null,
     );
   }
 
@@ -27,6 +29,9 @@ class Token {
     }
     if (this.card != null) {
       data['card'] = this.card.toJson();
+    }
+    if (this.extra != null) {
+      data['extra'] = this.extra.toJson();
     }
     return data;
   }
@@ -165,6 +170,94 @@ class CreditCard {
     if (this.number != null) data['number'] = this.number;
     if (this.cvc != null) data['cvc'] = this.cvc;
     if (this.token != null) data['token'] = this.token;
+    return data;
+  }
+}
+
+class Extra {
+  Contact shippingContact;
+  Contact billingContact;
+
+  Extra(
+      {this.shippingContact,
+      this.billingContact});
+
+  factory Extra.fromJson(Map<dynamic, dynamic> json) {
+    return Extra(
+      shippingContact: Contact.fromJson(json['shippingContact']),
+      billingContact: Contact.fromJson(json['billingContact']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.shippingContact != null) data['shippingContact'] = this.shippingContact.toJson();
+    if (this.billingContact != null) data['billingContact'] = this.billingContact.toJson();
+    return data;
+  }
+}
+
+class Contact {
+  String name;
+  String emailAddress;
+  String phoneNumber;
+  String country;
+  String postalCode;
+  String state;
+  String city;
+  String street;
+  String isoCountryCode;
+  String subAdministrativeArea;
+  String subLocality;
+  String supplementarySubLocality;
+
+  Contact (
+      {this.name,
+      this.emailAddress,
+      this.phoneNumber,
+      this.country,
+      this.postalCode,
+      this.state,
+      this.city,
+      this.street,
+      this.isoCountryCode,
+      this.subAdministrativeArea,
+      this.subLocality,
+      this.supplementarySubLocality
+      });
+
+  factory Contact.fromJson(Map<dynamic, dynamic> json) {
+    print(json);
+    return Contact(
+      name: json['name'] ?? "",
+      emailAddress: json['emailAddress'] ?? "",
+      phoneNumber: json['phoneNumber'] ?? "",
+      country: json['country'] ?? "",
+      postalCode: json['postalCode'] ?? "",
+      state: json['state'] ?? json['administrativeArea'] ?? "",
+      city: json['city'] ?? json['locality'] ?? "",
+      street: json['street'] ?? json['address1'] != null ? json['address1'] + json['address2'] : "",
+      isoCountryCode: json['ISOCountryCode'] ?? json['countryCode'] ?? "",
+      subAdministrativeArea: json['subAdministrativeArea'] ?? "",
+      subLocality: json['subLocality'] ?? json['locality'] ?? "",
+      supplementarySubLocality: json['supplementarySubLocality'] ?? "",
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.name != null) data['name'] = this.name;
+    if (this.emailAddress != null) data['emailAddress'] = this.emailAddress;
+    if (this.phoneNumber != null) data['phoneNumber'] = this.phoneNumber;
+    if (this.country != null) data['country'] = this.country;
+    if (this.postalCode != null) data['postalCode'] = this.postalCode;
+    if (this.state != null) data['state'] = this.state;
+    if (this.city != null) data['city'] = this.city;
+    if (this.street != null) data['street'] = this.street;
+    if (this.isoCountryCode != null) data['ISOCountryCode'] = this.isoCountryCode;
+    if (this.subAdministrativeArea != null) data['subAdministrativeArea'] = this.subAdministrativeArea;
+    if (this.subLocality != null) data['subLocality'] = this.subLocality;
+    if (this.supplementarySubLocality != null) data['supplementarySubLocality'] = this.supplementarySubLocality;
     return data;
   }
 }
