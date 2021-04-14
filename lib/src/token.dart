@@ -119,18 +119,19 @@ class ShippingContact {
       return ShippingContact(
         name: json['name'],
         phoneNumber: json['phoneNumber'],
-        street: json['address1'] + json['address2'] != null
-            ? ' ' + json['address2']
-            : '' + json['address3'] != null
-                ? ' ' + json['address3']
-                : '' + json['address4'] != null
-                    ? ' ' + json['address4']
-                    : '' + json['address5'] != null
-                        ? ' ' + json['address5']
-                        : '',
+        emailAddress: json['emailAddress'],
+        street: json['address1'] +
+            ' ' +
+            json['address2'] +
+            ' ' +
+            json['address3'] +
+            ' ' +
+            json['address4'] +
+            ' ' +
+            json['address5'],
         city: json['locality'],
         state: json['administrativeArea'],
-        isoCountryCode: json['countryCode'],
+        country: json['countryCode'],
         postalCode: json['postalCode'],
       );
     }
