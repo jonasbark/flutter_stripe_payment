@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class Token {
   BankAccount bankAccount;
   CreditCard card;
@@ -8,11 +10,11 @@ class Token {
 
   Token(
       {this.bankAccount,
-        this.card,
-        this.created,
-        this.livemode,
-        this.tokenId,
-        this.extra});
+      this.card,
+      this.created,
+      this.livemode,
+      this.tokenId,
+      this.extra});
 
   factory Token.fromJson(Map<dynamic, dynamic> json) {
     return Token(
@@ -40,7 +42,7 @@ class Token {
     if (this.card != null) {
       data['card'] = this.card.toJson();
     }
-    if(this.extra != null) {
+    if (this.extra != null) {
       data['extra'] = this.extra.toJson();
     }
     return data;
@@ -49,14 +51,19 @@ class Token {
 
 class Extra {
   ShippingContact shippingContact;
+  String email;
 
-  Extra({this.shippingContact});
+  Extra({
+    this.shippingContact,
+    this.email,
+  });
 
   factory Extra.fromJson(Map<dynamic, dynamic> json) {
     return Extra(
       shippingContact: json['shippingContact'] != null
           ? ShippingContact.fromJson(json['shippingContact'])
           : null,
+      email: json['email'] != null ? json['email'] : null,
     );
   }
 
@@ -95,18 +102,38 @@ class ShippingContact {
   });
 
   factory ShippingContact.fromJson(Map<dynamic, dynamic> json) {
-    return ShippingContact(
-      name: json['name'],
-      phoneNumber: json['phoneNumber'],
-      emailAddress: json['emailAddress'],
-      street: json['street'],
-      city: json['city'],
-      state: json['state'],
-      country: json['country'],
-      isoCountryCode: json['ISOCountryCode'],
-      postalCode: json['postalCode'],
-      supplementarySubLocality: json['supplementarySubLocality'],
-    );
+    if (Platform.isIOS) {
+      return ShippingContact(
+        name: json['name'],
+        phoneNumber: json['phoneNumber'],
+        emailAddress: json['emailAddress'],
+        street: json['street'],
+        city: json['city'],
+        state: json['state'],
+        country: json['country'],
+        isoCountryCode: json['ISOCountryCode'],
+        postalCode: json['postalCode'],
+        supplementarySubLocality: json['supplementarySubLocality'],
+      );
+    } else {
+      return ShippingContact(
+        name: json['name'],
+        phoneNumber: json['phoneNumber'],
+        street: json['address1'] + json['address2'] != null
+            ? ' ' + json['address2']
+            : '' + json['address3'] != null
+                ? ' ' + json['address3']
+                : '' + json['address4'] != null
+                    ? ' ' + json['address4']
+                    : '' + json['address5'] != null
+                        ? ' ' + json['address5']
+                        : '',
+        city: json['locality'],
+        state: json['administrativeArea'],
+        isoCountryCode: json['countryCode'],
+        postalCode: json['postalCode'],
+      );
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -141,14 +168,14 @@ class BankAccount {
 
   BankAccount(
       {this.accountHolderName,
-        this.accountHolderType,
-        this.accountNumber,
-        this.bankName,
-        this.countryCode,
-        this.currency,
-        this.fingerprint,
-        this.last4,
-        this.routingNumber});
+      this.accountHolderType,
+      this.accountNumber,
+      this.bankName,
+      this.countryCode,
+      this.currency,
+      this.fingerprint,
+      this.last4,
+      this.routingNumber});
 
   factory BankAccount.fromJson(Map<dynamic, dynamic> json) {
     return BankAccount(
@@ -203,23 +230,23 @@ class CreditCard {
 
   CreditCard(
       {this.addressCity,
-        this.addressCountry,
-        this.addressLine1,
-        this.addressLine2,
-        this.addressState,
-        this.addressZip,
-        this.brand,
-        this.cardId,
-        this.currency,
-        this.country,
-        this.expMonth,
-        this.expYear,
-        this.number,
-        this.token,
-        this.cvc,
-        this.funding,
-        this.last4,
-        this.name});
+      this.addressCountry,
+      this.addressLine1,
+      this.addressLine2,
+      this.addressState,
+      this.addressZip,
+      this.brand,
+      this.cardId,
+      this.currency,
+      this.country,
+      this.expMonth,
+      this.expYear,
+      this.number,
+      this.token,
+      this.cvc,
+      this.funding,
+      this.last4,
+      this.name});
 
   factory CreditCard.fromJson(Map<dynamic, dynamic> json) {
     return CreditCard(
