@@ -116,15 +116,17 @@ class ShippingContact {
         name: json['name'],
         phoneNumber: json['phoneNumber'],
         emailAddress: json['emailAddress'],
-        street: json['address1'] + json['address2'] != null
-            ? ' ' + json['address2']
-            : '' + json['address3'] != null
-                ? ' ' + json['address3']
-                : '' + json['address4'] != null
-                    ? ' ' + json['address4']
-                    : '' + json['address5'] != null
-                        ? ' ' + json['address5']
-                        : '',
+        street: json['address1'] != null
+            ? json['address1']
+            : '' + json['address2'] != null
+                ? ' ' + json['address2']
+                : '' + json['address3'] != null
+                    ? ' ' + json['address3']
+                    : '' + json['address4'] != null
+                        ? ' ' + json['address4']
+                        : '' + json['address5'] != null
+                            ? ' ' + json['address5']
+                            : '',
         city: json['locality'],
         state: json['administrativeArea'],
         country: json['countryCode'],
