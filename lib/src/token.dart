@@ -51,20 +51,16 @@ class Token {
 
 class Extra {
   ShippingContact shippingContact;
-  String email;
 
   Extra({
     this.shippingContact,
-    this.email,
   });
 
   factory Extra.fromJson(Map<dynamic, dynamic> json) {
     return Extra(
-      shippingContact: json['shippingContact'] != null
-          ? ShippingContact.fromJson(json['shippingContact'])
-          : null,
-      email: json['email'] != null ? json['email'] : null,
-    );
+        shippingContact: json['shippingContact'] != null
+            ? ShippingContact.fromJson(json['shippingContact'])
+            : null);
   }
 
   Map<String, dynamic> toJson() {
@@ -120,15 +116,15 @@ class ShippingContact {
         name: json['name'],
         phoneNumber: json['phoneNumber'],
         emailAddress: json['emailAddress'],
-        street: json['address1'] +
-            ' ' +
-            json['address2'] +
-            ' ' +
-            json['address3'] +
-            ' ' +
-            json['address4'] +
-            ' ' +
-            json['address5'],
+        street: json['address1'] + json['address2'] != null
+            ? ' ' + json['address2']
+            : '' + json['address3'] != null
+                ? ' ' + json['address3']
+                : '' + json['address4'] != null
+                    ? ' ' + json['address4']
+                    : '' + json['address5'] != null
+                        ? ' ' + json['address5']
+                        : '',
         city: json['locality'],
         state: json['administrativeArea'],
         country: json['countryCode'],
