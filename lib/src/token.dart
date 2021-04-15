@@ -116,23 +116,24 @@ class ShippingContact {
         name: json['name'],
         phoneNumber: json['phoneNumber'],
         emailAddress: json['emailAddress'],
-        street: json['address1'] != null
-            ? json['address1']
-            : '' + json['address2'] != null
-                ? ' ' + json['address2']
-                : '' + json['address3'] != null
-                    ? ' ' + json['address3']
-                    : '' + json['address4'] != null
-                        ? ' ' + json['address4']
-                        : '' + json['address5'] != null
-                            ? ' ' + json['address5']
-                            : '',
+        street: getAddress(json),
         city: json['locality'],
         state: json['administrativeArea'],
         country: json['countryCode'],
         postalCode: json['postalCode'],
       );
     }
+  }
+
+  static String getAddress(Map<dynamic, dynamic> json) {
+    String address = '';
+    for (var i = 1; i <= 5; i++) {
+      if (json["address$i"] != null && json["address$i"] is String) {
+        address += ' ${json["address$i"]}';
+      }
+    }
+
+    return address;
   }
 
   Map<String, dynamic> toJson() {
