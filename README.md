@@ -9,7 +9,7 @@
 - This Flutter plugin is a straight port from the tipsi-stripe plugin for React Native - we tried to 
 keep the API as close as possible, so the documentation applies this plugin.
 - Collect chargeable tokens from users' **Card Input** and** Apple & Google Pay**.
-For **SCA** compliant apps, setup payment intents for later confirmation.
+- For **SCA** compliant apps, setup payment intents for later confirmation.
 
 ## Supported features:
 
