@@ -6,12 +6,14 @@ class PaymentIntent {
   String paymentMethodId;
   String returnURL;
   String clientSecret;
+  bool isSavingPaymentMethod;
 
   PaymentIntent({
     this.paymentMethod,
     this.paymentMethodId,
     this.returnURL,
     @required this.clientSecret,
+    this.isSavingPaymentMethod,
   });
 
   Map<String, dynamic> toJson() {
@@ -19,9 +21,12 @@ class PaymentIntent {
     if (this.paymentMethod != null) {
       data['paymentMethod'] = this.paymentMethod.toJson();
     }
-    if (this.paymentMethodId != null) data['paymentMethodId'] = this.paymentMethodId;
+    if (this.paymentMethodId != null)
+      data['paymentMethodId'] = this.paymentMethodId;
     if (this.returnURL != null) data['returnURL'] = this.returnURL;
     if (this.clientSecret != null) data['clientSecret'] = this.clientSecret;
+    if (this.isSavingPaymentMethod != null)
+      data['savePaymentMethod'] = this.isSavingPaymentMethod;
     return data;
   }
 }
@@ -31,7 +36,8 @@ class PaymentIntentResult {
   String paymentIntentId;
   String paymentMethodId;
 
-  PaymentIntentResult({this.status, this.paymentIntentId, this.paymentMethodId});
+  PaymentIntentResult(
+      {this.status, this.paymentIntentId, this.paymentMethodId});
 
   factory PaymentIntentResult.fromJson(Map<dynamic, dynamic> json) {
     return PaymentIntentResult(
@@ -43,9 +49,11 @@ class PaymentIntentResult {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.paymentIntentId != null) data['paymentIntentId'] = this.paymentIntentId;
+    if (this.paymentIntentId != null)
+      data['paymentIntentId'] = this.paymentIntentId;
     if (this.status != null) data['status'] = this.status;
-    if (this.paymentMethodId != null) data['paymentMethodId'] = this.paymentMethodId;
+    if (this.paymentMethodId != null)
+      data['paymentMethodId'] = this.paymentMethodId;
     return data;
   }
 }
