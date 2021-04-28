@@ -1,3 +1,6 @@
+## [1.0.12]
+- update Stripe iOS dependency to support Xcode 12.5 (#286) (by @mclark4386)
+
 ## [1.0.11]
 - fix #258 (by @Trede98)
 
