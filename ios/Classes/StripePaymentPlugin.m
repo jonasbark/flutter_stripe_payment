@@ -1,6 +1,7 @@
 #import "StripePaymentPlugin.h"
-#import <Stripe/Stripe.h>
 #import "TPSStripeManager.h"
+
+@import Stripe;
 
 @implementation StripePaymentPlugin {
     FlutterResult flutterResult;

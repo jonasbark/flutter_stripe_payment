@@ -7,10 +7,11 @@
 //
 
 #import "TPSStripeManager.h"
-#import <Stripe/Stripe.h>
 
 #import "TPSError.h"
 #import "TPSStripeManager+Constants.h"
+
+@import Stripe;
 
 // If you change these, make sure to also change:
 //  android/src/main/java/com/gettipsi/stripe/StripeModule.java
@@ -301,7 +302,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     publishableKey = options[@"publishableKey"];
     merchantId = options[@"merchantId"];
     errorCodes = errors;
-    [Stripe setDefaultPublishableKey:publishableKey];
+    [StripeAPI setDefaultPublishableKey:publishableKey];
 }
 
 -(void)setStripeAccount:(NSString *)_stripeAccount {
@@ -856,7 +857,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
         [summaryItems addObject:summaryItem];
     }
 
-    PKPaymentRequest *paymentRequest = [Stripe paymentRequestWithMerchantIdentifier:merchantId country:countryCode currency:currencyCode];
+    PKPaymentRequest *paymentRequest = [StripeAPI paymentRequestWithMerchantIdentifier:merchantId country:countryCode currency:currencyCode];
 
     [paymentRequest setRequiredShippingAddressFields:requiredShippingAddressFields];
     [paymentRequest setRequiredBillingAddressFields:requiredBillingAddressFields];
@@ -1183,7 +1184,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
 }
 
 - (BOOL)canSubmitPaymentRequest:(PKPaymentRequest *)paymentRequest rejecter:(RCTPromiseRejectBlock)reject {
-    if (![Stripe deviceSupportsApplePay]) {
+    if (![StripeAPI deviceSupportsApplePay]) {
         NSDictionary *error = [errorCodes valueForKey:kErrorKeyDeviceNotSupportsNativePay];
         reject(error[kErrorKeyCode], error[kErrorKeyDescription], nil);
         return NO;
@@ -1295,7 +1296,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
                                             url:TPSAppInfoURL];
     });
 
-    STPAPIClient * client = [[STPAPIClient alloc] initWithPublishableKey:[Stripe defaultPublishableKey]];
+    STPAPIClient * client = [[STPAPIClient alloc] initWithPublishableKey:[StripeAPI defaultPublishableKey]];
     client.appInfo = info;
     client.stripeAccount = stripeAccount;
 
