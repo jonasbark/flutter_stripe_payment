@@ -1501,7 +1501,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
 
 /// API: https://stripe.com/docs/api/cards/object#card_object-brand
 - (NSString *)cardBrandAsPresentableBrandString:(STPCardBrand)inputBrand {
-    return STPCardBrandUtilities.stringFrom(inputBrand);
+    return [STPCardBrandUtilities stringFromCardBrand:inputBrand];
 }
 
 - (NSString *)cardFunding:(STPCardFundingType)inputFunding {
