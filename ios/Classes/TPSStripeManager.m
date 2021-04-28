@@ -1212,7 +1212,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
 
 - (void)addCardViewController:(STPAddCardViewController *)addCardViewController
        didCreatePaymentMethod:(STPPaymentMethod *)paymentMethod
-                   completion:(STPErrorBlock)completion {
+                   completion:(void (^)(NSError * _Nullable))completion {
     [RCTPresentedViewController() dismissViewControllerAnimated:YES completion:nil];
 
     requestIsCompleted = YES;
@@ -1489,7 +1489,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
             return @"discover";
         case STPCardBrandDinersClub:
             return @"diners";
-        case STPCardBrandMasterCard:
+        case STPCardBrandMastercard:
             return @"mastercard";
         case STPCardBrandUnionPay:
             return @"unionpay";
@@ -1501,7 +1501,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
 
 /// API: https://stripe.com/docs/api/cards/object#card_object-brand
 - (NSString *)cardBrandAsPresentableBrandString:(STPCardBrand)inputBrand {
-    return STPStringFromCardBrand(inputBrand);
+    return STPCardBrandUtilities.stringFrom(inputBrand);
 }
 
 - (NSString *)cardFunding:(STPCardFundingType)inputFunding {
@@ -1600,7 +1600,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
             return @"bancontact";
         case STPSourceTypeGiropay:
             return @"giropay";
-        case STPSourceTypeIDEAL:
+        case STPSourceTypeiDEAL:
             return @"ideal";
         case STPSourceTypeSEPADebit:
             return @"sepaDebit";
