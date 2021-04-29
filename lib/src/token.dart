@@ -1,9 +1,9 @@
 class Token {
-  BankAccount bankAccount;
-  CreditCard card;
-  double created;
-  bool livemode;
-  String tokenId;
+  BankAccount? bankAccount;
+  CreditCard? card;
+  double? created;
+  bool? livemode;
+  String? tokenId;
 
   Token({this.bankAccount, this.card, this.created, this.livemode, this.tokenId});
 
@@ -23,25 +23,25 @@ class Token {
     if (this.livemode != null) data['livemode'] = this.livemode;
     if (this.tokenId != null) data['tokenId'] = this.tokenId;
     if (this.bankAccount != null) {
-      data['bankAccount'] = this.bankAccount.toJson();
+      data['bankAccount'] = this.bankAccount!.toJson();
     }
     if (this.card != null) {
-      data['card'] = this.card.toJson();
+      data['card'] = this.card!.toJson();
     }
     return data;
   }
 }
 
 class BankAccount {
-  String accountHolderName;
-  String accountHolderType;
-  String accountNumber;
-  String bankName;
-  String countryCode;
-  String currency;
-  String fingerprint;
-  String last4;
-  String routingNumber;
+  String? accountHolderName;
+  String? accountHolderType;
+  String? accountNumber;
+  String? bankName;
+  String? countryCode;
+  String? currency;
+  String? fingerprint;
+  String? last4;
+  String? routingNumber;
 
   BankAccount(
       {this.accountHolderName,
@@ -84,24 +84,24 @@ class BankAccount {
 }
 
 class CreditCard {
-  String addressCity;
-  String addressCountry;
-  String addressLine1;
-  String addressLine2;
-  String addressState;
-  String addressZip;
-  String brand;
-  String cardId;
-  String country;
-  String currency;
-  int expMonth;
-  int expYear;
-  String funding;
-  String last4;
-  String name;
-  String number;
-  String cvc;
-  String token;
+  String? addressCity;
+  String? addressCountry;
+  String? addressLine1;
+  String? addressLine2;
+  String? addressState;
+  String? addressZip;
+  String? brand;
+  String? cardId;
+  String? country;
+  String? currency;
+  int? expMonth;
+  int? expYear;
+  String? funding;
+  String? last4;
+  String? name;
+  String? number;
+  String? cvc;
+  String? token;
 
   CreditCard(
       {this.addressCity,

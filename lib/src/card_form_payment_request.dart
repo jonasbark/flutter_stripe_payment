@@ -1,6 +1,6 @@
 class CardFormPaymentRequest {
-  PrefilledInformation prefilledInformation;
-  String requiredBillingAddressFields;
+  PrefilledInformation? prefilledInformation;
+  String? requiredBillingAddressFields;
 
   CardFormPaymentRequest({this.prefilledInformation, this.requiredBillingAddressFields});
 
@@ -17,14 +17,14 @@ class CardFormPaymentRequest {
     if (this.requiredBillingAddressFields != null) if (this.requiredBillingAddressFields != null)
       data['requiredBillingAddressFields'] = this.requiredBillingAddressFields;
     if (this.prefilledInformation != null) {
-      data['prefilledInformation'] = this.prefilledInformation.toJson();
+      data['prefilledInformation'] = this.prefilledInformation!.toJson();
     }
     return data;
   }
 }
 
 class PrefilledInformation {
-  BillingAddress billingAddress;
+  BillingAddress? billingAddress;
 
   PrefilledInformation({this.billingAddress});
 
@@ -37,20 +37,20 @@ class PrefilledInformation {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.billingAddress != null) {
-      data['billingAddress'] = this.billingAddress.toJson();
+      data['billingAddress'] = this.billingAddress!.toJson();
     }
     return data;
   }
 }
 
 class BillingAddress {
-  String city;
-  String country;
-  String line1;
-  String line2;
-  String name;
-  String postalCode;
-  String state;
+  String? city;
+  String? country;
+  String? line1;
+  String? line2;
+  String? name;
+  String? postalCode;
+  String? state;
 
   BillingAddress({this.city, this.country, this.line1, this.line2, this.name, this.postalCode, this.state});
 
