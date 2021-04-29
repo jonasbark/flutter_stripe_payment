@@ -61,3 +61,6 @@ It includes:
 
 ## Blog Posts
 - [Build a marketplace in your Flutter app and accept payments using Stripe and Firebase](https://medium.com/flutter-community/build-a-marketplace-in-your-flutter-app-and-accept-payments-using-stripe-and-firebase-72f3f7228625)
+
+## Xcode 12.5 support
+Xcode 12.5 is not supported - see this [discussion](https://github.com/jonasbark/flutter_stripe_payment/issues/284#issuecomment-828293850) for a fix

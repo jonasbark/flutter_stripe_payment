@@ -195,11 +195,11 @@ class _MyAppState extends State<MyApp> {
                           StripePayment.confirmPaymentIntent(
                             PaymentIntent(
                               clientSecret: _paymentIntentClientSecret,
-                              paymentMethodId: _paymentMethod.id,
+                              paymentMethodId: _paymentMethod!.id!,
                               isSavingPaymentMethod: true,
                             ),
                           ).then((paymentIntent) {
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            _scaffoldKey.currentState?.showSnackBar(SnackBar(
                                 content: Text(
                                     'Received ${paymentIntent.paymentIntentId}')));
                             setState(() {

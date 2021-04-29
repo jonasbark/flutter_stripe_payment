@@ -1,3 +1,7 @@
+## [1.1.0]
+- support for null safety
+- Xcode 12.5 is not supported - see this [discussion](https://github.com/jonasbark/flutter_stripe_payment/issues/284#issuecomment-828293850) for a fix
+
 ## [1.0.11]
 - fix #258 (by @Trede98)
 
