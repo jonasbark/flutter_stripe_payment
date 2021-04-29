@@ -6,7 +6,7 @@ class PaymentIntent {
   String? paymentMethodId;
   String? returnURL;
   String? clientSecret;
-  bool isSavingPaymentMethod;
+  bool? isSavingPaymentMethod;
 
   PaymentIntent({
     this.paymentMethod,
