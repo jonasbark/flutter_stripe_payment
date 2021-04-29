@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:stripe_payment/stripe_payment.dart';
-import 'dart:io';
 
 void main() {
   runApp(new MyApp());
@@ -175,6 +175,31 @@ class _MyAppState extends State<MyApp> {
                             ),
                           ).then((paymentIntent) {
                             _scaffoldKey.currentState!.showSnackBar(SnackBar(
+                                content: Text(
+                                    'Received ${paymentIntent.paymentIntentId}')));
+                            setState(() {
+                              _paymentIntent = paymentIntent;
+                            });
+                          }).catchError(setError);
+                        },
+            ),
+            RaisedButton(
+              child: Text(
+                "Confirm Payment Intent with saving payment method",
+                textAlign: TextAlign.center,
+              ),
+              onPressed:
+                  _paymentMethod == null || _paymentIntentClientSecret == null
+                      ? null
+                      : () {
+                          StripePayment.confirmPaymentIntent(
+                            PaymentIntent(
+                              clientSecret: _paymentIntentClientSecret,
+                              paymentMethodId: _paymentMethod.id,
+                              isSavingPaymentMethod: true,
+                            ),
+                          ).then((paymentIntent) {
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
                                 content: Text(
                                     'Received ${paymentIntent.paymentIntentId}')));
                             setState(() {

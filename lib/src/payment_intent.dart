@@ -6,12 +6,14 @@ class PaymentIntent {
   String? paymentMethodId;
   String? returnURL;
   String? clientSecret;
+  bool isSavingPaymentMethod;
 
   PaymentIntent({
     this.paymentMethod,
     this.paymentMethodId,
     this.returnURL,
-    required this.clientSecret,
+    @required this.clientSecret,
+    this.isSavingPaymentMethod,
   });
 
   Map<String, dynamic> toJson() {
@@ -22,6 +24,7 @@ class PaymentIntent {
     if (this.paymentMethodId != null) data['paymentMethodId'] = this.paymentMethodId;
     if (this.returnURL != null) data['returnURL'] = this.returnURL;
     if (this.clientSecret != null) data['clientSecret'] = this.clientSecret;
+    if (this.isSavingPaymentMethod != null) data['savePaymentMethod'] = this.isSavingPaymentMethod;
     return data;
   }
 }
