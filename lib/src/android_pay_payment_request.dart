@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class AndroidPayPaymentRequest {
   bool? billingAddressRequired;
   String? currencyCode;
