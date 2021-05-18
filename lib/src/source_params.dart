@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:stripe_payment/src/token.dart';
 
 class SourceParams {
