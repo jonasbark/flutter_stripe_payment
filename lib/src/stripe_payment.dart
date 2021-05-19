@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
+import 'package:stripe_payment/src/checkout.dart';
 
 import 'android_pay_payment_request.dart';
 import 'apple_pay_payment_request.dart';
@@ -173,6 +173,20 @@ class StripePayment {
     assert(intent.paymentMethodId != null);
     final result = await _channel.invokeMethod('confirmSetupIntent', intent.toJson());
     return SetupIntentResult.fromJson(result);
+  }
+
+  static Future<CheckoutResult> redirectToCheckout(Checkout checkout) async {
+    if (kIsWeb) {
+      final result = await _channel.invokeMethod(
+        'redirectToCheckout',
+        checkout.toJson()
+      );
+      return CheckoutResult.fromJson(result);
+    }
+
+    throw UnimplementedError(
+      'redirectToCheckout is not supported for environments other than web'
+    );
   }
 }
 

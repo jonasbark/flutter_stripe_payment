@@ -8,3 +8,11 @@ export 'src/source.dart';
 export 'src/source_params.dart';
 export 'src/stripe_payment.dart';
 export 'src/token.dart';
+export 'src/checkout.dart' show
+  Checkout,
+  CheckoutLineItem,
+  CheckoutMode,
+  SubmitType,
+  ShippingAddressCollection,
+  CheckoutResult,
+  CheckoutResultError;
