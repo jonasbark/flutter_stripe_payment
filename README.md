@@ -1,3 +1,7 @@
+> **⚠ WARNING: This plugin has been discontinued.**  
+> Head over to [migration.md](migration.md) for migrate to the new flutter_stripe plugin
+
+
 [![pub package](https://img.shields.io/pub/v/stripe_payment.svg)](https://pub.dev/packages/stripe_payment)
 
 # stripe_payment
