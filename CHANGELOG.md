@@ -1,3 +1,6 @@
+## [1.1.2]
+- Fix #301
+
 ## [1.1.1]
 - add information about the plugin being discontinued and its replacement
 
