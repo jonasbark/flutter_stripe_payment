@@ -2,6 +2,7 @@ package com.gettipsi.stripe;
 
 import android.app.Activity;
 import android.content.Intent;
+
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Promise;
@@ -24,8 +25,11 @@ import com.google.android.gms.wallet.ShippingAddressRequirements;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.Wallet;
 import com.google.android.gms.wallet.WalletConstants;
-import com.stripe.android.BuildConfig;
+import com.stripe.android.Stripe;
 import com.stripe.android.model.Token;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,11 +39,11 @@ import static com.gettipsi.stripe.util.Converters.convertTokenToWritableMap;
 import static com.gettipsi.stripe.util.Converters.getAllowedShippingCountryCodes;
 import static com.gettipsi.stripe.util.Converters.getBillingAddress;
 import static com.gettipsi.stripe.util.Converters.putExtraToTokenMap;
-import static com.gettipsi.stripe.util.PayParams.CURRENCY_CODE;
 import static com.gettipsi.stripe.util.PayParams.BILLING_ADDRESS_REQUIRED;
-import static com.gettipsi.stripe.util.PayParams.SHIPPING_ADDRESS_REQUIRED;
-import static com.gettipsi.stripe.util.PayParams.PHONE_NUMBER_REQUIRED;
+import static com.gettipsi.stripe.util.PayParams.CURRENCY_CODE;
 import static com.gettipsi.stripe.util.PayParams.EMAIL_REQUIRED;
+import static com.gettipsi.stripe.util.PayParams.PHONE_NUMBER_REQUIRED;
+import static com.gettipsi.stripe.util.PayParams.SHIPPING_ADDRESS_REQUIRED;
 import static com.gettipsi.stripe.util.PayParams.TOTAL_PRICE;
 
 /**
@@ -94,7 +98,7 @@ public final class GoogleApiPayFlowImpl extends PayFlow {
       .setPaymentMethodTokenizationType(WalletConstants.PAYMENT_METHOD_TOKENIZATION_TYPE_PAYMENT_GATEWAY)
       .addParameter("gateway", "stripe")
       .addParameter("stripe:publishableKey", getPublishableKey())
-      .addParameter("stripe:version", BuildConfig.VERSION_NAME)
+      .addParameter("stripe:version", Stripe.VERSION)
       .build();
   }
 
@@ -230,7 +234,13 @@ public final class GoogleApiPayFlowImpl extends PayFlow {
             PaymentData paymentData = PaymentData.getFromIntent(data);
             ArgCheck.nonNull(paymentData);
             String tokenJson = paymentData.getPaymentMethodToken().getToken();
-            Token token = Token.fromString(tokenJson);
+            Token token = null;
+            try {
+              JSONObject obj = new JSONObject(tokenJson);
+              token = Token.fromJson(obj);
+            } catch (JSONException e) {
+              e.printStackTrace();
+            }
             if (token == null) {
               payPromise.reject(
                 getErrorCode("parseResponse"),

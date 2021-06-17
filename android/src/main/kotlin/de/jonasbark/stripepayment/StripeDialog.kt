@@ -3,25 +3,25 @@ package de.jonasbark.stripepayment
 import android.app.DialogFragment
 import android.content.DialogInterface
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.stripe.android.ApiResultCallback
-import com.stripe.android.PaymentConfiguration
 import com.stripe.android.Stripe
-import com.stripe.android.model.*
+import com.stripe.android.model.PaymentMethod
+import com.stripe.android.model.PaymentMethodCreateParams
 import com.stripe.android.view.CardMultilineWidget
-import java.lang.Exception
 
 
 class StripeDialog : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(title: String): StripeDialog {
+        fun newInstance(title: String, stripeAccountId: String?): StripeDialog {
             val frag = StripeDialog()
             val args = Bundle()
+            args.putString("stripeAccountId", stripeAccountId)
             args.putString("title", title)
             frag.arguments = args
             return frag
@@ -82,6 +82,8 @@ class StripeDialog : DialogFragment() {
 
                 stripeInstance.createPaymentMethod(
                     paymentMethodCreateParams,
+                    null,
+                    null,
                     object : ApiResultCallback<PaymentMethod> {
                         override fun onSuccess(result: PaymentMethod) {
                             view?.findViewById<View>(R.id.progress)?.visibility = View.GONE
@@ -95,7 +97,7 @@ class StripeDialog : DialogFragment() {
                             view?.findViewById<View>(R.id.progress)?.visibility = View.GONE
                             view?.findViewById<View>(R.id.buttonSave)?.visibility = View.VISIBLE
                             view?.let {
-                                Snackbar.make(it, error.localizedMessage, Snackbar.LENGTH_LONG)
+                                Toast.makeText(it.context, error.localizedMessage, Toast.LENGTH_LONG)
                                     .show()
                             }
                         }
@@ -105,7 +107,7 @@ class StripeDialog : DialogFragment() {
             }
         } else {
             view?.let {
-                Snackbar.make(it, "The card info you entered is not correct", Snackbar.LENGTH_LONG)
+                Toast.makeText(it.context, "The card info you entered is not correct", Toast.LENGTH_LONG)
                     .show()
             }
         }
