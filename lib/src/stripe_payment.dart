@@ -28,7 +28,7 @@ class StripePayment {
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/usage.html
-  static Future<bool> deviceSupportsNativePay() async {
+  static Future<bool?> deviceSupportsNativePay() async {
     if (kIsWeb) {
       return false;
     } else {
@@ -43,7 +43,7 @@ class StripePayment {
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/canMakeNativePayPayments.html
-  static Future<bool> canMakeNativePayPayments(List<String> networks) async {
+  static Future<bool?> canMakeNativePayPayments(List<String> networks) async {
     if (kIsWeb) {
       throw UnimplementedError();
     } else {
@@ -57,13 +57,13 @@ class StripePayment {
     }
   }
 
-  static Future<bool> _deviceSupportsAndroidPay() => _channel.invokeMethod("deviceSupportsAndroidPay");
+  static Future<bool?> _deviceSupportsAndroidPay() => _channel.invokeMethod("deviceSupportsAndroidPay");
 
-  static Future<bool> _deviceSupportsApplePay() => _channel.invokeMethod("deviceSupportsApplePay");
+  static Future<bool?> _deviceSupportsApplePay() => _channel.invokeMethod("deviceSupportsApplePay");
 
   /// https://tipsi.github.io/tipsi-stripe/docs/paymentRequestWithNativePay.html
   static Future<Token> paymentRequestWithNativePay(
-      {@required AndroidPayPaymentRequest androidPayOptions, @required ApplePayPaymentOptions applePayOptions}) {
+      {required AndroidPayPaymentRequest androidPayOptions, required ApplePayPaymentOptions applePayOptions}) {
     if (kIsWeb) {
       throw UnimplementedError();
     } else {
@@ -83,7 +83,7 @@ class StripePayment {
 
   static Future<Token> _paymentRequestWithApplePay(ApplePayPaymentOptions options) async {
     final token = await _channel.invokeMethod("paymentRequestWithApplePay",
-        {"options": options.json, "items": options.items.map((item) => item.json).toList()});
+        {"options": options.json, "items": options.items!.map((item) => item.json).toList()});
     return Token.fromJson(token);
   }
 
@@ -146,7 +146,7 @@ class StripePayment {
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/authenticatePaymentIntent.html
-  static Future<PaymentIntentResult> authenticatePaymentIntent({@required String clientSecret}) async {
+  static Future<PaymentIntentResult> authenticatePaymentIntent({required String clientSecret}) async {
     assert(clientSecret != null);
     final result = await _channel.invokeMethod('authenticatePaymentIntent', {"clientSecret": clientSecret});
     return PaymentIntentResult.fromJson(result);
@@ -161,7 +161,7 @@ class StripePayment {
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/authenticateSetupIntent.html
-  static Future<SetupIntentResult> authenticateSetupIntent({@required String clientSecret}) async {
+  static Future<SetupIntentResult> authenticateSetupIntent({required String clientSecret}) async {
     assert(clientSecret != null);
     final result = await _channel.invokeMethod('authenticateSetupIntent', {"clientSecret": clientSecret});
     return SetupIntentResult.fromJson(result);
@@ -177,11 +177,11 @@ class StripePayment {
 }
 
 class StripeOptions {
-  final String publishableKey;
-  final String merchantId;
-  final String androidPayMode;
+  final String? publishableKey;
+  final String? merchantId;
+  final String? androidPayMode;
 
-  StripeOptions({@required this.publishableKey, this.merchantId, this.androidPayMode});
+  StripeOptions({required this.publishableKey, this.merchantId, this.androidPayMode});
 
   factory StripeOptions.fromJson(Map<String, dynamic> json) {
     return StripeOptions(

@@ -1,20 +1,21 @@
 import 'dart:io';
 
 class Token {
-  BankAccount bankAccount;
-  CreditCard card;
-  double created;
-  bool livemode;
-  String tokenId;
-  Extra extra;
+  BankAccount? bankAccount;
+  CreditCard? card;
+  double? created;
+  bool? livemode;
+  String? tokenId;
+  Extra? extra;
 
-  Token(
-      {this.bankAccount,
-      this.card,
-      this.created,
-      this.livemode,
-      this.tokenId,
-      this.extra});
+  Token({
+    this.bankAccount,
+    this.card,
+    this.created,
+    this.livemode,
+    this.tokenId,
+    this.extra,
+  });
 
   factory Token.fromJson(Map<dynamic, dynamic> json) {
     return Token(
@@ -37,20 +38,20 @@ class Token {
     if (this.livemode != null) data['livemode'] = this.livemode;
     if (this.tokenId != null) data['tokenId'] = this.tokenId;
     if (this.bankAccount != null) {
-      data['bankAccount'] = this.bankAccount.toJson();
+      data['bankAccount'] = this.bankAccount!.toJson();
     }
     if (this.card != null) {
-      data['card'] = this.card.toJson();
+      data['card'] = this.card!.toJson();
     }
     if (this.extra != null) {
-      data['extra'] = this.extra.toJson();
+      data['extra'] = this.extra!.toJson();
     }
     return data;
   }
 }
 
 class Extra {
-  ShippingContact shippingContact;
+  ShippingContact? shippingContact;
 
   Extra({
     this.shippingContact,
@@ -66,23 +67,23 @@ class Extra {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.shippingContact != null) {
-      data['shippingContact'] = this.shippingContact.toJson();
+      data['shippingContact'] = this.shippingContact!.toJson();
     }
     return data;
   }
 }
 
 class ShippingContact {
-  String name;
-  String phoneNumber;
-  String emailAddress;
-  String street;
-  String city;
-  String country;
-  String isoCountryCode;
-  String postalCode;
-  String state;
-  String supplementarySubLocality;
+  String? name;
+  String? phoneNumber;
+  String? emailAddress;
+  String? street;
+  String? city;
+  String? country;
+  String? isoCountryCode;
+  String? postalCode;
+  String? state;
+  String? supplementarySubLocality;
 
   ShippingContact({
     this.name,
@@ -156,15 +157,15 @@ class ShippingContact {
 }
 
 class BankAccount {
-  String accountHolderName;
-  String accountHolderType;
-  String accountNumber;
-  String bankName;
-  String countryCode;
-  String currency;
-  String fingerprint;
-  String last4;
-  String routingNumber;
+  String? accountHolderName;
+  String? accountHolderType;
+  String? accountNumber;
+  String? bankName;
+  String? countryCode;
+  String? currency;
+  String? fingerprint;
+  String? last4;
+  String? routingNumber;
 
   BankAccount(
       {this.accountHolderName,
@@ -209,24 +210,24 @@ class BankAccount {
 }
 
 class CreditCard {
-  String addressCity;
-  String addressCountry;
-  String addressLine1;
-  String addressLine2;
-  String addressState;
-  String addressZip;
-  String brand;
-  String cardId;
-  String country;
-  String currency;
-  int expMonth;
-  int expYear;
-  String funding;
-  String last4;
-  String name;
-  String number;
-  String cvc;
-  String token;
+  String? addressCity;
+  String? addressCountry;
+  String? addressLine1;
+  String? addressLine2;
+  String? addressState;
+  String? addressZip;
+  String? brand;
+  String? cardId;
+  String? country;
+  String? currency;
+  int? expMonth;
+  int? expYear;
+  String? funding;
+  String? last4;
+  String? name;
+  String? number;
+  String? cvc;
+  String? token;
 
   CreditCard(
       {this.addressCity,
