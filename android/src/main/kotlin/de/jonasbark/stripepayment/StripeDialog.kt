@@ -42,6 +42,9 @@ class StripeDialog : DialogFragment() {
         // Fetch arguments from bundle and set title
         val title = arguments?.getString("title", "Add Source")
         dialog?.setTitle(title)
+
+        val mCardInputWidget = view.findViewById<View>(R.id.card_input_widget) as CardMultilineWidget
+        mCardInputWidget.setShouldShowPostalCode(false)
         view.findViewById<View>(R.id.buttonSave)?.setOnClickListener {
             getToken()
         }
