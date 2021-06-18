@@ -31,6 +31,13 @@ class _MyAppState extends State<MyApp> {
     number: '4000002760003184',
     expMonth: 12,
     expYear: 21,
+    name: 'Test User',
+    cvc: '133',
+    addressLine1: 'Address 1',
+    addressLine2: 'Address 2',
+    addressCity: 'City',
+    addressState: 'CA',
+    addressZip: '1337',
   );
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();

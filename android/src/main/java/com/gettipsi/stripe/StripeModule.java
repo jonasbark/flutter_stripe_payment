@@ -22,6 +22,7 @@ import com.gettipsi.stripe.util.Fun0;
 import com.google.android.gms.wallet.WalletConstants;
 import com.stripe.android.ApiResultCallback;
 import com.stripe.android.AppInfo;
+import com.stripe.android.PaymentConfiguration;
 import com.stripe.android.PaymentIntentResult;
 import com.stripe.android.SetupIntentResult;
 import com.stripe.android.Stripe;
@@ -139,6 +140,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
       Stripe.setAppInfo(AppInfo.create(APP_INFO_NAME, APP_INFO_VERSION, APP_INFO_URL));
       mStripe = new Stripe(getReactApplicationContext(), mPublicKey);
       getPayFlow().setPublishableKey(mPublicKey);
+      PaymentConfiguration.init(getReactApplicationContext(), mPublicKey);
     }
 
     if (newAndroidPayMode != null) {
