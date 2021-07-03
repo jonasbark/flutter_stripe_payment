@@ -1,3 +1,7 @@
+> **⚠ WARNING: This plugin has been discontinued.**  
+> Head over to [migration.md](migration.md) for migrate to the new flutter_stripe plugin
+
+
 [![pub package](https://img.shields.io/pub/v/stripe_payment.svg)](https://pub.dev/packages/stripe_payment)
 
 # stripe_payment
@@ -6,9 +10,9 @@
 
 ## Quick Glance
 
-- This Flutter plugin is a straight port from tipsi-stripe plugin for React Native - we tried to 
-keep the API as close as possible so the documentation applies this this plugin as well.
-- Collect chargable tokens from users' **Card Input** and **Apple & Google Pay**
+- This Flutter plugin is a straight port from the tipsi-stripe plugin for React Native - we tried to 
+keep the API as close as possible, so the documentation applies this plugin.
+- Collect chargeable tokens from users' **Card Input** and** Apple & Google Pay**.
 - For **SCA** compliant apps, setup payment intents for later confirmation.
 
 ## Supported features:
@@ -60,4 +64,7 @@ It includes:
 - method documentations
 
 ## Blog Posts
-- ![Build a marketplace in your Flutter app and accept payments using Stripe and Firebase](https://medium.com/flutter-community/build-a-marketplace-in-your-flutter-app-and-accept-payments-using-stripe-and-firebase-72f3f7228625)
+- [Build a marketplace in your Flutter app and accept payments using Stripe and Firebase](https://medium.com/flutter-community/build-a-marketplace-in-your-flutter-app-and-accept-payments-using-stripe-and-firebase-72f3f7228625)
+
+## Xcode 12.5 support
+Xcode 12.5 is not supported - see this [discussion](https://github.com/jonasbark/flutter_stripe_payment/issues/284#issuecomment-828293850) for a fix

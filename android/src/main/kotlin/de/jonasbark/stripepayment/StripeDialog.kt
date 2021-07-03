@@ -11,18 +11,19 @@ import android.view.View
 import android.view.ViewGroup
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.Stripe
-import com.stripe.android.model.*
+import com.stripe.android.model.PaymentMethod
+import com.stripe.android.model.PaymentMethodCreateParams
 import com.stripe.android.view.CardMultilineWidget
-import java.lang.Exception
 
 
 class StripeDialog : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(title: String): StripeDialog {
+        fun newInstance(title: String, stripeAccountId: String?): StripeDialog {
             val frag = StripeDialog()
             val args = Bundle()
+            args.putString("stripeAccountId", stripeAccountId)
             args.putString("title", title)
             frag.arguments = args
             return frag
@@ -44,6 +45,9 @@ class StripeDialog : DialogFragment() {
         val title = arguments?.getString("title", "Add Source")
         dialog?.setTitle(title)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(TRANSPARENT))
+
+        val mCardInputWidget = view.findViewById<View>(R.id.card_input_widget) as CardMultilineWidget
+        mCardInputWidget.setShouldShowPostalCode(false)
         view.findViewById<View>(R.id.buttonSave)?.setOnClickListener {
             getToken()
         }
@@ -89,6 +93,8 @@ class StripeDialog : DialogFragment() {
 
                 stripeInstance.createPaymentMethod(
                     paymentMethodCreateParams,
+                    null,
+                    arguments?.getString("stripeAccountId", null),
                     object : ApiResultCallback<PaymentMethod> {
                         override fun onSuccess(result: PaymentMethod) {
                             view?.findViewById<View>(R.id.progress)?.visibility = View.GONE

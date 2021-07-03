@@ -17,10 +17,10 @@
 // Relevant Docs:
 // - https://stripe.dev/stripe-ios/docs/Classes/STPAppInfo.html https://stripe.dev/stripe-android/com/stripe/android/AppInfo.html
 // - https://stripe.com/docs/building-plugins#setappinfo
-NSString * const TPSAppInfoName = @"tipsi-stripe";
-NSString * const TPSAppInfoPartnerId = @"tipsi-stripe";
-NSString * const TPSAppInfoURL = @"https://github.com/tipsi/tipsi-stripe";
-NSString * const TPSAppInfoVersion = @"8.x";
+NSString * const TPSAppInfoName = @"flutter_stripe_payment";
+NSString * const TPSAppInfoPartnerId = @"flutter_stripe_payment";
+NSString * const TPSAppInfoURL = @"https://github.com/jonasbark/flutter_stripe_payment";
+NSString * const TPSAppInfoVersion = @"1.x";
 
 typedef NSString * TPSErrorKey NS_EXTENSIBLE_STRING_ENUM;
 #define TPSErrorKeyDefine(Key, string) TPSErrorKey const kErrorKey ## Key = string
@@ -454,6 +454,7 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     promiseResolver = resolve;
     promiseRejector = reject;
 
+    STPAPIClient *api = self.newAPIClient;
     // From example in step 3 of https://stripe.com/docs/payments/payment-intents/ios#manual-confirmation-ios
     [[STPPaymentHandler sharedHandler] handleNextActionForPayment:clientSecret
                                         withAuthenticationContext:self
@@ -887,6 +888,20 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
 
 - (STPCardParams *)extractCardParamsFromDictionary:(NSDictionary<TPSStripeType(CardParams), id> *)params {
     STPCardParams *result = [[STPCardParams alloc] init];
+
+    // Make a new address object, and fill it in with data before assigning it
+    // Editing the fields on the assigned address won't do anything according to Stripe's docs
+    // Setting the address before the rest of the fields so result.name is not cleared.
+    // https://stripe.dev/stripe-ios/docs/Classes/STPCardParams.html#/c:objc(cs)STPCardParams(py)address
+    STPAddress * address = [[STPAddress alloc] init];
+    address.line1 = params[TPSStripeParam(CardParams, addressLine1)];
+    address.line2 = params[TPSStripeParam(CardParams, addressLine2)];
+    address.city = params[TPSStripeParam(CardParams, addressCity)];
+    address.state = params[TPSStripeParam(CardParams, addressState)];
+    address.country = params[TPSStripeParam(CardParams, addressCountry)];
+    address.postalCode = params[TPSStripeParam(CardParams, addressZip)];
+    result.address = address; // Commit all the changes as a batch
+
 #define simpleUnpack(key) result.key = [RCTConvert NSString:params[TPSStripeParam(CardParams, key)]]
 
     simpleUnpack(number);
@@ -898,17 +913,6 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
     simpleUnpack(name);
 
 #undef simpleUnpack
-
-    // Make a new address object, and fill it in with data before assigning it
-    // Editing the fields on the assigned address won't do anything according to Stripe's docs
-    STPAddress * address = [[STPAddress alloc] init];
-    address.line1 = params[TPSStripeParam(CardParams, addressLine1)];
-    address.line2 = params[TPSStripeParam(CardParams, addressLine2)];
-    address.city = params[TPSStripeParam(CardParams, addressCity)];
-    address.state = params[TPSStripeParam(CardParams, addressState)];
-    address.country = params[TPSStripeParam(CardParams, addressCountry)];
-    address.postalCode = params[TPSStripeParam(CardParams, addressZip)];
-    result.address = address; // Commit all the changes as a batch
 
     return result;
 }
@@ -1486,6 +1490,8 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
             return @"diners";
         case STPCardBrandMasterCard:
             return @"mastercard";
+        case STPCardBrandUnionPay:
+            return @"unionpay";
         case STPCardBrandUnknown:
         default:
             return @"unknown";
