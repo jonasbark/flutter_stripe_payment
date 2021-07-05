@@ -19,8 +19,8 @@
 | `completeNativePayRequest`    | -                      | see above                                                 |
 | `cancelNativePayRequest`      | -                      | see above                                                 |
 | `paymentRequestWithCardForm`  | -                      | use the `CardField` view or payment sheet                 |
-| `createTokenWithCard`         | `createPaymentMethod`  | use `PaymentMethodParams.card`                            |
-| `createTokenWithBankAccount`  | `createPaymentMethod`  |                                                           |
+| `createTokenWithCard`         | `createToken`          |                                                           |
+| `createTokenWithBankAccount`  | -                      |                                                           |
 | `createSourceWithParams`      | `createPaymentMethod`  |                                                           |
 | `createPaymentMethod`         | `createPaymentMethod`  |                                                           |
 | `authenticatePaymentIntent`   | `handleCardAction`     |                                                           |
