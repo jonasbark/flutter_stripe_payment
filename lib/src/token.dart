@@ -1,9 +1,9 @@
 class Token {
-  BankAccount bankAccount;
-  CreditCard card;
-  double created;
-  bool livemode;
-  String tokenId;
+  BankAccount? bankAccount;
+  CreditCard? card;
+  double? created;
+  bool? livemode;
+  String? tokenId;
 
   Token({this.bankAccount, this.card, this.created, this.livemode, this.tokenId});
 
@@ -23,25 +23,25 @@ class Token {
     if (this.livemode != null) data['livemode'] = this.livemode;
     if (this.tokenId != null) data['tokenId'] = this.tokenId;
     if (this.bankAccount != null) {
-      data['bankAccount'] = this.bankAccount.toJson();
+      data['bankAccount'] = this.bankAccount!.toJson();
     }
     if (this.card != null) {
-      data['card'] = this.card.toJson();
+      data['card'] = this.card!.toJson();
     }
     return data;
   }
 }
 
 class BankAccount {
-  String accountHolderName;
-  String accountHolderType;
-  String accountNumber;
-  String bankName;
-  String countryCode;
-  String currency;
-  String fingerprint;
-  String last4;
-  String routingNumber;
+  String? accountHolderName;
+  String? accountHolderType;
+  String? accountNumber;
+  String? bankName;
+  String? countryCode;
+  String? currency;
+  String? fingerprint;
+  String? last4;
+  String? routingNumber;
 
   BankAccount(
       {this.accountHolderName,
@@ -84,23 +84,24 @@ class BankAccount {
 }
 
 class CreditCard {
-  String addressCity;
-  String addressCountry;
-  String addressLine1;
-  String addressLine2;
-  String addressState;
-  String addressZip;
-  String brand;
-  String cardId;
-  String country;
-  int expMonth;
-  int expYear;
-  String funding;
-  String last4;
-  String name;
-  String number;
-  String cvc;
-  String token;
+  String? addressCity;
+  String? addressCountry;
+  String? addressLine1;
+  String? addressLine2;
+  String? addressState;
+  String? addressZip;
+  String? brand;
+  String? cardId;
+  String? country;
+  String? currency;
+  int? expMonth;
+  int? expYear;
+  String? funding;
+  String? last4;
+  String? name;
+  String? number;
+  String? cvc;
+  String? token;
 
   CreditCard(
       {this.addressCity,
@@ -111,6 +112,7 @@ class CreditCard {
       this.addressZip,
       this.brand,
       this.cardId,
+      this.currency,
       this.country,
       this.expMonth,
       this.expYear,
@@ -131,6 +133,7 @@ class CreditCard {
         addressZip: json['addressZip'],
         brand: json['brand'],
         cardId: json['cardId'],
+        currency: json['currency'],
         country: json['country'],
         expMonth: json['expMonth'],
         expYear: json['expYear'],
@@ -156,6 +159,7 @@ class CreditCard {
     if (this.expMonth != null) data['expMonth'] = this.expMonth;
     if (this.expYear != null) data['expYear'] = this.expYear;
     if (this.funding != null) data['funding'] = this.funding;
+    if (this.currency != null) data['currency'] = this.currency;
     data['last4'] = this.last4;
     if (this.name != null) data['name'] = this.name;
     if (this.number != null) data['number'] = this.number;

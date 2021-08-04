@@ -1,3 +1,30 @@
+## [1.1.4]
+- Fix #311
+
+## [1.1.3]
+- Fix #301, #304, #305
+
+## [1.1.1]
+- add information about the plugin being discontinued and its replacement
+
+## [1.1.0]
+- support for null safety
+- Xcode 12.5 is not supported - see this [discussion](https://github.com/jonasbark/flutter_stripe_payment/issues/284#issuecomment-828293850) for a fix
+
+## [1.0.11]
+- fix #258 (by @Trede98)
+
+## [1.0.10]
+- update sdk signature information (by @davidme-stripe)
+
+## [1.0.9]
+- fix issues with Stripe iOS dependency
+
+## [1.0.8]
+- fix errors with shippingMethod for Apple Play (thanks @andhieka)
+- preserve card name on iOS (thanks @brauliolomeli)
+- currency support for CreditCard model (thanks @cis-emp1822)
+
 ## [1.0.7]
 - update Stripe iOS dependency to support Xcode 11.4 (#131)
 - bump Android gradle for latest Flutter support (thanks @ened)
