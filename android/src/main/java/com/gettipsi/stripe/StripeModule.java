@@ -680,7 +680,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
           options.getString("card"));
         break;
       case "card":
-        sourceParams = SourceParams.createCardParams(Converters.createCard(options));
+        sourceParams = SourceParams.createCardParams(Converters.createCard(getMapOrNull(options, "card")));
         break;
     }
     return sourceParams;
