@@ -23,7 +23,7 @@ class StripePayment {
   }
 
   /// https://tipsi.github.io/tipsi-stripe/docs/usage.html
-  static void setStripeAccount(String stripeAccount) {
+  static void setStripeAccount(String? stripeAccount) {
     _channel.invokeMethod('setStripeAccount', {"stripeAccount": stripeAccount});
   }
 
