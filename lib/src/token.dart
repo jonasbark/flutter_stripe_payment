@@ -1,19 +1,34 @@
+import 'dart:io';
+
 class Token {
   BankAccount? bankAccount;
   CreditCard? card;
   double? created;
   bool? livemode;
   String? tokenId;
+  Extra? extra;
 
-  Token({this.bankAccount, this.card, this.created, this.livemode, this.tokenId});
+  Token({
+    this.bankAccount,
+    this.card,
+    this.created,
+    this.livemode,
+    this.tokenId,
+    this.extra,
+  });
 
   factory Token.fromJson(Map<dynamic, dynamic> json) {
     return Token(
-      bankAccount: json['bankAccount'] != null ? BankAccount.fromJson(json['bankAccount']) : null,
+      bankAccount: json['bankAccount'] != null
+          ? BankAccount.fromJson(json['bankAccount'])
+          : null,
       card: json['card'] != null ? CreditCard.fromJson(json['card']) : null,
-      created: json['created'] is int ? (json['created'] as int).toDouble() : json['created'],
+      created: json['created'] is int
+          ? (json['created'] as int).toDouble()
+          : json['created'],
       livemode: json['livemode'],
       tokenId: json['tokenId'],
+      extra: json['extra'] != null ? Extra.fromJson(json['extra']) : null,
     );
   }
 
@@ -28,6 +43,115 @@ class Token {
     if (this.card != null) {
       data['card'] = this.card!.toJson();
     }
+    if (this.extra != null) {
+      data['extra'] = this.extra!.toJson();
+    }
+    return data;
+  }
+}
+
+class Extra {
+  ShippingContact? shippingContact;
+
+  Extra({
+    this.shippingContact,
+  });
+
+  factory Extra.fromJson(Map<dynamic, dynamic> json) {
+    return Extra(
+        shippingContact: json['shippingContact'] != null
+            ? ShippingContact.fromJson(json['shippingContact'])
+            : null);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.shippingContact != null) {
+      data['shippingContact'] = this.shippingContact!.toJson();
+    }
+    return data;
+  }
+}
+
+class ShippingContact {
+  String? name;
+  String? phoneNumber;
+  String? emailAddress;
+  String? street;
+  String? city;
+  String? country;
+  String? isoCountryCode;
+  String? postalCode;
+  String? state;
+  String? supplementarySubLocality;
+
+  ShippingContact({
+    this.name,
+    this.phoneNumber,
+    this.emailAddress,
+    this.street,
+    this.city,
+    this.country,
+    this.isoCountryCode,
+    this.postalCode,
+    this.state,
+    this.supplementarySubLocality,
+  });
+
+  factory ShippingContact.fromJson(Map<dynamic, dynamic> json) {
+    if (Platform.isIOS) {
+      return ShippingContact(
+        name: json['name'],
+        phoneNumber: json['phoneNumber'],
+        emailAddress: json['emailAddress'],
+        street: json['street'],
+        city: json['city'],
+        state: json['state'],
+        country: json['country'],
+        isoCountryCode: json['ISOCountryCode'],
+        postalCode: json['postalCode'],
+        supplementarySubLocality: json['supplementarySubLocality'],
+      );
+    } else {
+      return ShippingContact(
+        name: json['name'],
+        phoneNumber: json['phoneNumber'],
+        emailAddress: json['emailAddress'],
+        street: getAddress(json),
+        city: json['locality'],
+        state: json['administrativeArea'],
+        country: json['countryCode'],
+        postalCode: json['postalCode'],
+      );
+    }
+  }
+
+  static String getAddress(Map<dynamic, dynamic> json) {
+    String address = '';
+    for (var i = 1; i <= 5; i++) {
+      if (json["address$i"] != null && json["address$i"] is String) {
+        address += ' ${json["address$i"]}';
+      }
+    }
+
+    return address;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.name != null) data['name'] = this.name;
+    if (this.phoneNumber != null) data['phoneNumber'] = this.phoneNumber;
+    if (this.emailAddress != null) data['emailAddress'] = this.emailAddress;
+    if (this.street != null) data['street'] = this.street;
+    if (this.city != null) data['city'] = this.city;
+    if (this.state != null) data['state'] = this.state;
+    if (this.country != null) data['country'] = this.country;
+    if (this.isoCountryCode != null)
+      data['ISOCountryCode'] = this.isoCountryCode;
+    if (this.postalCode != null) data['postalCode'] = this.postalCode;
+    if (this.supplementarySubLocality != null)
+      data['supplementarySubLocality'] = this.supplementarySubLocality;
+
     return data;
   }
 }
@@ -70,8 +194,10 @@ class BankAccount {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.accountHolderName != null) data['accountHolderName'] = this.accountHolderName;
-    if (this.accountHolderType != null) data['accountHolderType'] = this.accountHolderType;
+    if (this.accountHolderName != null)
+      data['accountHolderName'] = this.accountHolderName;
+    if (this.accountHolderType != null)
+      data['accountHolderType'] = this.accountHolderType;
     if (this.accountNumber != null) data['accountNumber'] = this.accountNumber;
     if (this.bankName != null) data['bankName'] = this.bankName;
     if (this.countryCode != null) data['countryCode'] = this.countryCode;
@@ -148,7 +274,8 @@ class CreditCard {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.addressCity != null) data['addressCity'] = this.addressCity;
-    if (this.addressCountry != null) data['addressCountry'] = this.addressCountry;
+    if (this.addressCountry != null)
+      data['addressCountry'] = this.addressCountry;
     data['addressLine1'] = this.addressLine1;
     data['addressLine2'] = this.addressLine2;
     if (this.addressState != null) data['addressState'] = this.addressState;
