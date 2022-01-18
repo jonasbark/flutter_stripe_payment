@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 
+//Warning: Example in this file is using deprecated lib and should not be followed for new applications.
+
 void main() {
   runApp(new MyApp());
 }
